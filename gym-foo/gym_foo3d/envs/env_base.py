@@ -476,6 +476,7 @@ class CircularQueue():
         return np.square(self.array[self.start] - self.array[self.end-1])
     def returnSecond(self,freq):
         return self.count/freq
+
     def returnarray(self):
         return self.array
 

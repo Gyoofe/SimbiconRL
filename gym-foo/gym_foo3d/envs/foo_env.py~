@@ -42,40 +42,22 @@ class FooEnv(env_base.FooEnvBase):
 
         self.do_simulation(action,self.frameskip)
         
-        ##다리사이 각 계산 ZY평면
+        #발의 위치
         r_foot_pos = self._getJointPosition(self.r_foot) 
         l_foot_pos = self._getJointPosition(self.l_foot)
-        """
-        l_uleg_jpos = self._getJointPosition(self.l_uleg)
-        r_uleg_jpos = self._getJointPosition(self.r_uleg)
-        l_lleg_jpos = self._getJointPosition(self.l_lleg)
-        r_lleg_jpos = self._getJointPosition(self.r_lleg)
 
-        rLeg_vector = r_lleg_jpos - self.pelvis.world_transform()[:3,3]
-        lLeg_vector = l_lleg_jpos - self.pelvis.world_transform()[:3,3]
-
-        pelvisX_axis = self.pelvisX.axis_in_world_frame()
-
-        rLeg_vector = np.cross(pelvisX_axis, np.cross(rLeg_vector,pelvisX_axis))
-        lLeg_vector = np.cross(pelvisX_axis, np.cross(lLeg_vector, pelvisX_axis))
-        #print(rLeg_vector)
-        #print(lLeg_vector)
-        #LegZYangle = self._calAngleBetweenVectors(rLeg_vector,lLeg_vector)
-
-        #anglesPanelty = 0
-        #if LegZYangle > 0.55:
-        #    anglesPanelty = anglesPanelty + LegZYangle * 0.3
-        """
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
+        
+        #2초간의 속도 계산
         #velocity_2s = np.sqrt(np.square(self.XveloQueue.first_end_distance())+np.square(self.ZveloQueue.first_end_distance()))
         velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
         velocityReward = np.abs(velocity_2s - self.desiredSpeed)
-        print(velocity_2s) 
+
         ##직선 보행 panelty
         y_lane = np.abs(pos_after[2])
-        #print(y_lane)
+
         alive_bonus = 2.5
         #reward = alive_bonus - velocityReward - y_lane * 0.2 - 3*np.abs(self.getCOMFrameXAxis()[2])
         reward = alive_bonus - velocityReward - 4*np.abs(self.getCOMFrameXAxis()[2])
@@ -119,16 +101,10 @@ class FooEnv(env_base.FooEnvBase):
 
 
     def do_simulation(self, action, n_frames):
-        """set action..
-            for _ in range(n_frames):
-                self.simulator step
-        """
         self.controller.mCurrentStateMachine.mCurrentAction = action
         self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
         for _ in range(n_frames):
             self.controller.update()
-            #input()
-            #self.controller.update(action,0)
             self.sim.step()
             if(self.isrender):
                 time.sleep(0.001)
