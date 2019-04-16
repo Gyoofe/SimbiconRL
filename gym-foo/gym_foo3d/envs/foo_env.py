@@ -29,10 +29,10 @@ from . import env_base
 
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 class FooEnv(env_base.FooEnvBase):
-    def init_sim(self):
-        super().init_sim()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(14,))
-
+    def init_sim(self,cDirection):
+        super().init_sim(cDirection)
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(15,))
+        print(self.targetAngle)
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
@@ -54,22 +54,36 @@ class FooEnv(env_base.FooEnvBase):
         #velocity_2s = np.sqrt(np.square(self.XveloQueue.first_end_distance())+np.square(self.ZveloQueue.first_end_distance()))
         velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
         velocityReward = np.abs(velocity_2s - self.desiredSpeed)
-
-        ##직선 보행 panelty
-        y_lane = np.abs(pos_after[2])
-
-        alive_bonus = 2.5
-        #reward = alive_bonus - velocityReward - y_lane * 0.2 - 3*np.abs(self.getCOMFrameXAxis()[2])
-        reward = alive_bonus - velocityReward - 4*np.abs(self.getCOMFrameXAxis()[2])
         
+        alive_bonus = 5
+
+
+        #방향 맞춤
+        self.currentFrameXAxis = self.getCOMFrameXAxis()
+        self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
+
+        #walkPenalty(직선보행 페널티)
+        if self.XveloQueue.f_e_d() == 0 and self.ZveloQueue.f_e_d() == 0:
+            a = [1,0,0]
+        else:
+            a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
+        a = cMat.Matrix.normalize(a)
+        walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
+
+        reward = alive_bonus - 1.5*velocityReward - 1.5*self.leftAngle - 0.5*(walkPenalty)
+
+
+
+
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
         #reward = alive_bonus - speed[0]*0.7 -np.abs(pos_after[2])*0.1 - (anglesPanelty + np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.5 
         #reward = alive_bonus - panelty * 0.2 - anglesPanelty
 
         if pos_after[1] < 0.025 or pos_after[1] > 0.5:
             done = True
-        elif np.abs(pos_after[2]) > 2:
-            done = True
+        #정면으로 걷지않을경우 빠르게 종료
+        #elif np.abs(pos_after[2]) > 2:
+        #    done = True
         elif r_foot_pos[1] > pos_after[1]:
             done = True
         elif l_foot_pos[1] > pos_after[1]:
@@ -90,10 +104,19 @@ class FooEnv(env_base.FooEnvBase):
         self.actionSteps += 1
         self.episodeTotalReward += reward
         self.set_desiredSpeed()
+
+
+        #수정
+        if self.step_counter % (self.step_per_sec * 20) == self.step_per_sec*5 and self.cDirection and self.step_counter is not 0:
+            self.changeDirection()
+        #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
+        #    self.changeDirection()
+
+
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             print("velocityReward: " + str(velocityReward) + "__" + str(velocity_2s)+ "__" + str(self.desiredSpeed))
-            self.reset()
+            #self.reset()
         return thisState, reward, done, pos_after
 
         #self.do_simulation(action, 60)

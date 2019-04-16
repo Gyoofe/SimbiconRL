@@ -30,8 +30,8 @@ GAMMA = 0.99
 GAE_LAMBDA = 0.95
 
 TRAJECTORY_SIZE = 2049
-LEARNING_RATE_ACTOR = 5e-4
-LEARNING_RATE_CRITIC = 5e-4
+LEARNING_RATE_ACTOR = 1e-4
+LEARNING_RATE_CRITIC = 1e-4
 PPO_EPS = 0.2
 PPO_EPOCHES = 10
 PPO_BATCH_SIZE = 2048
@@ -96,20 +96,22 @@ def calc_adv_ref(trajectory, net_crt, states_v, device="cuda"):
 
     return adv_v, ref_v
 
-def update_linear_schedule(optimizer, epoch, total_num_epochs, initial_lr):
+def update_linear_schedule(optimizer, epoch, total_num_epochs, initial_lr,writer):
     """Decrease the learning rate linearly"""
     lr = initial_lr - (initial_lr * (epoch / float(total_num_epochs)))
-    print("current lr: ", lr)
+    writer.add_scalar("lr", lr, epoch)
     if lr > 1e-6:
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
+            writer.add_scalar("lr_c", param_group['lr'],epoch)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", required=True, help ="use linearScheduler")
     parser.add_argument("-e", required=True, help="env to train")
-    parser.add_argument("-r", required=True, help="use linearRatio") 
+    parser.add_argument("-r", required=True, help="use linearRatio")
+    parser.add_argument("-rd", required=True, help="use random Direction")
     args = parser.parse_args()
     
     ##linearScheduler
@@ -118,6 +120,11 @@ if __name__ == "__main__":
         linearSchedule = False
     else:
         linearSchedule = True
+
+    if args.rd == "F":
+        cDirection = False
+    else:
+        cDirection = True
 
     if args.e == "0":
         ENV_ID = "3d-v0"
@@ -147,8 +154,8 @@ if __name__ == "__main__":
     test_env = gym.make(ENV_ID)
     
     env.init_dart()
-    env.init_sim()
-    test_env.init_sim()
+    env.init_sim(cDirection)
+    test_env.init_sim(cDirection)
 
     #env.start_render()
     #print(ENV_ID)
@@ -187,7 +194,7 @@ if __name__ == "__main__":
     #tracker = ptan.common.utils.RewardTracker(writer)
     tUpdate = 0
     with ptan.common.utils.RewardTracker(writer) as tracker:
-        for step_idx, exp in enumerate(exp_source): 
+        for step_idx, exp in enumerate(exp_source):
             rewards_steps = exp_source.pop_rewards_steps()
             if rewards_steps:
                 rewards, steps = zip(*rewards_steps)
@@ -196,7 +203,7 @@ if __name__ == "__main__":
                 print(rewards, step_idx)
             
              
-            if step_idx % TEST_ITERS == 0:
+            if (step_idx % TEST_ITERS == 0) and step_idx >= TEST_ITERS*400:
                 ts = time.time()
                 rewards, steps = test_net(net_act, test_env, device=device)
                 print("Test done in %.2f sec, reward %.3f, steps %d" % (time.time() - ts, rewards, steps))
@@ -206,7 +213,7 @@ if __name__ == "__main__":
                 if best_reward is None or  best_reward < rewards:
                     if best_reward is not None:
                         print("Best reward updated: %.3f -> %.3f" % (best_reward, rewards))
-                        name = "PPO_CRITIC_No_contact_2049128_best_%+.3f_%d.dat" % (rewards, step_idx) + ENV_ID
+                        name = "PPO_CRITIC_No_contact_2049128_best_%+.3f_%d.dat" % (rewards, step_idx) + ENV_ID + args.rd
                         fname = os.path.join(save_path, name)
                         #torch.save(net_act.state_dict(), fname)
                         torch.save(net_act, fname)
@@ -248,8 +255,8 @@ if __name__ == "__main__":
 
             if linearSchedule:
                 print(linearSchedule)
-                update_linear_schedule(opt_act,updateCount,NUM_UPDATES,LEARNING_RATE_ACTOR)
-                update_linear_schedule(opt_crt,updateCount,NUM_UPDATES,LEARNING_RATE_CRITIC)
+                update_linear_schedule(opt_act,updateCount,NUM_UPDATES,LEARNING_RATE_ACTOR,writer)
+                update_linear_schedule(opt_crt,updateCount,NUM_UPDATES,LEARNING_RATE_CRITIC,writer)
             updateCount+=1
 
 
@@ -323,6 +330,7 @@ if __name__ == "__main__":
                         if linearActionRatio > 1:
                             linearActionRatio = 1
                         env.set_linearActionRatio(linearActionRatio)
+
                     else:
                         print(linearActionRatio, "linearActionRatio is full")
 

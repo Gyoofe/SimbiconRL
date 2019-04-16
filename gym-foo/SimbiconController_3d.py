@@ -115,6 +115,7 @@ class StateMachine():
                 sta13 = action[11]
                 swhx13 = action[12]
                 swhz13 = action[13]
+                pelvis = action[14]
             elif env == 2 or env == 3 or env == 6 or env == 7:
                 #print("2")
                 swh13 = action[0]
@@ -124,7 +125,7 @@ class StateMachine():
                 sta13 = action[4]
                 swhx13 = action[5]
                 swhz13 = action[6]
-
+                pelvis = action[7]
 
             #swh02 = 0.5
             #swk02 = -1.10
@@ -139,8 +140,10 @@ class StateMachine():
             #sta13 = 0.0
 
 
-
-            
+            wState0.setDesiredJointPosition("back_bky", -pelvis)
+            wState1.setDesiredJointPosition("back_bky", -pelvis)
+            wState2.setDesiredJointPosition("back_bky", -pelvis)
+            wState3.setDesiredJointPosition("back_bky", -pelvis)
 
 
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)

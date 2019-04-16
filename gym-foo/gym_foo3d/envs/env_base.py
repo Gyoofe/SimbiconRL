@@ -24,10 +24,11 @@ import time
 
 import matplotlib
 import matplotlib.pyplot as plt
+import random
 
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 STEP_PER_SEC = 900
-DESIRED_MAX_SPEED = 2
+DESIRED_MAX_SPEED = 1.5
 class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
 
@@ -116,7 +117,7 @@ class FooEnvBase(gym.Env):
     def init_dart(self):
         pydart.init()
 
-    def init_sim(self):
+    def init_sim(self,cDirection):
         self.querystep = 1
         self.frameskip = 30
         self.sim = pydart.World(1/STEP_PER_SEC)
@@ -157,7 +158,7 @@ class FooEnvBase(gym.Env):
         #self.action_space = spaces.Box(low = 0, high = 1.5, shape=(5,))
 
         #마지막2개, desiredSpeed
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[:4],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq,[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0]])
+        observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq,[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0,0]])
         observation_spaces = np.zeros(len(observation_spaces))
         #observation_spaces[0:]=500
         self.observation_space = spaces.Box(observation_spaces, -observation_spaces)
@@ -198,7 +199,19 @@ class FooEnvBase(gym.Env):
         self.desiredSpeed = 0
         self.step_per_sec = STEP_PER_SEC
 
+        self.cDirection = cDirection
+        
+        #if cDirection:
+        #    self.changeDirection()
+        #else:
+        #    self.targetAngle = math.radians(0.0)
+        self.targetAngle = math.radians(0.0)
+        self.leftAngle = math.radians(0.0)
         self.mlinearActionRatio = 0
+
+
+        self.targetFrameXAxis = self.getCOMFrameXAxis()
+        self.currentFrameXAxis = self.getCOMFrameXAxis()
 
     def set_desiredSpeed(self):
         #print(actionSteps)
@@ -209,7 +222,7 @@ class FooEnvBase(gym.Env):
         return
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[:4],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq, [int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed]])
+        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq, [int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.targetAngle,self.leftAngle]])
          
     def set_env_name(self, name_v):
         self.name = name_v
@@ -240,7 +253,10 @@ class FooEnvBase(gym.Env):
         self.XveloQueue.reset()
         self.ZveloQueue.reset()
         self.actionSteps = 0
-        self.episodeTotalReward = 0 
+        self.episodeTotalReward = 0
+        if self.cDirection:
+        #    self.changeDirection()
+            self.targetAngle = 0
         return self.get_state()
 
     def start_render(self, mode='human', close=False):
@@ -302,6 +318,7 @@ class FooEnvBase(gym.Env):
         action[11] = action[11]*(self.mlinearActionRatio)
         action[12] = action[12]*(self.mlinearActionRatio)
         action[13] = action[13]*(self.mlinearActionRatio)
+        action[14] = action[14]*(self.mlinearActionRatio) + math.radians(-10.0)*(1-self.mlinearActionRatio)
 
     def clip_Normal_Actiond10(self, action):
         action = np.clip(action, -1, 1)
@@ -319,6 +336,7 @@ class FooEnvBase(gym.Env):
         action[11] = (action[11])*np.pi/9
         action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(60.0)
+        action[14] = (action[14]+1)*math.radians(-45.0)/2
         self.ForceAction10(action)
 
         return action
@@ -339,8 +357,10 @@ class FooEnvBase(gym.Env):
         action[11] = (action[11])*np.pi/9
         action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(45.0)
+        action[14] = (action[14]+1)*math.radians(-30.0)/2
         #print(action)
         self.ForceAction10(action)
+
         return action
 
     def clip_Scaling_Actiond5(self, action):
@@ -384,6 +404,22 @@ class FooEnvBase(gym.Env):
 
         xAxis = cMat.Matrix.normalize_2D(pelvisXAxis)
         return xAxis
+
+    def changeDirection(self):
+        self.targetAngle = ((random.random()*2)-1)*np.pi
+        self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)
+        self.XveloQueue.reset()
+        self.ZveloQueue.reset()
+        print(self.targetAngle,"targetAngle")
+        print (self.targetFrameXAxis, "targetFrameXAxis")
+        print (self.currentFrameXAxis, "currentFrameXAxis")
+
+
+    def rotateYAxis(self,theta,tVec):
+        rotM = [[np.cos(theta),0,np.sin(theta)],
+                [0,1,0],
+                [-np.sin(theta), 0, np.cos(theta)]]
+        return rotM@(np.transpose(tVec))
 
 class FooEnvBase_rs(FooEnvBase):
     def init_sim(self):
@@ -480,20 +516,13 @@ class CircularQueue():
     def returnarray(self):
         return self.array
 
+    def f_e_d(self):
+        return self.array[self.end-1] - self.array[self.start]
+
 
 if __name__ == "__main__":
-    a = CircularQueue(6)
-    a.enqueue(1)
-    a.enqueue(2)
-    a.enqueue(3)
-    a.enqueue(4)
-    a.enqueue(5)
-    a.enqueue(6)
-    print(str(a.mid_first_end()))
-    print(a.isfull())
-    a.enqueue(7)
-    a.enqueue(8)
-    print(a.mid_first_end())
-    a.enqueue(9)
-    a.enqueue(10)
-    print(a.mid_first_end())
+    a = [0.97692168,0,-0.21359778293]
+    b = [0.53975151,0,-0.84182439]
+    print(FooEnvBase._calAngleBetweenVectors(FooEnvBase,a,b))
+    print(np.cross(a,b))
+    print(np.cross(b,a))
