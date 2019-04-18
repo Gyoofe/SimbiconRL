@@ -8,9 +8,6 @@ import math
 import queue
 #import Cgui
 
-from guiModule import ModuleTest_drawMesh_new
-from wx import glcanvas
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -29,8 +26,8 @@ from . import env_base
 
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 class FooEnv(env_base.FooEnvBase):
-    def init_sim(self,cDirection):
-        super().init_sim(cDirection)
+    def init_sim(self,cDirection,render):
+        super().init_sim(cDirection,render)
         self.action_space = spaces.Box(low = 0, high = 1.5, shape=(15,))
         print(self.targetAngle)
 
@@ -108,6 +105,8 @@ class FooEnv(env_base.FooEnvBase):
 
         #수정
         if self.step_counter % (self.step_per_sec * 20) == self.step_per_sec*5 and self.cDirection and self.step_counter is not 0:
+            print(self.step_counter)
+
             self.changeDirection()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()

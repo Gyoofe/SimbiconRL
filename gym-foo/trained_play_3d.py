@@ -41,7 +41,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--env", required=True, help="enviroment to use")
     parser.add_argument("-m", "--model", required=True, help="Model file to load")
-    parser.add_argument("-rd", "--rd", required=True, help="use Random Direction") 
+    parser.add_argument("-rd", "--rd", required=True, help="use Random Direction")
+    parser.add_argument("-render", "--render", required=True, help="rendering")
     args = parser.parse_args()
     if args.env == "0":
         ENV_ID = "3d-v0"
@@ -68,10 +69,15 @@ if __name__ == "__main__":
     else:
         cDirection = True
 
+    if args.render == "F":
+        render = False
+    else:
+        render = True
+
     env = gym.make(ENV_ID)
     print(args)
     env.init_dart()
-    env.init_sim(cDirection)
+    env.init_sim(cDirection,render)
     #net = Model.ModelActor(env.observation_space.shape[0], env.action_space.shape[0])
     #net.load_state_dict(torch.load(args.model))
     net = torch.load(args.model)
@@ -79,8 +85,9 @@ if __name__ == "__main__":
 
     obs = env.reset()
     env.set_linearActionRatio(1)
-    env.start_render()
-    input()
+    if render:
+        env.start_render()
+        input()
     total_reward = 0.0
     total_steps = 0
     count = 2

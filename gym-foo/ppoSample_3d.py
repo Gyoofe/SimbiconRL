@@ -112,6 +112,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", required=True, help="env to train")
     parser.add_argument("-r", required=True, help="use linearRatio")
     parser.add_argument("-rd", required=True, help="use random Direction")
+    parser.add_argument("-render", required=True, help="lendering")
     args = parser.parse_args()
     
     ##linearScheduler
@@ -125,6 +126,11 @@ if __name__ == "__main__":
         cDirection = False
     else:
         cDirection = True
+
+    if args.render == "F"
+        render = False
+    else:
+        render = True
 
     if args.e == "0":
         ENV_ID = "3d-v0"
@@ -154,8 +160,8 @@ if __name__ == "__main__":
     test_env = gym.make(ENV_ID)
     
     env.init_dart()
-    env.init_sim(cDirection)
-    test_env.init_sim(cDirection)
+    env.init_sim(cDirection,render)
+    test_env.init_sim(cDirection,render)
 
     #env.start_render()
     #print(ENV_ID)

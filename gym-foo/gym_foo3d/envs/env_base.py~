@@ -8,9 +8,6 @@ import math
 import queue
 #import Cgui
 
-from guiModule import ModuleTest_drawMesh_new
-from wx import glcanvas
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -117,7 +114,7 @@ class FooEnvBase(gym.Env):
     def init_dart(self):
         pydart.init()
 
-    def init_sim(self,cDirection):
+    def init_sim(self,cDirection,render):
         self.querystep = 1
         self.frameskip = 30
         self.sim = pydart.World(1/STEP_PER_SEC)
@@ -144,14 +141,17 @@ class FooEnvBase(gym.Env):
 
         self.controller = SC.Controller(self.skel, self.sim)
 
-        app = wx.App(0)
-        frame = wx.Frame(None, -1, size=(1200,960))
-        #self.gui = Cgui.dartGui(frame,self.sim,self.controller)
-        self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller)
-        frame.Show(True)
+        if render:
+            from guiModule import ModuleTest_drawMesh_new
+            from wx import glcanvas
+            app = wx.App(0)
+            frame = wx.Frame(None, -1, size=(1200,960))
+            #self.gui = Cgui.dartGui(frame,self.sim,self.controller)
+            self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller)
+            frame.Show(True)
 
 
-        self.guiThread = wxPythonThread(app,frame)
+            self.guiThread = wxPythonThread(app,frame)
 
         ##gym Setting##
         #lowhigh = np.array([-300,300])
