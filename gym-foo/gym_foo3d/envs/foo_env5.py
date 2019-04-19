@@ -2,7 +2,7 @@ import sys
 import pydart2 as pydart
 import numpy as np
 import cMat
-import SimbiconController as SC
+import SimbiconController_3d as SC
 import math
 import queue
 #import Cgui

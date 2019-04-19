@@ -1,6 +1,6 @@
 import math
 import numpy as np
-import SimbiconController
+import SimbiconController_3d
 import cMat
 import copy
 import pydart2 as pydart
