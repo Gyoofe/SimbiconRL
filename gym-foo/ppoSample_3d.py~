@@ -127,7 +127,7 @@ if __name__ == "__main__":
     else:
         cDirection = True
 
-    if args.render = "F"
+    if args.render == "F":
         render = False
     else:
         render = True
@@ -209,7 +209,7 @@ if __name__ == "__main__":
                 print(rewards, step_idx)
             
              
-            if (step_idx % TEST_ITERS == 0) and step_idx >= TEST_ITERS*400:
+            if (step_idx % TEST_ITERS == 0) and step_idx >= TEST_ITERS*4000:
                 ts = time.time()
                 rewards, steps = test_net(net_act, test_env, device=device)
                 print("Test done in %.2f sec, reward %.3f, steps %d" % (time.time() - ts, rewards, steps))

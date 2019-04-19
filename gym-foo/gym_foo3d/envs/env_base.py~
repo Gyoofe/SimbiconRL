@@ -1,4 +1,3 @@
-import wx
 import sys
 import pydart2 as pydart
 import numpy as np
@@ -30,86 +29,7 @@ class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        """
-        pydart.init()
-
-        self.world = pydart.World(1/1000)
-        self.ground = self.world.add_skeleton(skel_path+"ground.urdf")
-        self.atlas = self.world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf")
-
-        self.skel = self.world.skeletons[1]
-
-        q = self.skel.q
-        q[0] = -0.5*np.pi
-        q[4] = q[4]+0.01
-        self.skel.set_positions(q)
-
-        self.controller = SC.Controller(self.skel, self.world)
-
-        self.app = wx.App(0)
-
-        self.frame= wx.Frame(None, -1, size=(1200,960))
-        self.gui = Cgui.dartGui(self.frame,self.world,self.controller)
-        self.frame.Show(True)
-
-        self.app.MainLoop()
-
         return
-        """
-        """
-        pydart.init()
-
-        self.frameskip = None
-        self.sim = pydart.World(1/1000)
-        self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
-        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf")
-        
-        self.data = None
-        self.viewer = None
-
-        self.skel = self.sim.skeletons[1]
-        q = self.skel.q
-        q[0] = -0.5*np.pi
-        q[4] = q[4]+0.01
-        #q[3] = q[3]+1
-        #x방향으로 진행
-        self.initPos = q
-        self.skel.set_positions(q)
-
-
-        self.controller = SC.Controller(self.skel, self.sim)
-
-        app = wx.App(0)
-        frame = wx.Frame(None, -1, size=(1200,960))
-        self.gui = Cgui.dartGui(frame,self.sim,self.controller)
-        frame.Show(True)
-
-
-        self.guiThread = wxPythonThread(app,frame)
-
-        ##gym Setting##
-        lowhigh = np.array([-300,300])
-        self.action_space = spaces.Box(low = -1, high = 0, shape=(8,))
-
-
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[:4],self.sim.skeletons[1].q[6:], self.sim.skeletons[1].dq, self.sim.skeletons[1].com_velocity(), self.sim.skeletons[1].com_acceleration()])
-        observation_spaces = np.zeros(len(observation_spaces))
-        observation_spaces[0:]=500
-        self.observation_space = spaces.Box(observation_spaces, -observation_spaces)
-        print(observation_spaces)
-        #print(self.sim.skeletons[1].com())
-
-        plt.ion()
-        #input("init")
-        self.plt_xAxis = np.array([0])
-        self.plt_yAxis = np.array([0])
-        self.draw_plot(self.plt_xAxis,self.plt_yAxis)
-        #plt.plot(self.plt_xAxis,self.plt_yAxis)
-        #plt.show()
-
-        self.step_counter = 0
-        """
-        #input("init")
 
     def init_dart(self):
         pydart.init()
@@ -142,6 +62,7 @@ class FooEnvBase(gym.Env):
         self.controller = SC.Controller(self.skel, self.sim)
 
         if render:
+            import wx
             from guiModule import ModuleTest_drawMesh_new
             from wx import glcanvas
             app = wx.App(0)
@@ -158,14 +79,29 @@ class FooEnvBase(gym.Env):
         #self.action_space = spaces.Box(low = 0, high = 1.5, shape=(5,))
 
         #마지막2개, desiredSpeed
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq,[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0,0]])
+        observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
+        #observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
         observation_spaces = np.zeros(len(observation_spaces))
         #observation_spaces[0:]=500
         self.observation_space = spaces.Box(observation_spaces, -observation_spaces)
-        #print(observation_spaces)
-        #input()
-        #print(self.sim.skeletons[1].com())
 
+        """
+        print(len(observation_spaces))
+        print(len(self.sim.skeletons[1].q))
+        print(self.sim.skeletons[1].num_dofs())
+        for i in range(33):
+            print(self.sim.skeletons[1].dof(i).index_in_skeleton(),self.sim.skeletons[1].dof(i).name)
+        a = [0,1,2,3,4,5,6,7,8,9,10]
+        #print(self.sim.skeletons[1].q[1:3])
+        #print(self.sim.skeletons[1].q[6:9])
+        #print(self.sim.skeletons[1].q[14:20])
+        #print(self.sim.skeletons[1].q[26:32])
+        print(a[5:8])
+        print(len(self.sim.skeletons[1].q))
+        print(len(self.sim.skeletons[1].dq))
+        input()
+        #print(self.sim.skeletons[1].com())
+        """
         #plt.ion()
         #input("init")
         #self.plt_xAxis = np.array([0])
@@ -222,7 +158,9 @@ class FooEnvBase(gym.Env):
         return
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq, [int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.targetAngle,self.leftAngle]])
+        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
+        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
+
          
     def set_env_name(self, name_v):
         self.name = name_v
@@ -413,6 +351,7 @@ class FooEnvBase(gym.Env):
         print(self.targetAngle,"targetAngle")
         print (self.targetFrameXAxis, "targetFrameXAxis")
         print (self.currentFrameXAxis, "currentFrameXAxis")
+        input()
 
 
     def rotateYAxis(self,theta,tVec):

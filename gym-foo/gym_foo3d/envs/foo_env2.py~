@@ -103,7 +103,7 @@ class FooEnv2(env_base.FooEnvBase):
             done = True
         elif self.step_counter > self.step_per_sec * 60:
             done = True
-        elif pos_after[0] < -2:
+        elif pos_after[0] < -1:
             done = True
         else:
             done = False

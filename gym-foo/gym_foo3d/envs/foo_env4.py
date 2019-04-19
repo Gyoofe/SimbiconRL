@@ -1,4 +1,3 @@
-import wx
 import sys
 import pydart2 as pydart
 import numpy as np
@@ -7,9 +6,6 @@ import SimbiconController as SC
 import math
 import queue
 #import Cgui
-
-from guiModule import ModuleTest_drawMesh_new
-from wx import glcanvas
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *

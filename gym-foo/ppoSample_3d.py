@@ -127,7 +127,7 @@ if __name__ == "__main__":
     else:
         cDirection = True
 
-    if args.render == "F"
+    if args.render == "F":
         render = False
     else:
         render = True
