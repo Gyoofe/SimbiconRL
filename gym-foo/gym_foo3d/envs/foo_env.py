@@ -106,8 +106,6 @@ class FooEnv(env_base.FooEnvBase):
 
         #수정
         if self.step_counter % (self.step_per_sec * 20) == self.step_per_sec*5 and self.cDirection and self.step_counter is not 0:
-            print(self.step_counter)
-
             self.changeDirection()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()

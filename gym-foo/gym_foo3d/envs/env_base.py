@@ -348,10 +348,7 @@ class FooEnvBase(gym.Env):
         self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)
         self.XveloQueue.reset()
         self.ZveloQueue.reset()
-        print(self.targetAngle,"targetAngle")
-        print (self.targetFrameXAxis, "targetFrameXAxis")
-        print (self.currentFrameXAxis, "currentFrameXAxis")
-        input()
+        print("change Direction")
 
 
     def rotateYAxis(self,theta,tVec):
