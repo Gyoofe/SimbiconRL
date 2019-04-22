@@ -76,10 +76,7 @@ class FooEnv7(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - 1.5*velocityReward - 1.5*self.leftAngle - 0.5*(walkPenalty)
-
-
-
+        reward = alive_bonus - 1.5*velocityReward - 1.5*(np.abs(self.leftAngle)) - 0.5*(walkPenalty)
 
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
         #reward = alive_bonus - speed[0]*0.7 -np.abs(pos_after[2])*0.1 - (anglesPanelty + np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.5 
