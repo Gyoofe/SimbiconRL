@@ -1,0 +1,40 @@
+import pydart2  as pydart
+import numpy as np
+import customWorld as cW
+import myWindow as mW
+import SimbiconController as SC
+
+skel_path="/home/qfei/dart/data/sdf/atlas/"
+
+if __name__ == '__main__':
+    pydart.init()
+
+    #world = pydart.World(30/1000)
+    world = cW.MyWorld(1/1000)
+
+    ground = world.add_skeleton(skel_path+"ground.urdf")
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");
+
+    skel = world.skeletons[1]
+    q = skel.q
+    q[0]=-0.5*np.pi
+    q[4]=q[4]+0.01
+    skel.set_positions(q)
+
+    controller = SC.Controller(skel,world)
+
+    print(world.gravity())
+    gravity=world.gravity()
+    gravity[1]=-9.81
+    print(gravity)
+    world.set_gravity(gravity)
+    print(world.gravity())
+    print(world.g)
+    p=skel.dof("back_bky")
+    print(skel.dof("back_bky"))
+    print(p)
+    print(q.size)
+    #pydart.gui.pyqt4.window.PyQt4Window.set_callback("on_key_press",world.on_key_press)
+    #pydart.gui.viewer.launch_pyqt4(world)
+    #pydart.gui.viewer.launch(world)
+    mW.launch_MyWindow(world,controller)

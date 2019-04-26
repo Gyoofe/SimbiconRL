@@ -44,20 +44,24 @@ class FooEnvBase(gym.Env):
         
         self.data = None
         self.viewer = None
-
+        
         self.skel = self.sim.skeletons[1]
         q = self.skel.q
-        q[0] = -0.5*np.pi
+        q[0] = -0.49*np.pi
+        #q[1] = 0.49*np.pi
+        #q[2] = 0
         q[4] = q[4]
-        q[7] = q[7] + 0.2
-        q[16] = q[16]+0.2
+        #q[7] = q[7] + 0.2
+        #q[16] = q[16]+0.2
         #q[29] = q[29]+0.3
-       # q[28] = q[28]-0.1
+        #q[28] = q[28]-0.1
         #q[3] = q[3]+1
         #x방향으로 진행
         self.initPos = q
         self.skel.set_positions(q)
-
+        
+        #self.sim.skeletons[1].set_root_joint_to_trans_and_euler()
+        #print(q[0], q[1], q[2])
 
         self.controller = SC.Controller(self.skel, self.sim)
 
@@ -195,6 +199,7 @@ class FooEnvBase(gym.Env):
         if self.cDirection:
         #    self.changeDirection()
             self.targetAngle = 0
+        self.targetFrameXAxis = self.getCOMFrameXAxis()
         return self.get_state()
 
     def start_render(self, mode='human', close=False):

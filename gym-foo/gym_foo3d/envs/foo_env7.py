@@ -60,13 +60,11 @@ class FooEnv7(env_base.FooEnvBase):
         
         alive_bonus = 5
 
-
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
         if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
             self.leftAngle = -self.leftAngle
-
 
         #walkPenalty(직선보행 페널티)
         if self.XveloQueue.f_e_d() == 0 and self.ZveloQueue.f_e_d() == 0:

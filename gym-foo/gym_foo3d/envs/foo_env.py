@@ -68,7 +68,7 @@ class FooEnv(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - 1.5*velocityReward - 1.5*self.leftAngle - 0.5*(walkPenalty)
+        reward = alive_bonus - 1.5*velocityReward - np.abs(1.5*self.leftAngle) - 0.5*(walkPenalty)
 
 
 
