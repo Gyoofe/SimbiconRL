@@ -63,6 +63,8 @@ class FooEnv7(env_base.FooEnvBase):
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
+        if np.degrees(self.leftAngle) > 45:
+            self.leftAngle = np.radians(45)
         if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
             self.leftAngle = -self.leftAngle
 
@@ -75,7 +77,7 @@ class FooEnv7(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - 1.5*(np.abs(self.leftAngle)) - 0.2*(walkPenalty)
+        reward = alive_bonus - 3*(np.abs(self.leftAngle)) - 0.5*(walkPenalty)
         #print(self.get_state())
         #input()
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
