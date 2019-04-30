@@ -93,9 +93,9 @@ class FooEnv7(env_base.FooEnvBase):
             #print("step_counter over")
             done = True
             #reward = reward + 1000 + 0.3*self.step_counter
-        elif pos_after[0] < -1:
-            print("back ward")
-            done = True
+        #elif pos_after[0] < -1:
+        #    print("back ward")
+        #    done = True
         else:
             done = False
         self.step_counter += self.frameskip
