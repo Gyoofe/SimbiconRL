@@ -352,8 +352,8 @@ class FooEnvBase(gym.Env):
     def changeDirection(self):
         self.targetAngle = ((random.random()*2)-1)*np.pi
         self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)
-        self.XveloQueue.reset()
-        self.ZveloQueue.reset()
+        #self.XveloQueue.reset()
+        #self.ZveloQueue.reset()
         print("change Direction",self.targetFrameXAxis)
 
 

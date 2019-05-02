@@ -63,8 +63,8 @@ class FooEnv7(env_base.FooEnvBase):
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
-        if np.degrees(self.leftAngle) > 30:
-            self.leftAngle = np.radians(30)
+        if np.degrees(self.leftAngle) > 60:
+            self.leftAngle = np.radians(60)
         if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
             self.leftAngle = -self.leftAngle
 
