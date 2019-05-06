@@ -362,6 +362,12 @@ class FooEnvBase(gym.Env):
                 [0,1,0],
                 [-np.sin(theta), 0, np.cos(theta)]]
         return rotM@(np.transpose(tVec))
+    
+    def distance(self):
+        dis = 0
+        for i in range(self.XveloQueue.count-1):
+            dis += np.sqrt(np.square(self.XveloQueue.array[self.XveloQueue.end-1-i] -self.XveloQueue.array[self.XveloQueue.end-2-i]) + np.square(self.ZveloQueue.array[self.ZveloQueue.end-1-i] - self.ZveloQueue.array[self.ZveloQueue.end-2-i]))
+        return dis
 
 class FooEnvBase_rs(FooEnvBase):
     def init_sim(self):

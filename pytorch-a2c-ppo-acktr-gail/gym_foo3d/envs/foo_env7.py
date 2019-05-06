@@ -56,6 +56,7 @@ class FooEnv7(env_base.FooEnvBase):
         #2초간의 속도 계산
         #velocity_2s = np.sqrt(np.square(self.XveloQueue.first_end_distance())+np.square(self.ZveloQueue.first_end_distance()))
         velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
+        velocity_s = self.distance()
         velocityReward = np.abs(velocity_2s - self.desiredSpeed)
         
         alive_bonus = 5
