@@ -24,7 +24,7 @@ import random
 
 skel_path="/home/gyoofe/dart/data/sdf/atlas/"
 STEP_PER_SEC = 900
-DESIRED_MAX_SPEED = 1.5
+DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
 
@@ -129,8 +129,8 @@ class FooEnvBase(gym.Env):
         self.pelvisZ = self.skel.joint("back_bkz")
         self.pelvis = self.skel.body("pelvis")
 
-        self.XveloQueue = CircularQueue(self.frameskip*2)
-        self.ZveloQueue = CircularQueue(self.frameskip*2)
+        self.XveloQueue = CircularQueue(self.frameskip*1)
+        self.ZveloQueue = CircularQueue(self.frameskip*1)
         self.actionSteps = 0
         self.episodeTotalReward = 0
         self.isrender = False

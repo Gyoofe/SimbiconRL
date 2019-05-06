@@ -53,19 +53,19 @@ class FooEnv7(env_base.FooEnvBase):
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
         
-        #2초간의 속도 계산
+        #1초간의 속도 계산
         #velocity_2s = np.sqrt(np.square(self.XveloQueue.first_end_distance())+np.square(self.ZveloQueue.first_end_distance()))
-        velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
+        #velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
         velocity_s = self.distance()
-        velocityReward = np.abs(velocity_2s - self.desiredSpeed)
+        velocityReward = np.abs(velocity_s - self.desiredSpeed)
         
         alive_bonus = 5
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
-        if np.degrees(self.leftAngle) > 60:
-            self.leftAngle = np.radians(60)
+        #if np.degrees(self.leftAngle) > 60:
+        #    self.leftAngle = np.radians(60)
         if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
             self.leftAngle = -self.leftAngle
 
@@ -78,7 +78,7 @@ class FooEnv7(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - 3*(np.abs(self.leftAngle)) - 0.5*(walkPenalty)
+        reward = alive_bonus - 2*(np.abs(self.leftAngle)) - 3*(walkPenalty) - 2*velocityReward
         #print(self.get_state())
         #input()
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
@@ -118,13 +118,13 @@ class FooEnv7(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
-
+        """
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             print("velocityReward: " + str(velocityReward) + "__" + str(velocity_2s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
-
+        """
         info = {
                 'pos':pos_after[2]
         }
