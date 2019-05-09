@@ -78,7 +78,7 @@ class FooEnv7(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - 2*(np.abs(self.leftAngle)) - 3*(walkPenalty) - 7*velocityReward
+        reward = alive_bonus - np.exp(1+(np.abs(self.leftAngle))) - np.exp(1.5+(walkPenalty)) - np.exp(2+velocityReward)
 
         #print(self.get_state())
         #input()
@@ -119,16 +119,19 @@ class FooEnv7(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
-        """
+        
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
-            print("velocityReward: " + str(velocityReward) + "__" + str(velocity_2s)+ "__" + str(self.desiredSpeed))
+            print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
-        """
+            input()
+
         info = {
                 'pos':pos_after[2]
         }
+        print(thisState)
+        input()
         #print(reward)
         #print(done)
         return thisState, reward, done, info 
