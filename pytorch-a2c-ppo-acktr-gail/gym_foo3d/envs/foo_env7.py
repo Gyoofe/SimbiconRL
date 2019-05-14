@@ -59,7 +59,7 @@ class FooEnv7(env_base.FooEnvBase):
         velocity_s = self.distance()
         velocityReward = np.abs(velocity_s - self.desiredSpeed)
         
-        alive_bonus = 7
+        alive_bonus = 20
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
