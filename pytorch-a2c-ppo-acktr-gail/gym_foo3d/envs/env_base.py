@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/gyoofe/dart/data/sdf/atlas/"
+skel_path="/home/qfei/dart/data/sdf/atlas/"
 STEP_PER_SEC = 900
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
@@ -72,7 +72,7 @@ class FooEnvBase(gym.Env):
             app = wx.App(0)
             frame = wx.Frame(None, -1, size=(1200,960))
             #self.gui = Cgui.dartGui(frame,self.sim,self.controller)
-            self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller)
+            self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller,self)
             frame.Show(True)
 
 
@@ -152,14 +152,19 @@ class FooEnvBase(gym.Env):
 
         self.targetFrameXAxis = self.getCOMFrameXAxis()
         self.currentFrameXAxis = self.getCOMFrameXAxis()
+        self.aStepWspeedChanged = 0
 
     def set_desiredSpeed(self):
-        #print(actionSteps)
-        maxtime = self.actionSteps/(self.targetspeed*self.frameskip*1.5)
+        maxtime = (self.actionSteps - self.aStepWspeedChanged)/(self.targetspeed*self.frameskip*1.5)
         #print(maxtime)
         if maxtime <= 1:
-            self.desiredSpeed = (self.targetspeed - self.p_targetspeed)*maxtime
+            self.desiredSpeed = self.p_targetspeed + (self.targetspeed - self.p_targetspeed)*maxtime
         return
+
+    def change_targetspeed(self):
+        self.p_targetspeed = self.targetspeed
+        self.targetspeed = 0.9+(np.random.rand())*0.8
+        self.aStepWspeedChanged = self.actionSteps
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
@@ -197,6 +202,9 @@ class FooEnvBase(gym.Env):
         self.ZveloQueue.reset()
         self.actionSteps = 0
         self.episodeTotalReward = 0
+        self.aStepWspeedChanged = 0
+        self.targetspeed = 1.1
+        self.p_targetspeed = 0 
         if self.cDirection:
         #    self.changeDirection()
             self.targetAngle = 0

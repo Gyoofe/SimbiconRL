@@ -58,7 +58,8 @@ class FooEnv7(env_base.FooEnvBase):
         #velocity_2s = np.sqrt(self.XveloQueue.first_end_distance_square() + self.ZveloQueue.first_end_distance_square())/self.XveloQueue.returnSecond(30)
         velocity_s = self.distance()
         velocityReward = np.abs(velocity_s - self.desiredSpeed)
-        
+        #print("vs",velocity_s)
+        #print("dS", self.desiredSpeed)
         alive_bonus = 100
 
         #방향 맞춤
@@ -72,13 +73,16 @@ class FooEnv7(env_base.FooEnvBase):
 
         #walkPenalty(직선보행 페널티)
         if self.XveloQueue.f_e_d() == 0 and self.ZveloQueue.f_e_d() == 0:
-            a = [1,0,0]
+            self.a = [1,0,0]
         else:
-            a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
-        a = cMat.Matrix.normalize(a)
-        walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
+            self.a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
+        self.a = cMat.Matrix.normalize(self.a)
+        walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
 
         reward = alive_bonus - np.exp(1.25*(np.abs(self.leftAngle))) - np.exp(1.5*(walkPenalty)) - np.exp(2*velocityReward)
+        #print("v",velocityReward)
+        #print("lA",self.leftAngle)
+        #print("w",walkPenalty)
         #print(self.get_state())
         #input()
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
@@ -115,6 +119,7 @@ class FooEnv7(env_base.FooEnvBase):
         #수정
         if self.step_counter % (self.step_per_sec * 20) == self.step_per_sec*5 and self.cDirection and self.step_counter is not 0:
             self.changeDirection()
+            self.change_targetspeed()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
