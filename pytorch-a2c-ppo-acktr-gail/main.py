@@ -102,6 +102,9 @@ def main():
     start = time.time()
     num_updates = int(
         args.num_env_steps) // args.num_steps // args.num_processes
+
+    print(num_updates)
+    input()
     for j in range(num_updates):
 
         if args.use_linear_lr_decay:
@@ -162,6 +165,7 @@ def main():
         rollouts.after_update()
 
         # save for every interval-th episode or for the last epoch
+        print(j)
         if (j % args.save_interval == 0
                 or j == num_updates - 1) and args.save_dir != "":
             save_path = os.path.join(args.save_dir, args.algo)
@@ -173,7 +177,7 @@ def main():
             torch.save([
                 actor_critic,
                 getattr(utils.get_vec_normalize(envs), 'ob_rms', None)
-            ], os.path.join(save_path, args.env_name + ".pt"))
+            ], os.path.join(save_path, args.env_name + str(j) + ".pt"))
 
         if j % args.log_interval == 0 and len(episode_rewards) > 1:
             total_num_steps = (j + 1) * args.num_processes * args.num_steps

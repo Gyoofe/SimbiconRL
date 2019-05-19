@@ -59,7 +59,7 @@ class FooEnv7(env_base.FooEnvBase):
         velocity_s = self.distance()
         velocityReward = np.abs(velocity_s - self.desiredSpeed)
         
-        alive_bonus = 20
+        alive_bonus = 100
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -78,14 +78,14 @@ class FooEnv7(env_base.FooEnvBase):
         a = cMat.Matrix.normalize(a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, a)
 
-        reward = alive_bonus - np.exp(1+(np.abs(self.leftAngle))) - np.exp(1.5+(walkPenalty)) - np.exp(2+velocityReward)
+        reward = alive_bonus - np.exp(1.25*(np.abs(self.leftAngle))) - np.exp(1.5*(walkPenalty)) - np.exp(2*velocityReward)
         #print(self.get_state())
         #input()
         #reward = alive_bonus - velocityReward*0.9 -y_lane*0.2 - (np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.2 - foot_balance
         #reward = alive_bonus - speed[0]*0.7 -np.abs(pos_after[2])*0.1 - (anglesPanelty + np.abs(self.skel.q[0] + np.pi*0.5) + np.abs(self.skel.q[1]) + np.abs(self.skel.q[2]))*0.5 
         #reward = alive_bonus - panelty * 0.2 - anglesPanelty
 
-        if pos_after[1] < 0.025 or pos_after[1] > 0.5:
+        if pos_after[1] < 0.020 or pos_after[1] > 0.5:
             done = True
         #정면으로 걷지않을경우 빠르게 종료
         #elif np.abs(pos_after[2]) > 2:
@@ -124,7 +124,7 @@ class FooEnv7(env_base.FooEnvBase):
             print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
-        """
+        """ 
         info = {
                 'pos':pos_after[2]
         }
