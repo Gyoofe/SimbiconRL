@@ -370,9 +370,9 @@ class Controller():
         wState3 = st.State(self.mSkel, "3")
         
         #기본값 0.1
-        tCond0 = st.TimerCondition(wState0, 0.1);
+        tCond0 = st.TimerCondition(wState0, 0.3);
         tCond1 = st.CollisionCondition(wState1, self.mWorld,self._getRightFoot())
-        tCond2 = st.TimerCondition(wState2, 0.1)
+        tCond2 = st.TimerCondition(wState2, 0.3)
         tCond3 = st.CollisionCondition(wState3,self.mWorld,self._getLeftFoot())
 
         wState0.setTerminalCondition(tCond0)
