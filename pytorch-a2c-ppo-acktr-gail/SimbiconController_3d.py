@@ -67,8 +67,13 @@ class StateMachine():
             wState1 = self.mStates[1]
             wState2 = self.mStates[2]
             wState3 = self.mStates[3]
-
-
+            
+            if self.mCurrentState is 0:
+                tCond0 = st.TimerCondition(wState0, action[15])
+                wState0.setTerminalCondition(tCond0)
+            if self.mCurrentState is 2:
+                tCond2 = st.TimerCondition(wState2, action[15])
+                wState2.setTerminalCondition(tCond2)
             #swh02 = 0.5
             #swk02 = -1.10
             #swa02 = 0.6
@@ -106,26 +111,14 @@ class StateMachine():
             sta02 = action[4]
             swhx02 = action[5]
             swhz02 = action[6]
-            if env == 1 or env == 0 or env == 4 or env ==5:
-                #print("0")
-                swh13 = action[7]
-                swk13 = action[8]
-                swa13 = action[9]
-                stk13 = action[10]
-                sta13 = action[11]
-                swhx13 = action[12]
-                swhz13 = action[13]
-                pelvis = action[14]
-            elif env == 2 or env == 3 or env == 6 or env == 7:
-                #print("2")
-                swh13 = action[0]
-                swk13 = action[1]
-                swa13 = action[2]
-                stk13 = action[3]
-                sta13 = action[4]
-                swhx13 = action[5]
-                swhz13 = action[6]
-                pelvis = action[7]
+            swh13 = action[7]
+            swk13 = action[8]
+            swa13 = action[9]
+            stk13 = action[10]
+            sta13 = action[11]
+            swhx13 = action[12]
+            swhz13 = action[13]
+            pelvis = action[14]
 
             #swh02 = 0.5
             #swk02 = -1.10
@@ -431,12 +424,12 @@ class Controller():
 
         wState1.setDesiredJointPosition("back_bky", -pelvis)
 
-        wState1.setDesiredJointPosition("r_leg_hpy", -swh13)
-        wState1.setDesiredJointPosition("r_leg_kny", -swk13)
-        wState1.setDesiredJointPosition("r_leg_aky", -swa13)
+        wState1.setDesiredJointPosition("l_leg_hpy", -swh13)
+        wState1.setDesiredJointPosition("l_leg_kny", -swk13)
+        wState1.setDesiredJointPosition("l_leg_aky", -swa13)
 
-        wState1.setDesiredJointPosition("l_leg_kny", -stk13)
-        wState1.setDesiredJointPosition("l_leg_aky", -sta13)
+        wState1.setDesiredJointPosition("r_leg_kny", -stk13)
+        wState1.setDesiredJointPosition("r_leg_aky", -sta13)
 
         wState1.setDesiredJointPosition("r_arm_shy", math.radians(-20.0))
         wState1.setDesiredJointPosition("l_arm_shy", math.radians(10.0)) 
@@ -486,12 +479,12 @@ class Controller():
 
         wState3.setDesiredJointPosition("back_bky", -pelvis)
 
-        wState3.setDesiredJointPosition("l_leg_hpy", -swh13)
-        wState3.setDesiredJointPosition("l_leg_kny", -swk13)
-        wState3.setDesiredJointPosition("l_leg_aky", -swa13)
+        wState3.setDesiredJointPosition("r_leg_hpy", -swh13)
+        wState3.setDesiredJointPosition("r_leg_kny", -swk13)
+        wState3.setDesiredJointPosition("r_leg_aky", -swa13)
 
-        wState3.setDesiredJointPosition("r_leg_kny", -stk13)
-        wState3.setDesiredJointPosition("r_leg_aky",-sta13)
+        wState3.setDesiredJointPosition("l_leg_kny", -stk13)
+        wState3.setDesiredJointPosition("l_leg_aky",-sta13)
 
         wState3.setDesiredJointPosition("l_arm_shy", math.radians(-20.0))
         wState3.setDesiredJointPosition("r_arm_shy", math.radians(10.0)) 
@@ -714,11 +707,10 @@ class Controller():
         return self.StandingFSM
 
     def _setJointDamping(self):
-        for i in range(0,self.mSkel.num_bodynodes()):
-            if i is not 0:
-                joint = self.mSkel.joint(i)
-                for j in range(0,joint.num_dofs()):
-                    joint.set_damping_coefficient(j, 80.0)
+        for i in range(1,self.mSkel.num_bodynodes()):
+            joint = self.mSkel.joint(i)
+            for j in range(0,joint.num_dofs()):
+                joint.set_damping_coefficient(j, 80.0)
      
     def update(self):
         #check After

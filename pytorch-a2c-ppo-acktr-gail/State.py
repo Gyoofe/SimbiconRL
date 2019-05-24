@@ -110,7 +110,7 @@ class State():
         self.getStanceAnklePosition()
         
         self.mDesiredJointPositionBalance = self.mDesiredJointPosition + self.getSagitalCOMDistance(getCOMFrameLinear) * self.mSagitalCd + self.getSagitalCOMVelocity(getCOMFrameLinear) * self.mSagitalCv + self.getCoronalCOMDistance(getCOMFrameLinear) * self.mCoronalCd + self.getCoronalCOMVelocity(getCOMFrameLinear) * self.mCoronalCv
-
+        #self.mDesiredJointPositionBalance = self.mDesiredJointPosition
         #print("desiredPos",self.mDesiredJointPosition)
         #print("DesiredPosb",self.mDesiredJointPositionBalance)
         #print("sd", self.getSagitalCOMDistance())
@@ -306,6 +306,7 @@ class State():
             else:
                 #theta = np.dot(v1,v2)/ (cMat.Matrix.size(v1) * cMat.Matrix.size(v2))
                 theta = np.dot(v1,v2) / sizee
+                #theta = np.dot(v1,v2) / (np.dot(cMat.Matrix.normalize(v1),cMat.Matrix.normalize(v2)))
             theta = np.clip(theta, -1, 1)
 
             return math.acos(theta)
