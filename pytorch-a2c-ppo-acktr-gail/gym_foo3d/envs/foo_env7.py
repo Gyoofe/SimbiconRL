@@ -124,13 +124,13 @@ class FooEnv7(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
-        """
+        
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
-        """ 
+         
         info = {
                 'pos':pos_after[2]
         }

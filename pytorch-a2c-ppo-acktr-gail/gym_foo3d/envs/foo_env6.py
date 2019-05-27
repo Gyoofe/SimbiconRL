@@ -62,7 +62,7 @@ class FooEnv6(env_base.FooEnvBase):
         #velocityReward = np.abs(velocity_s - self.desiredSpeed)
         #print("vs",velocity_s)
         #print("dS", self.desiredSpeed)
-        alive_bonus = 100
+        alive_bonus = 10
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -92,7 +92,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #reward 수정 예정,, torque 총합 페널티..
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
-        reward = alive_bonus - 2*self.leftAngle + 1.5*walkPenalty - tausums/100
+        reward = alive_bonus - 2*self.leftAngle - 1.5*walkPenalty - tausums/1000
 
 
         self.step_counter += n_frames
@@ -105,10 +105,12 @@ class FooEnv6(env_base.FooEnvBase):
 
 
         #수정
-        if self.step_counter % (self.step_per_sec * 20) == self.step_per_sec*5 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+            #print(self.step_counter)
+            #input()
             self.changeDirection()
             ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
-            self.change_targetspeed()
+            #self.change_targetspeed()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
@@ -125,7 +127,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #print(reward)
         #print(done)
-        print(self.previousState)
+        #print(self.previousState)
         if done is True:
             return thisState, 0, done, info
         return thisState, reward, done, info 
@@ -135,8 +137,8 @@ class FooEnv6(env_base.FooEnvBase):
 
 
     def do_simulation(self, action):
-        #self.controller.mCurrentStateMachine.mCurrentAction = action
-        #self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
+        self.controller.mCurrentStateMachine.mCurrentAction = action
+        self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
         done = False
         n_frames = 0
 
@@ -158,7 +160,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.step_counter > self.step_per_sec * 60:
+            elif self.actionSteps > self.step_per_walk * 100:
                 done = True
             if done is True:
                 break

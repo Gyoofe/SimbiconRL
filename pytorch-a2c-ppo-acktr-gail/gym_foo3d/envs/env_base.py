@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import random
 
 skel_path="/home/gyoofe/dart/data/sdf/atlas/"
-STEP_PER_SEC = 900
+STEP_PER_WALK = 4
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -37,7 +37,7 @@ class FooEnvBase(gym.Env):
     def init_sim(self,cDirection,render):
         self.querystep = 1
         self.frameskip = 30
-        self.sim = pydart.World(1/STEP_PER_SEC)
+        self.sim = pydart.World(1/900)
         self.sim.set_recording(False)
         self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
         self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
@@ -137,7 +137,7 @@ class FooEnvBase(gym.Env):
         self.p_targetspeed = 0
         self.targetspeed = DESIRED_MAX_SPEED
         self.desiredSpeed = 0
-        self.step_per_sec = STEP_PER_SEC
+        self.step_per_walk = STEP_PER_WALK
 
         self.cDirection = cDirection
         
@@ -209,6 +209,7 @@ class FooEnvBase(gym.Env):
         #    self.changeDirection()
             self.targetAngle = 0
         self.targetFrameXAxis = self.getCOMFrameXAxis()
+        self.previousState = 0
         return self.get_state()
 
     def start_render(self, mode='human', close=False):
