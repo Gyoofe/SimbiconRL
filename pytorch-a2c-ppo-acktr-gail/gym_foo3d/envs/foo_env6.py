@@ -82,9 +82,9 @@ class FooEnv6(env_base.FooEnvBase):
 
 
         #print(self.skel.tau)
-        tausums = 0
-        for i in self.skel.tau:
-            tausums += np.abs(i)
+        #tausums = 0
+        #for i in self.skel.tau:
+        #    tausums += np.abs(i)
 
         #print(tausums)
         #input()
@@ -94,7 +94,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - 2*np.abs(self.leftAngle) - 1.5*walkPenalty - tausums/1000
+        reward = alive_bonus - tausums/1000
 
 
         self.step_counter += n_frames
@@ -143,10 +143,16 @@ class FooEnv6(env_base.FooEnvBase):
         self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
         done = False
         n_frames = 0
-
+       
+        self.tausums = 0
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName):
             self.controller.update()
             self.sim.step()
+            
+            if self.tausums is not 0:
+                for i in self.skel.tau:
+                    self.tausums += np.abs(i)
+
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
