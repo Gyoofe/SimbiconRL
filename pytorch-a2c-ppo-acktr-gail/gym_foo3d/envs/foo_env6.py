@@ -94,7 +94,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - tausums/1000
+        reward = alive_bonus - self.tausums/1000
 
 
         self.step_counter += n_frames
@@ -149,7 +149,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.controller.update()
             self.sim.step()
             
-            if self.tausums is not 0:
+            if self.tausums is 0:
                 for i in self.skel.tau:
                     self.tausums += np.abs(i)
 
