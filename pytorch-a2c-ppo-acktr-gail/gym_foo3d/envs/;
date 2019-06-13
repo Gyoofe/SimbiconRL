@@ -44,33 +44,12 @@ class FooEnv6(env_base.FooEnvBase):
         action = self.clip_Scaling_Actiond10(action)
 
         self.previousState = self.controller.mCurrentStateMachine.mCurrentState.mName
-
-
-        cState = int(self.controller.mCurrentStateMachine.mCurrentState.mName)
-        
-
         #done은 에피소드가 끝났는지..
         done,n_frames = self.do_simulation(action)
-
-        cState = int(self.controller.mCurrentStateMachine.mCurrentState.mName)
-
-
+        
         #발의 위치
         r_foot_pos = self._getJointPosition(self.r_foot) 
         l_foot_pos = self._getJointPosition(self.l_foot)
-
-        #1일땐 right foot이 땅에 닿음
-        rfoot_pe = 0
-        lfoot_pe = 0
-        if cState is  2:
-           rfoot_pe = np.abs((self.p_rfoot - r_foot_pos[0]) - 0.4)
-           self.p_rfoot = r_foot_pos[0]
-        #3일땐 left foot이 땅에 닿는다. State가 변화했으므로 0일때
-        elif cState is 0:
-           lfoot_pe = np.abs((self.p_lfoot - l_foot_pos[0]) - 0.4)
-           self.p_lfoot = l_foot_pos[0] 
-
-        
 
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
@@ -83,8 +62,7 @@ class FooEnv6(env_base.FooEnvBase):
         #velocityReward = np.abs(velocity_s - self.desiredSpeed)
         #print("vs",velocity_s)
         #print("dS", self.desiredSpeed)
-        #alive_bonus = 829
-        alive_bonus = 10
+        alive_bonus = 829
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -116,10 +94,9 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        #reward = alive_bonus - np.exp(np.abs(2*self.leftAngle) + 1.5*walkPenalty + tausums/1000)
+        reward = alive_bonus - np.exp(np.abs(2*self.leftAngle) + 1.5*walkPenalty + tausums/1000)
         #reward = alive_bonus - 2*self.leftAngle - 1.5*walkPenalty - tausums/1000
-        #reward = alive_bonus - self.tausums/2000 - rfoot_pe*10 - lfoot_pe*10
-        reward = alive_bonus - rfoot_pe*10 - lfoot_pe*10
+
 
         self.step_counter += n_frames
         thisState = self.get_state()
@@ -175,10 +152,11 @@ class FooEnv6(env_base.FooEnvBase):
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
-            
-            if self.tausums is 0:
-                for i in self.skel.tau:
-                    self.tausums += np.abs(i)
+
+            for i in self.skel.tau:
+                self.tausums += np.abs(i)
+
+
 
             if(self.isrender):
                 time.sleep(0.001)
