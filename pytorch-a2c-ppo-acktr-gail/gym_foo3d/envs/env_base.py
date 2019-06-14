@@ -154,8 +154,8 @@ class FooEnvBase(gym.Env):
         self.currentFrameXAxis = self.getCOMFrameXAxis()
         self.aStepWspeedChanged = 0
         self.tausums = 0
-        self.p_rfoot = 0
-        self.p_lfoot = 0
+        self.p_rfoot = self._getJointPosition(self.r_foot)
+        self.p_lfoot = self._getJointPosition(self.l_foot)
 
     def set_desiredSpeed(self):
         maxtime = (self.actionSteps - self.aStepWspeedChanged)/(self.targetspeed*self.frameskip*1.5)
@@ -214,8 +214,10 @@ class FooEnvBase(gym.Env):
         self.targetFrameXAxis = self.getCOMFrameXAxis()
         self.previousState = 0
         self.tausums = 0
-        self.p_rfoot = 0
-        self.p_lfoot = 0
+        self.p_rfoot = self._getJointPosition(self.r_foot)
+        self.p_lfoot = self._getJointPosition(self.l_foot)
+
+
         return self.get_state()
 
     def start_render(self, mode='human', close=False):

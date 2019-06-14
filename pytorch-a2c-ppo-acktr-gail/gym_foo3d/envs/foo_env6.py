@@ -62,13 +62,17 @@ class FooEnv6(env_base.FooEnvBase):
         #1일땐 right foot이 땅에 닿음
         rfoot_pe = 0
         lfoot_pe = 0
+        rfoot_hpe = 0
+        lfoot_hpe = 0
         if cState is  2:
-           rfoot_pe = np.abs((self.p_rfoot - r_foot_pos[0]) - 0.4)
-           self.p_rfoot = r_foot_pos[0]
+           rfoot_pe = np.abs(r_foot_pos[0] - self.p_rfoot[0]  - 0.4)
+           rfoot_hpe = np.abs(r_foot_pos[1] - self.p_rfoot[1])
+           self.p_rfoot = r_foot_pos
         #3일땐 left foot이 땅에 닿는다. State가 변화했으므로 0일때
         elif cState is 0:
-           lfoot_pe = np.abs((self.p_lfoot - l_foot_pos[0]) - 0.4)
-           self.p_lfoot = l_foot_pos[0] 
+           lfoot_pe = np.abs(l_foot_pos[0] - self.p_lfoot[0] - 0.4)
+           rfoot_hpe = np.abs(l_foot_pos[1] - self.p_lfoot[1])
+           self.p_lfoot = l_foot_pos 
 
         
 
@@ -119,7 +123,14 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(np.abs(2*self.leftAngle) + 1.5*walkPenalty + tausums/1000)
         #reward = alive_bonus - 2*self.leftAngle - 1.5*walkPenalty - tausums/1000
         #reward = alive_bonus - self.tausums/2000 - rfoot_pe*10 - lfoot_pe*10
-        reward = alive_bonus - rfoot_pe*10 - lfoot_pe*10
+        if done:
+            reward = 0
+        else:
+            reward = alive_bonus - (rfoot_pe + rfoot_hpe)*10 - (lfoot_pe + lfoot_hpe)*10
+            #print(reward)
+            #print(rfoot_pe + rfoot_hpe, "rr")
+            #print(lfoot_pe + lfoot_hpe, "ll")
+            #input()
 
         self.step_counter += n_frames
         thisState = self.get_state()
@@ -131,10 +142,10 @@ class FooEnv6(env_base.FooEnvBase):
 
 
         #수정
-        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+        #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
             #print(self.step_counter)
             #input()
-            self.changeDirection()
+            #self.changeDirection()
             ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
             #self.change_targetspeed()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
