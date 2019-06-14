@@ -67,13 +67,14 @@ class StateMachine():
             wState1 = self.mStates[1]
             wState2 = self.mStates[2]
             wState3 = self.mStates[3]
-            
+            """ 
             if int(self.mCurrentState.mName) is 0:
                 tCond0 = st.TimerCondition(wState0, action[15])
                 wState0.setTerminalCondition(tCond0)
             if int(self.mCurrentState.mName) is 2:
                 tCond2 = st.TimerCondition(wState2, action[15])
                 wState2.setTerminalCondition(tCond2)
+            """
             #swh02 = 0.5
             #swk02 = -1.10
             #swa02 = 0.6
