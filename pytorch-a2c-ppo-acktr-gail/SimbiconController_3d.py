@@ -365,11 +365,11 @@ class Controller():
         
         #기본값 0.1
         tCond0 = st.TimerCondition(wState0, 0.3);
-        #tCond1 = st.CollisionCondition(wState1, self.mWorld,self._getRightFoot())
-        tCond1 = st.TimerCondition(wState1, 1/30)
+        tCond1 = st.CollisionCondition(wState1, self.mWorld,self._getRightFoot())
+        #tCond1 = st.TimerCondition(wState1, 1/30)
         tCond2 = st.TimerCondition(wState2, 0.3)
-        #tCond3 = st.CollisionCondition(wState3,self.mWorld,self._getLeftFoot())
-        tCond3 = st.TimerCondition(wState3, 1/30)
+        tCond3 = st.CollisionCondition(wState3,self.mWorld,self._getLeftFoot())
+        #tCond3 = st.TimerCondition(wState3, 1/30)
 
         wState0.setTerminalCondition(tCond0)
         wState1.setTerminalCondition(tCond1)

@@ -31,6 +31,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.action_space = spaces.Box(low = 0, high = 1.5, shape=(16,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
+
+        self.XveloQueue = CircularQueue(8)
+        self.ZveloQueue = CircularQueue(8)
         print(self.targetAngle)
 
     def get_state(self):
