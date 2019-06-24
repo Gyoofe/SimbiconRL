@@ -104,7 +104,7 @@ def main():
         args.num_env_steps) // args.num_steps // args.num_processes
 
     print(num_updates)
-    input()
+    #input()
     for j in range(num_updates):
 
         if args.use_linear_lr_decay:

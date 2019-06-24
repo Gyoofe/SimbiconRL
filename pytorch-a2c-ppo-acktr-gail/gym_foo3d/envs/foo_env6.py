@@ -46,20 +46,16 @@ class FooEnv6(env_base.FooEnvBase):
         self.Lcontact_mean_step = 0
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
+
+        self.XveloQueue = env_base.CircularQueue(8)
+        self.ZveloQueue = env_base.CircularQueue(8)
         print(self.targetAngle)
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
  
-
     def reset(self):
         super().reset()
-        #self.Rcontact_time_before = 0
-        #self.Rcontact_time_before_2step = 0
-        #self.Rcontact_time_current = 0
-        #self.Lcontact_time_before = 0
-        #self.Lcontact_time_before_2step = 0
-        #self.Lcontact_time_current = 0
         self.contact_time_before = 0
         self.contact_time_before_2step = 0
         self.contact_time_current = 0
@@ -69,6 +65,14 @@ class FooEnv6(env_base.FooEnvBase):
         self.Lcontact_mean_step = 0
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
+
+        return self.get_state()
+        #self.Rcontact_time_before = 0
+        #self.Rcontact_time_before_2step = 0
+        #self.Rcontact_time_current = 0
+        #self.Lcontact_time_before = 0
+        #self.Lcontact_time_before_2step = 0
+        #self.Lcontact_time_current = 0
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
@@ -156,7 +160,7 @@ class FooEnv6(env_base.FooEnvBase):
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
-            input()
+            #input()
          
         info = {
                 'pos':pos_after[2]
@@ -181,14 +185,15 @@ class FooEnv6(env_base.FooEnvBase):
         self.tausums = 0
         state_step = 0
         state_step_after_contact = 0
-        offset = action[15]
+        offset = np.round(action[15])
+
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
         CFSM = self.controller.mCurrentStateMachine
 
         #스윙힙이 최고 높이에 도달했을때
 
-        print((CFSM.mCurrentState.mName))
+        #print((CFSM.mCurrentState.mName))
         if int(CFSM.mCurrentState.mName) == 1: 
             self.to_contact_counter_R = 0
         elif int(CFSM.mCurrentState.mName) == 3:
