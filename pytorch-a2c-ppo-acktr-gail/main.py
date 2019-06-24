@@ -21,6 +21,7 @@ from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
 from evaluation import evaluate
 
+import time
 
 def main():
     args = get_args()
@@ -105,6 +106,7 @@ def main():
 
     print(num_updates)
     input()
+    start = time.time()
     for j in range(num_updates):
 
         if args.use_linear_lr_decay:
@@ -182,6 +184,7 @@ def main():
         if j % args.log_interval == 0 and len(episode_rewards) > 1:
             total_num_steps = (j + 1) * args.num_processes * args.num_steps
             end = time.time()
+            print("elapsed time: ", end - start)
             print(
                 "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.1f}/{:.1f}, min/max reward {:.1f}/{:.1f}\n"
                 .format(j, total_num_steps,
@@ -196,7 +199,7 @@ def main():
             ob_rms = utils.get_vec_normalize(envs).ob_rms
             evaluate(actor_critic, ob_rms, args.env_name, args.seed,
                      args.num_processes, eval_log_dir, device)
-
+    print("end time: ", end - start)        
 
 if __name__ == "__main__":
     main()

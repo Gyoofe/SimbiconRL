@@ -32,8 +32,8 @@ class FooEnv6(env_base.FooEnvBase):
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
 
-        self.XveloQueue = CircularQueue(8)
-        self.ZveloQueue = CircularQueue(8)
+        self.XveloQueue = env_base.CircularQueue(8)
+        self.ZveloQueue = env_base.CircularQueue(8)
         print(self.targetAngle)
 
     def get_state(self):
@@ -97,8 +97,8 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - self.tausums/1000 - walkPenalty - np.abs(self.leftAngle)
-
+        #reward = alive_bonus - walkPenalty - np.abs(self.leftAngle) - self.tausums/1000
+        reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
 
         self.step_counter += n_frames
         thisState = self.get_state()
