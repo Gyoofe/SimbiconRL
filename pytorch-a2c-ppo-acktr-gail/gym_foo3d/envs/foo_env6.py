@@ -178,8 +178,8 @@ class FooEnv6(env_base.FooEnvBase):
 
 
     def do_simulation(self, action):
-        #self.controller.mCurrentStateMachine.mCurrentAction = action
-        #self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
+        self.controller.mCurrentStateMachine.mCurrentAction = action
+        self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
         done = False
         n_frames = 0 
         self.tausums = 0
