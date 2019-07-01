@@ -127,7 +127,8 @@ class FooEnv6(env_base.FooEnvBase):
             #self.reset()
          
         info = {
-                'pos':pos_after[2]
+                'pos':pos_after[2],
+                'env_step':self.step_counter
         }
 
         #print(reward)

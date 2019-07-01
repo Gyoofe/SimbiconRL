@@ -106,6 +106,9 @@ def main():
 
     print(num_updates)
     input()
+    total_step = 0
+    interval_steps = 0
+    wallClock_interval = 0
     start = time.time()
     for j in range(num_updates):
 
@@ -128,6 +131,11 @@ def main():
             for info in infos:
                 if 'episode' in info.keys():
                     episode_rewards.append(info['episode']['r'])
+
+            for info in infos:
+                if 'env_step' in info.keys():
+                    total_step += info['env_step']
+            #print(total_step)
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor(
@@ -165,6 +173,39 @@ def main():
         value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
+       
+        
+        # save for wallClock Time
+        if (time.time() - start)%3600 > wallClock_interval:
+            wallClock_interval += 1
+            save_path = os.path.join(args.save_dir+"wall_clock", args.algo)
+            try:
+                os.makedirs(save_path)
+            except OSError:
+                pass
+            
+            torch.save([
+                actor_critic,
+                getattr(utils.get_vec_normalize(envs), 'ob_rms', None)
+            ], os.path.join(save_path, args.env_name + str(time.time() - start) + ".pt"))
+
+
+
+        # save for total steps
+        if total_step%1000000 > interval_steps:
+            interval_steps += 1
+            save_path = os.path.join(args.save_dir+"total_steps", args.algo)
+            try:
+                os.makedirs(save_path)
+            except OSError:
+                pass
+            
+            torch.save([
+                actor_critic,
+                getattr(utils.get_vec_normalize(envs), 'ob_rms', None)
+            ], os.path.join(save_path, args.env_name + str(total_step) + ".pt"))
+       
+
 
         # save for every interval-th episode or for the last epoch
         print(j)
