@@ -32,8 +32,10 @@ class FooEnv6(env_base.FooEnvBase):
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
 
+        #Queue 크기 설정
         #self.XveloQueue = env_base.CircularQueue(8)
         #self.ZveloQueue = env_base.CircularQueue(8)
+        
         self.step_counter = 0
         self.the_last = 0
         self.a = [1,0,0]
@@ -144,12 +146,17 @@ class FooEnv6(env_base.FooEnvBase):
             #self.reset()
          
         info = {
-                'env_step':self.step_counter
+                'env_step':self.step_counter,
+                'n_frames':n_frames
         }
 
         #print(reward)
         #print(done)
         #print(self.previousState)
+        #print(self.step_counter)
+        #print(n_frames)
+        #input()
+
         if done is True:
             return thisState, 0, done, info
         return thisState, reward, done, info 
@@ -178,8 +185,9 @@ class FooEnv6(env_base.FooEnvBase):
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
-
-            if (n_frames+self.the_last)%30 is 0 or self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName:
+            
+            if (n_frames+self.the_last)%30 is 0 or self.previousState is not self.controller.mCurrentStateMachine.mCurrentState.mName:
+                #print(n_frames)
                 self.XveloQueue.enqueue(pos_after[0])
                 self.ZveloQueue.enqueue(pos_after[2])
                 alive_bonus = 10

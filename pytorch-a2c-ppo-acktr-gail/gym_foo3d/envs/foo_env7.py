@@ -142,7 +142,8 @@ class FooEnv7(env_base.FooEnvBase):
          
         info = {
                 'pos':pos_after[2],
-                'env_step':self.step_counter 
+                'env_step':self.step_counter,
+                'n_frames':self.frameskip
         }
 
         #print(reward)
