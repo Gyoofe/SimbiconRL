@@ -32,9 +32,24 @@ class FooEnv6(env_base.FooEnvBase):
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
 
-        self.XveloQueue = env_base.CircularQueue(8)
-        self.ZveloQueue = env_base.CircularQueue(8)
+        #self.XveloQueue = env_base.CircularQueue(8)
+        #self.ZveloQueue = env_base.CircularQueue(8)
+        self.step_counter = 0
+        self.the_last = 0
+        self.a = [1,0,0]
+        self.reward_counter = 0
+        self.state_reward = 0
         print(self.targetAngle)
+
+    def reset(self):
+        super().reset()
+        self.step_counter = 0
+        self.the_last = 0
+        self.a = [1,0,0]
+        self.reward_counter = 0
+        self.state_reward = 0
+
+        return self.get_state()
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
@@ -53,11 +68,11 @@ class FooEnv6(env_base.FooEnvBase):
         #발의 위치
         r_foot_pos = self._getJointPosition(self.r_foot) 
         l_foot_pos = self._getJointPosition(self.l_foot)
-
+        """
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-        
+        """
         #1초간의 속도 계산
 
         ###수정 예정(env_base에서도 수정해야됨)###
@@ -65,6 +80,8 @@ class FooEnv6(env_base.FooEnvBase):
         #velocityReward = np.abs(velocity_s - self.desiredSpeed)
         #print("vs",velocity_s)
         #print("dS", self.desiredSpeed)
+
+        """
         alive_bonus = 10
 
         #방향 맞춤
@@ -82,8 +99,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
-
-
+        """
         #print(self.skel.tau)
         #tausums = 0
         #for i in self.skel.tau:
@@ -98,11 +114,12 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - walkPenalty - np.abs(self.leftAngle) - self.tausums/1000
-        reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
+        #reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
+
+        reward = self.state_reward/(self.reward_counter)
 
         self.step_counter += n_frames
         thisState = self.get_state()
-        thispos = pos_after[0]
        
         self.actionSteps += 1
         self.episodeTotalReward += reward
@@ -127,7 +144,6 @@ class FooEnv6(env_base.FooEnvBase):
             #self.reset()
          
         info = {
-                'pos':pos_after[2],
                 'env_step':self.step_counter
         }
 
@@ -147,7 +163,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.controller.mCurrentStateMachine.setTrainedDesiredAction(action, 0)
         done = False
         n_frames = 0
-       
+        self.reward_counter = 0
+        self.state_reward = 0
+
         self.tausums = 0
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName):
             self.controller.update()
@@ -160,6 +178,31 @@ class FooEnv6(env_base.FooEnvBase):
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
+
+            if (n_frames+self.the_last)%30 is 0 or self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName:
+                self.XveloQueue.enqueue(pos_after[0])
+                self.ZveloQueue.enqueue(pos_after[2])
+                alive_bonus = 10
+
+                #방향 맞춤
+                self.currentFrameXAxis = self.getCOMFrameXAxis()
+                self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
+                if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
+                    self.leftAngle = -self.leftAngle
+
+
+                #walkPenalty(직선보행 페널티)
+                ###Queue 수정해야됨!!!!!!!!!!!!! ###
+                if self.XveloQueue.f_e_d() == 0 and self.ZveloQueue.f_e_d() == 0:
+                    self.a = [1,0,0]
+                else:
+                    self.a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
+                self.a = cMat.Matrix.normalize(self.a)
+                walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
+                reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
+                
+                self.state_reward += reward
+                self.reward_counter += 1
 
             if(self.isrender):
                 time.sleep(0.001)
@@ -177,6 +220,8 @@ class FooEnv6(env_base.FooEnvBase):
             if done is True:
                 break
             n_frames += 1
+
+        self.the_last = n_frames%30
         return done,n_frames
    
     def render(self):

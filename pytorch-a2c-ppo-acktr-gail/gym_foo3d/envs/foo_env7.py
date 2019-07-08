@@ -37,7 +37,12 @@ class FooEnv7(env_base.FooEnvBase):
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
- 
+
+    def reset(self):
+        super().reset()
+        self.step_counter = 0
+        return self.get_state()
+
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
