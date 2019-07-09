@@ -134,7 +134,7 @@ def main():
 
             for info in infos:
                 if 'env_step' in info.keys():
-                    total_step += info['env_step']
+                    total_step += info['n_frames']
             #print(total_step)
 
             # If done then clean the history of observations.

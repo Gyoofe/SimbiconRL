@@ -186,7 +186,7 @@ class FooEnv6(env_base.FooEnvBase):
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
             
-            if (n_frames+self.the_last)%30 is 0 or self.previousState is not self.controller.mCurrentStateMachine.mCurrentState.mName:
+            if ((n_frames+self.the_last)%30 is 0) or (int(self.previousState) != (self.controller.mCurrentStateMachine.mCurrentState.mName)):
                 #print(n_frames)
                 self.XveloQueue.enqueue(pos_after[0])
                 self.ZveloQueue.enqueue(pos_after[2])
