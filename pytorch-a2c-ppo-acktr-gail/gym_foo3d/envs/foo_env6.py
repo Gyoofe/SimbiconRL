@@ -174,10 +174,11 @@ class FooEnv6(env_base.FooEnvBase):
         self.state_reward = 0
 
         self.tausums = 0
-        while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName):
+        while(int(self.previousState) == int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
             self.controller.update()
             self.sim.step()
-            
+            n_frames += 1
+
             if self.tausums is 0:
                 for i in self.skel.tau:
                     self.tausums += np.abs(i)
@@ -186,7 +187,23 @@ class FooEnv6(env_base.FooEnvBase):
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
             
-            if ((n_frames+self.the_last)%30 is 0) or (int(self.previousState) != (self.controller.mCurrentStateMachine.mCurrentState.mName)):
+            #Episode가 종료되었는지 먼저 판단
+            if(self.isrender):
+                time.sleep(0.001)
+            if pos_after[1] < 0.020 or pos_after[1] > 0.5:
+                done = True
+            #정면으로 걷지않을경우 빠르게 종료
+            #elif np.abs(pos_after[2]) > 2:
+            #    done = True
+            elif r_foot_pos[1] > pos_after[1]:
+                done = True
+            elif l_foot_pos[1] > pos_after[1]:
+                done = True
+            elif self.actionSteps > self.step_per_walk * 100:
+                done = True
+
+            #if ((n_frames+self.the_last)%30 is 0) or (int(self.previousState) != int(self.controller.mCurrentStateMachine.mCurrentState.mName)) or (done is True):
+            if (n_frames%30 == 0) or (int(self.previousState) != int(self.controller.mCurrentStateMachine.mCurrentState.mName)) or (done is True):
                 #print(n_frames)
                 self.XveloQueue.enqueue(pos_after[0])
                 self.ZveloQueue.enqueue(pos_after[2])
@@ -212,23 +229,19 @@ class FooEnv6(env_base.FooEnvBase):
                 self.state_reward += reward
                 self.reward_counter += 1
 
-            if(self.isrender):
-                time.sleep(0.001)
-            if pos_after[1] < 0.020 or pos_after[1] > 0.5:
-                done = True
-            #정면으로 걷지않을경우 빠르게 종료
-            #elif np.abs(pos_after[2]) > 2:
-            #    done = True
-            elif r_foot_pos[1] > pos_after[1]:
-                done = True
-            elif l_foot_pos[1] > pos_after[1]:
-                done = True
-            elif self.actionSteps > self.step_per_walk * 100:
-                done = True
+            #Episode 종료시 Break
             if done is True:
+                #BREAK 전에 n_frame +1 해줘야함
+                n_frames += 1
                 break
-            n_frames += 1
 
+        """
+        if (n_frames == 0):
+            print("n_frames Zero")
+            print(int(self.previousState))
+            print(int(self.controller.mCurrentStateMachine.mCurrentState.mName))
+            input()
+        """
         self.the_last = n_frames%30
         return done,n_frames
    
