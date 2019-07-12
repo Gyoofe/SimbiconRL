@@ -2,7 +2,7 @@ import sys
 import pydart2 as pydart
 import numpy as np
 import cMat
-import SimbiconController_3d as SC
+import SimbiconController_3dContact as SC
 import math
 import queue
 #import Cgui
@@ -27,6 +27,7 @@ skel_path="/home/qfei/dart/data/sdf/atlas/"
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
+        self.controller = SC.Controller(self.skel, self.sim)
         observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
         self.action_space = spaces.Box(low = 0, high = 1.5, shape=(16,))
         observation_spaces = np.zeros(len(observation_spaces))
@@ -174,37 +175,55 @@ class FooEnv6(env_base.FooEnvBase):
         self.state_reward = 0
 
         self.tausums = 0
+        CFSM = self.controller.mCurrentStateMachine
+        isContact = False
+        #while(int(self.previousState) == int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
         while(int(self.previousState) == int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
             self.controller.update()
             self.sim.step()
             n_frames += 1
-
+            
+            """
             if self.tausums is 0:
                 for i in self.skel.tau:
                     self.tausums += np.abs(i)
-
-            pos_after = self.sim.skeletons[1].com()
-            r_foot_pos = self._getJointPosition(self.r_foot) 
-            l_foot_pos = self._getJointPosition(self.l_foot)
-            
-            #Episode가 종료되었는지 먼저 판단
+            """
             if(self.isrender):
                 time.sleep(0.001)
-            if pos_after[1] < 0.020 or pos_after[1] > 0.5:
-                done = True
-            #정면으로 걷지않을경우 빠르게 종료
-            #elif np.abs(pos_after[2]) > 2:
-            #    done = True
-            elif r_foot_pos[1] > pos_after[1]:
-                done = True
-            elif l_foot_pos[1] > pos_after[1]:
-                done = True
-            elif self.actionSteps > self.step_per_walk * 100:
-                done = True
+
+            if CFSM.mCurrentState is CFSM.mStates[1]:
+                if self.controller.RContact.isSatisfied() is True:
+                    isContact = True
+            elif CFSM.mCurrentState is CFSM.mStates[3]:
+                if self.controller.LContact.isSatisfied() is True:
+                    isContact = True
+
 
             #if ((n_frames+self.the_last)%30 is 0) or (int(self.previousState) != int(self.controller.mCurrentStateMachine.mCurrentState.mName)) or (done is True):
-            if (n_frames%30 == 0) or (int(self.previousState) != int(self.controller.mCurrentStateMachine.mCurrentState.mName)) or (done is True):
-                #print(n_frames)
+            #if (n_frames%30 == 0) or (int(self.previousState) != int(self.controller.mCurrentStateMachine.mCurrentState.mName)) or (done is True):
+            if (n_frames%30 == 0):
+                pos_after = self.sim.skeletons[1].com()
+                r_foot_pos = self._getJointPosition(self.r_foot) 
+                l_foot_pos = self._getJointPosition(self.l_foot)
+                
+                #episode가 종료되었는지 먼저 판단
+                if pos_after[1] < 0.020 or pos_after[1] > 0.5:
+                    done = True
+                #정면으로 걷지않을경우 빠르게 종료
+                #elif np.abs(pos_after[2]) > 2:
+                #    done = true
+                elif r_foot_pos[1] > pos_after[1]:
+                    done = True
+                elif l_foot_pos[1] > pos_after[1]:
+                    done = True
+                elif self.actionSteps > self.step_per_walk * 100:
+                    done = True
+
+                #Contact하고 시간지났을시 State 변화
+                if isContact is True:
+                    CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+                
+
                 self.XveloQueue.enqueue(pos_after[0])
                 self.ZveloQueue.enqueue(pos_after[2])
                 alive_bonus = 10
@@ -225,14 +244,18 @@ class FooEnv6(env_base.FooEnvBase):
                 self.a = cMat.Matrix.normalize(self.a)
                 walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
                 reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
-                
+               
+                #done일시 reward 0
+                if done:
+                    reward = 0
+
                 self.state_reward += reward
                 self.reward_counter += 1
 
             #Episode 종료시 Break
             if done is True:
                 #BREAK 전에 n_frame +1 해줘야함
-                n_frames += 1
+                #n_frames += 1
                 break
 
         """
@@ -242,6 +265,12 @@ class FooEnv6(env_base.FooEnvBase):
             print(int(self.controller.mCurrentStateMachine.mCurrentState.mName))
             input()
         """
+        if self.reward_counter is 0:
+            print("done", done)
+            print(n_frames)
+            print("Contact", isContact)
+            print(self.the_last)
+            print(int(self.previousState),int(self.controller.mCurrentStateMachine.mCurrentState.mName))
         self.the_last = n_frames%30
         return done,n_frames
    
