@@ -47,8 +47,12 @@ class FooEnv6(env_base.FooEnvBase):
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
 
-        self.XveloQueue = env_base.CircularQueue(8)
-        self.ZveloQueue = env_base.CircularQueue(8)
+        #이전 정면방향
+        self.previousforward = [1,0,0]
+        self.ppreviousforward = [1,0,0]
+
+        self.XveloQueue = env_base.CircularQueue(16)
+        self.ZveloQueue = env_base.CircularQueue(16)
         print(self.targetAngle)
 
     def get_state(self):
@@ -65,6 +69,10 @@ class FooEnv6(env_base.FooEnvBase):
         self.Lcontact_mean_step = 0
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
+
+        #이전 정면방향
+        self.previousforward = [1,0,0]
+        self.ppreviousforward = [1,0,0]
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -103,10 +111,13 @@ class FooEnv6(env_base.FooEnvBase):
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
+        for i in range(3):
+            self.currentFrameXAxis[i] = (self.currentFrameXAxis[i] + self.ppreviousforward[i])
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
         if np.cross(self.currentFrameXAxis, self.targetFrameXAxis)[1] < 0:
             self.leftAngle = -self.leftAngle
-
+        self.ppreviousforward = self.previousforward
+        self.previousforward = self.getCOMFrameXAxis()
 
         #walkPenalty(직선보행 페널티)
         ###Queue 수정해야됨!!!!!!!!!!!!! ###
@@ -154,14 +165,14 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #    self.changeDirection()
 
-        
+        """ 
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
             #self.reset()
             #input()
-         
+        """
         info = {
                 'pos':pos_after[2]
         }

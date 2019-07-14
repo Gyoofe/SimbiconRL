@@ -194,7 +194,7 @@ class FooEnvBase(gym.Env):
         print("need implementation")
 
     def reset(self):
-        print("reset!")
+        #print("reset!")
         self.step_counter = 0
         self.sim.reset()
         self.reset_model()
