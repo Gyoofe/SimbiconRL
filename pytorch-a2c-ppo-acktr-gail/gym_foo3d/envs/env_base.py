@@ -319,7 +319,7 @@ class FooEnvBase(gym.Env):
         action[14] = (action[14]+1)*math.radians(-30.0)/2
 
         ##contact offset
-        action[15] = action[15]*50
+        action[15] = action[15]*150
         #print(action)
         #self.ForceAction10(action)
 

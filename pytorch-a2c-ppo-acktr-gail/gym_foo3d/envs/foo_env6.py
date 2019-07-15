@@ -143,7 +143,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - self.tausums/16000 - walkPenalty - np.abs(self.leftAngle)
+        reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle)
 
 
         self.step_counter += n_frames
