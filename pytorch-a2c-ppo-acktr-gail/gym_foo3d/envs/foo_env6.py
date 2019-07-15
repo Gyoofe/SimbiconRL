@@ -119,7 +119,8 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - walkPenalty - np.abs(self.leftAngle) - self.tausums/1000
         #reward = alive_bonus - walkPenalty - np.abs(self.leftAngle)
 
-        reward = self.state_reward/(self.reward_counter)
+        #reward = self.state_reward/(self.reward_counter)
+        reward = self.state_reward
 
         self.step_counter += n_frames
         thisState = self.get_state()
