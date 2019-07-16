@@ -306,7 +306,8 @@ class FooEnvBase(gym.Env):
         action[3] = ((action[3]-1)/2)*np.pi/9
         action[4] = (action[4])*np.pi/9
         #hpx
-        action[5] = ((action[5]+1)/2)*math.radians(20.0) 
+        #action[5] = ((action[5]+1)/2)*math.radians(20.0)
+        action[5] = (action[5])*math.radians(20.0) 
         action[6] = (action[6])*math.radians(45.0)
         action[7] = ((action[7] - 1)/2)*np.pi/6
         action[8] = ((action[8]-1)/2)*np.pi/9
@@ -314,7 +315,8 @@ class FooEnvBase(gym.Env):
         action[10] = ((action[10]-1)/2)*np.pi/6
         action[11] = (action[11])*np.pi/9
         #hpx
-        action[12] = ((action[12]+1)/2)*math.radians(20.0)
+        #action[12] = ((action[12]+1)/2)*math.radians(20.0)
+        action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(45.0)
         action[14] = (action[14]+1)*math.radians(-30.0)/2
 
