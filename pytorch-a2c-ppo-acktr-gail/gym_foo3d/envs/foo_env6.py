@@ -28,7 +28,7 @@ class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
         observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(16,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(19,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.Rcontact_time_before = 0
@@ -53,6 +53,15 @@ class FooEnv6(env_base.FooEnvBase):
 
         self.XveloQueue = env_base.CircularQueue(16)
         self.ZveloQueue = env_base.CircularQueue(16)
+
+        #속도 관련
+        self.StepCounterQueue = env_base.CircularQueue(16)
+        self.VelocityQueue = env_base.CircularQueue(16)
+        self.VelocityQueueY = env_base.CircularQueue(16)
+        self.VelocityQueueZ = env_base.CircularQueue(16)
+
+        self.targetspeed = 0.2
+        self.targetMaxspeed = 2
         print(self.targetAngle)
 
     def get_state(self):
@@ -74,6 +83,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.previousforward = [1,0,0]
         self.ppreviousforward = [1,0,0]
 
+        #속도 초기화
+        self.targetspeed = 0.2
+
         return self.get_state()
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
@@ -81,6 +93,10 @@ class FooEnv6(env_base.FooEnvBase):
         #self.Lcontact_time_before = 0
         #self.Lcontact_time_before_2step = 0
         #self.Lcontact_time_current = 0
+
+    def increaseSpeed(self):
+        if self.targetspeed < self.targetMaxspeed:
+            self.targetspeed += 0.025
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
@@ -107,6 +123,23 @@ class FooEnv6(env_base.FooEnvBase):
         #velocityReward = np.abs(velocity_s - self.desiredSpeed)
         #print("vs",velocity_s)
         #print("dS", self.desiredSpeed)
+
+        #두 걸음간의 속도 (X,Y,Z축 방향으로)
+
+        self.VelocityQueue.enqueue(pos_after[0] - pos_before[0])
+        self.VelocityQueueY.enqueue(pos_after[1] - pos_before[1])
+        self.VelocityQueueZ.enqueue(pos_after[2] - pos_before[2])
+        
+        sim_time = self.StepCounterQueue.sum_all()/900
+        velocity_2step = [self.VelocityQueue.sum_all()/sim_time,self.VelocityQueueY.sum_all()/sim_time,self.VelocityQueueZ.sum_all()/sim_time]
+
+        ##speed reward(penalty)
+        if velocity_2step[0] < self.targetspeed:
+            speed_penalty = self.targetspeed - velocity_2step[0]
+        else:
+            speed_penalty = 0
+
+
         alive_bonus = 10
 
         #방향 맞춤
@@ -143,7 +176,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle)
+        reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
 
 
         self.step_counter += n_frames
@@ -154,7 +187,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.episodeTotalReward += reward
         self.set_desiredSpeed()
 
-
+        """
         #수정
         if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
             #print(self.step_counter)
@@ -163,7 +196,8 @@ class FooEnv6(env_base.FooEnvBase):
             ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
             #self.change_targetspeed()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
-        #    self.changeDirection()
+        #  self.changeDirection()
+        """
 
         """ 
         if done is True:
@@ -210,16 +244,23 @@ class FooEnv6(env_base.FooEnvBase):
         elif int(CFSM.mCurrentState.mName) == 3:
             self.to_contact_counter_L = 0
 
+        ##속도 관련 counter
+        step_counter_queue_value = 0
         ## self.previousState는 step 들어가기 전 현재 State
         ## previousState가 1,3일때는 자동 transite가 일어나지 않기 때문에 이걸 조건문으로 이용해도 된다.?
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName):
             self.controller.update()
             self.sim.step()
-            
+
+            ##속도 관련
+            step_counter_queue_value += 1
+
             #이 State에서의 step_counter
             state_step += 1
             self.to_contact_counter_R += 1
             self.to_contact_counter_L += 1
+            n_frames += 1
+
 
             #컨택일어난 이후의 step counter
             if CFSM.mCurrentState is CFSM.mStates[1] and self.Rcontact_first is True:
@@ -328,7 +369,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             if done is True:
                 break
-            n_frames += 1
+        self.StepCounterQueue.enqueue(step_counter_queue_value)
         return done,n_frames
    
     def render(self):

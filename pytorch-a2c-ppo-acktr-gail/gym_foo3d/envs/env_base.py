@@ -322,6 +322,11 @@ class FooEnvBase(gym.Env):
 
         ##contact offset
         action[15] = action[15]*150
+
+        ##root
+        action[16] = (action[16]*math.radians(15.0)) - 0.5*np.pi
+        action[17] = (action[17])*math.radians(15.0)
+        action[18] = (action[18])*np.pi
         #print(action)
         #self.ForceAction10(action)
 
@@ -487,6 +492,11 @@ class CircularQueue():
     def f_e_d(self):
         return self.array[self.end-1] - self.array[self.start]
 
+    def sum_all(self):
+        _sum = 0
+        for i in range(self.count):
+            _sum += self.array[i]
+        return _sum
 
 if __name__ == "__main__":
     a = [0.97692168,0,-0.21359778293]

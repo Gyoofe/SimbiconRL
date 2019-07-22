@@ -121,6 +121,23 @@ class StateMachine():
             swhz13 = action[13]
             pelvis = action[14]
 
+            tauC = action[16]
+            tauS = action[17]
+            tauT = action[18]
+
+            wState0.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauS))
+            wState0.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauC))
+            wState0.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
+            wState1.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauS))
+            wState1.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauC))
+            wState1.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
+            wState2.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauS))
+            wState2.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauC))
+            wState2.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
+            wState3.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauS))
+            wState3.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauC))
+            wState3.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
+
             #swh02 = 0.5
             #swk02 = -1.10
             #swa02 = 0.6
