@@ -85,6 +85,14 @@ class FooEnv6(env_base.FooEnvBase):
 
         #속도 초기화
         self.targetspeed = 0.2
+        self.XveloQueue = env_base.CircularQueue(16)
+        self.ZveloQueue = env_base.CircularQueue(16)
+
+        #속도 관련
+        self.StepCounterQueue = env_base.CircularQueue(16)
+        self.VelocityQueue = env_base.CircularQueue(16)
+        self.VelocityQueueY = env_base.CircularQueue(16)
+        self.VelocityQueueZ = env_base.CircularQueue(16)
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -185,7 +193,7 @@ class FooEnv6(env_base.FooEnvBase):
        
         self.actionSteps += 1
         self.episodeTotalReward += reward
-        self.set_desiredSpeed()
+        #self.set_desiredSpeed()
 
         """
         #수정

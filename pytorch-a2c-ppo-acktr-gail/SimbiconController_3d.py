@@ -413,10 +413,10 @@ class Controller():
         wState3.setDesiredPelvisGlobalAngleOnSagital(math.radians(0.0))
 
 
-        wState0.setDesiredPelvisGlobalAngleOnCoronal(math.radians(0.0))
-        wState1.setDesiredPelvisGlobalAngleOnCoronal(math.radians(0.0))
-        wState2.setDesiredPelvisGlobalAngleOnCoronal(math.radians(0.0))
-        wState3.setDesiredPelvisGlobalAngleOnCoronal(math.radians(0.0))
+        wState0.setDesiredPelvisGlobalAngleOnCoronal(-math.radians(90.0))
+        wState1.setDesiredPelvisGlobalAngleOnCoronal(-math.radians(90.0))
+        wState2.setDesiredPelvisGlobalAngleOnCoronal(-math.radians(90.0))
+        wState3.setDesiredPelvisGlobalAngleOnCoronal(-math.radians(90.0))
 
 
         wState0.setDesiredJointPosition("back_bky", -pelvis)
