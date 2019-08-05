@@ -27,8 +27,8 @@ skel_path="/home/qfei/dart/data/sdf/atlas/"
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(19,))
+        observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(17,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.Rcontact_time_before = 0
@@ -65,8 +65,16 @@ class FooEnv6(env_base.FooEnvBase):
         print(self.targetAngle)
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
- 
+        return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
+
+    #curriculum Pd value
+    def set(self,value):
+        if self.controller.mCurrentStateMachine.mCurrentState.mRootKp < 5000:            
+            for states in self.controller.mCurrentStateMachine.mStates:
+                states.mRootKp += 50
+                states.mRootKd = states.rootmKp/500
+                print(states.mRootKp)
+
     def reset(self):
         super().reset()
         self.contact_time_before = 0
@@ -134,18 +142,18 @@ class FooEnv6(env_base.FooEnvBase):
 
         #두 걸음간의 속도 (X,Y,Z축 방향으로)
 
-        self.VelocityQueue.enqueue(pos_after[0] - pos_before[0])
-        self.VelocityQueueY.enqueue(pos_after[1] - pos_before[1])
-        self.VelocityQueueZ.enqueue(pos_after[2] - pos_before[2])
+        #self.VelocityQueue.enqueue(pos_after[0] - pos_before[0])
+        #self.VelocityQueueY.enqueue(pos_after[1] - pos_before[1])
+        #self.VelocityQueueZ.enqueue(pos_after[2] - pos_before[2])
         
-        sim_time = self.StepCounterQueue.sum_all()/900
-        velocity_2step = [self.VelocityQueue.sum_all()/sim_time,self.VelocityQueueY.sum_all()/sim_time,self.VelocityQueueZ.sum_all()/sim_time]
+        #sim_time = self.StepCounterQueue.sum_all()/900
+        #velocity_2step = [self.VelocityQueue.sum_all()/sim_time,self.VelocityQueueY.sum_all()/sim_time,self.VelocityQueueZ.sum_all()/sim_time]
 
         ##speed reward(penalty)
-        if velocity_2step[0] < self.targetspeed:
-            speed_penalty = self.targetspeed - velocity_2step[0]
-        else:
-            speed_penalty = 0
+        #if velocity_2step[0] < self.targetspeed:
+        #    speed_penalty = self.targetspeed - velocity_2step[0]
+        #else:
+        #    speed_penalty = 0
 
 
         alive_bonus = 10
@@ -184,7 +192,8 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
 
         ##초반 walkpenalty 상쇄?
-        reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
+        #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
+        reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
 
 
         self.step_counter += n_frames
@@ -207,14 +216,16 @@ class FooEnv6(env_base.FooEnvBase):
         #  self.changeDirection()
         """
 
-        """ 
+         
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
+            if self.controller.mCurrentStateMachine.mCurrentState.mRootKp:
+              print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        """
+        
         info = {
                 'pos':pos_after[2]
         }

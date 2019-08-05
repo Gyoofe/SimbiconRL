@@ -121,21 +121,12 @@ class StateMachine():
             swhz13 = action[13]
             pelvis = action[14]
 
-            tauC = action[16]
-            tauS = action[17]
-            tauT = action[18]
+            tauT = action[16]
 
-            wState0.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauS))
-            wState0.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauC))
+
             wState0.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState1.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauS))
-            wState1.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauC))
             wState1.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState2.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauS))
-            wState2.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauC))
             wState2.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState3.setDesiredPelvisGlobalAngleOnCoronal(math.radians(tauS))
-            wState3.setDesiredPelvisGlobalAngleOnSagital(math.radians(tauC))
             wState3.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
 
             #swh02 = 0.5
@@ -374,7 +365,7 @@ class Controller():
         sta13 = 0
         self.walkingMachine = StateMachine("walking")
         self.walkingMachine.mCurrentAction = np.array([0.5,-1.10,0.6, -0.05, 0, -0.1, -0.05, 0.15, -0.1, 0.0])
- 
+
         wState0 = st.State(self.mSkel, "0")
         wState1 = st.State(self.mSkel,"1")
         wState2 = st.State(self.mSkel, "2")

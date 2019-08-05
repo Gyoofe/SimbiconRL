@@ -4,6 +4,7 @@ import SimbiconController_3d
 import cMat
 import copy
 import pydart2 as pydart
+import cv2
 
 class State():
     def __init__(self,skel,name):
@@ -58,6 +59,8 @@ class State():
 
         self.mStanceFoot = self.mLeftFoot
 
+        self.mRootKp = 0
+        self.mRootKd = 0
 
         self.test = 0
 
@@ -218,17 +221,23 @@ class State():
         ##
         #미리 계산해두기
         #comY = cMat.Matrix.col(getCOMFrameLinear,1)
-        #pelvisZ = cMat.Matrix.col(cMat.Matrix.linear(self.mSkel.body("pelvis").T),2)
+        pelvisY = cMat.Matrix.col(cMat.Matrix.linear(self.mSkel.body("pelvis").T),2)
         
         q = self.mSkel.q
         dq = self.mSkel.dq
 
-        desiredq = copy.deepcopy(q)
-        desiredq[0] = self.mDesiredGlobalPelvisAngleOnCoronal
-        desiredq[1] = self.mDesiredGlobalPelvisAngleOnSagital
-        desiredq[2] = self.mDesiredGlobalPelvisAngleOnTransverse
-        
-        pos_d = self.mSkel.position_differences(q, desiredq)
+        action = self.mDesiredGlobalPelvisAngleOnTransverse
+       
+        defaultRot = np.zeros(3)
+        defaultRot[0] = -0.5*np.pi
+        defaultRot[1] = 0
+        defaultRot[2] = 0
+        rm_qRc = cv2.Rodrigues(q[0:3])[0]
+        rm_qRd1 = cv2.Rodrigues(defaultRot)[0]
+        rm_qRd2 = cv2.Rodrigues(action*pelvisY)[0]
+
+        pos_d = -cv2.Rodrigues(rm_qRc.T@rm_qRd2@rm_qRd1)[0]
+        #pos_d = self.mSkel.position_differences(q, desiredq)
 
         if self.mStanceFoot is self.mLeftFoot:
             #input()
@@ -263,10 +272,14 @@ class State():
             self.mTorque[self.mCoronalLeftHipDOFIndex] = -tauTorsoCoronal - self.mTorque[self.mCoronalRightHipDOFIndex]
 
 
-            tauTorsoTransverse = 1000.0*pos_d[2] - 10*dq[2]
-            self.mTorque[self.mTransverseLeftHipDOFIndex] = tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex]
+            #tauTorsoTransverse = 1000.0*pos_d[2] - 10*dq[2]
+            tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
+            self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
 
             #print("coronalTorque",self.mTorque[self.mCoronalLeftHipDOFIndex])
+
+            #print("mTLDOF",self.mTorque[self.mTransverseLeftHipDOFIndex])
+
 
         elif self.mStanceFoot is self.mRightFoot :
             #pelvisSagitalAngle = self.getSagitalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
@@ -293,10 +306,10 @@ class State():
 
             #print("crh",self.mTorque[self.mCoronalRightHipDOFIndex], "ttc" , tauTorsoCoronal, "mcL", self.mTorque[self.mCoronalLeftHipDOFIndex])
             #input()
-            tauTorsoTransverse = 1000.0*pos_d[2] - 10*dq[2]
-            self.mTorque[self.mTransverseRightHipDOFIndex] = tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex]
+            tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
+            self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
            
-
+            #print("mTRDOF",self.mTorque[self.mTransverseRightHipDOFIndex])
 
     
     def getSagitalPelvisAngle(self,getCOMFrameLinear,comY,pelvisZ):

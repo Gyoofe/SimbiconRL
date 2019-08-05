@@ -324,11 +324,7 @@ class FooEnvBase(gym.Env):
         action[15] = action[15]*150
 
         ##root
-        #action[16] = (action[16]*math.radians(15.0)) - 0.5*np.pi
-        action[16] = -0.5*np.pi
-        #action[17] = (action[17])*math.radians(15.0)
-        action[17] = 0
-        action[18] = (action[18])*np.pi/12
+        action[16] = (action[16])*np.pi/12
         #print(action)
         #self.ForceAction10(action)
 
