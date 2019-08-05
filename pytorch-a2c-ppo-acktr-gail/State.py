@@ -243,7 +243,7 @@ class State():
             #input()
             #pelvisSagitalAngle = self.getSagitalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoSagital = -5000.0 * (pelvisSagitalAngle + self.mDesiredGlobalPelvisAngleOnSagital)
-            tauTorsoSagital = 5000.0*pos_d[1] - 5*dq[1]
+            tauTorsoSagital = 5000.0*pos_d[1]
 
             #coronal left 10
             #coronal right 11
@@ -261,7 +261,7 @@ class State():
 
             #pelvisCoronalAngle = self.getCoronalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoCoronal = -5000.0 * (pelvisCoronalAngle - self.mDesiredGlobalPelvisAngleOnCoronal)
-            tauTorsoCoronal = -5000.0*pos_d[0] - 5*dq[0]
+            tauTorsoCoronal = -5000.0*pos_d[0]
 
 
             
@@ -284,7 +284,7 @@ class State():
         elif self.mStanceFoot is self.mRightFoot :
             #pelvisSagitalAngle = self.getSagitalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoSagital =-5000.0 * (pelvisSagitalAngle + self.mDesiredGlobalPelvisAngleOnSagital)
-            tauTorsoSagital = 5000.0*pos_d[1] - 5*dq[1]
+            tauTorsoSagital = 5000.0*pos_d[1]
 
             ##RLCODE
             #self.mTorque[self.mSagitalLeftHipDOFIndex] = action[0]
@@ -295,7 +295,7 @@ class State():
 
             #pelvisCoronalAngle = self.getCoronalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoCoronal = -5000.0 * (pelvisCoronalAngle - self.mDesiredGlobalPelvisAngleOnCoronal)
-            tauTorsoCoronal = -5000.0*pos_d[0] - 5*dq[0]
+            tauTorsoCoronal = -5000.0*pos_d[0]
 
             
             ##RLCODE
