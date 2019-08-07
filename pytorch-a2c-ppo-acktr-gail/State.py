@@ -273,9 +273,10 @@ class State():
 
 
             #tauTorsoTransverse = 1000.0*pos_d[2] - 10*dq[2]
-            tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
-            self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
-
+            if self.mRootKp > 0:
+                tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2] 
+                self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
+            
             #print("coronalTorque",self.mTorque[self.mCoronalLeftHipDOFIndex])
 
             #print("mTLDOF",self.mTorque[self.mTransverseLeftHipDOFIndex])
@@ -306,8 +307,9 @@ class State():
 
             #print("crh",self.mTorque[self.mCoronalRightHipDOFIndex], "ttc" , tauTorsoCoronal, "mcL", self.mTorque[self.mCoronalLeftHipDOFIndex])
             #input()
-            tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
-            self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
+            if self.mRootKp > 0:
+                tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
+                self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
            
             #print("mTRDOF",self.mTorque[self.mTransverseRightHipDOFIndex])
 
