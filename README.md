@@ -11,4 +11,4 @@ Baseline
   (silver에 reward cur, eldorado1에 pd controller gain cur 추후 통합)
 
 brach
-- master2 // Hpx 없음
+- master2 // swing hip Z tagetAngle 없음
