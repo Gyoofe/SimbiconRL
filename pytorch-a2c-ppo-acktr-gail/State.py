@@ -220,21 +220,23 @@ class State():
         #print(action)
         ##
         #미리 계산해두기
-        #comY = cMat.Matrix.col(getCOMFrameLinear,1)
-        pelvisY = cMat.Matrix.col(cMat.Matrix.linear(self.mSkel.body("pelvis").T),2)
+        comY = cMat.Matrix.col(getCOMFrameLinear,1)
+        #pelvisY = cMat.Matrix.col(cMat.Matrix.linear(self.mSkel.body("pelvis").T),2)
         
         q = self.mSkel.q
         dq = self.mSkel.dq
 
         action = self.mDesiredGlobalPelvisAngleOnTransverse
-       
+        action = 0
+
+
         defaultRot = np.zeros(3)
         defaultRot[0] = -0.5*np.pi
         defaultRot[1] = 0
         defaultRot[2] = 0
         rm_qRc = cv2.Rodrigues(q[0:3])[0]
         rm_qRd1 = cv2.Rodrigues(defaultRot)[0]
-        rm_qRd2 = cv2.Rodrigues(action*pelvisY)[0]
+        rm_qRd2 = cv2.Rodrigues(action*comY)[0]
 
         pos_d = -cv2.Rodrigues(rm_qRc.T@rm_qRd2@rm_qRd1)[0]
         #pos_d = self.mSkel.position_differences(q, desiredq)
@@ -253,30 +255,29 @@ class State():
             ##RLCODE
             #self.mTorque[self.mSagitalRightHipDOFIndex] = action[0] 
             ##
-    
-
             self.mTorque[self.mSagitalLeftHipDOFIndex] = tauTorsoSagital - self.mTorque[self.mSagitalRightHipDOFIndex]
 
             #print("sagitalTorque",self.mTorque[self.mSagitalLeftHipDOFIndex])
 
+
             #pelvisCoronalAngle = self.getCoronalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoCoronal = -5000.0 * (pelvisCoronalAngle - self.mDesiredGlobalPelvisAngleOnCoronal)
-            tauTorsoCoronal = -5000.0*pos_d[0]
-
-
-            
+            tauTorsoCoronal = -5000.0*pos_d[0] 
             ##RLCODE
             #self.mTorque[self.mCoronalRightHipDOFIndex] = action[1]
             ##
-
             self.mTorque[self.mCoronalLeftHipDOFIndex] = -tauTorsoCoronal - self.mTorque[self.mCoronalRightHipDOFIndex]
 
 
             #tauTorsoTransverse = 1000.0*pos_d[2] - 10*dq[2]
-            if self.mRootKp > 0:
-                tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2] 
-                self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
-            
+            #if self.mRootKp > 0:
+            #    tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2] 
+            #    self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
+
+            tauTorsoTransverse = 1000*pos_d[2] - dq[2] 
+            self.mTorque[self.mTransverseLeftHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
+
+
             #print("coronalTorque",self.mTorque[self.mCoronalLeftHipDOFIndex])
 
             #print("mTLDOF",self.mTorque[self.mTransverseLeftHipDOFIndex])
@@ -297,20 +298,20 @@ class State():
             #pelvisCoronalAngle = self.getCoronalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoCoronal = -5000.0 * (pelvisCoronalAngle - self.mDesiredGlobalPelvisAngleOnCoronal)
             tauTorsoCoronal = -5000.0*pos_d[0]
-
-            
             ##RLCODE
             #self.mTorque[self.mCoronalLeftHipDOFIndex] = action[1]
             ##
-
             self.mTorque[self.mCoronalRightHipDOFIndex] = -tauTorsoCoronal - self.mTorque[self.mCoronalLeftHipDOFIndex]
 
             #print("crh",self.mTorque[self.mCoronalRightHipDOFIndex], "ttc" , tauTorsoCoronal, "mcL", self.mTorque[self.mCoronalLeftHipDOFIndex])
             #input()
-            if self.mRootKp > 0:
-                tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
-                self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
+            #if self.mRootKp > 0:
+            #    tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
+            #    self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
            
+            tauTorsoTransverse = self.mRootKp*pos_d[2] - dq[2]
+            self.mTorque[self.mTransverseRightHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
+
             #print("mTRDOF",self.mTorque[self.mTransverseRightHipDOFIndex])
 
     
