@@ -12,3 +12,4 @@ Baseline
 
 brach
 - master2 // swing hip Z tagetAngle 없음
+- eldorado1_new2 // baseline의 Model부분 수정(Hidden Layer 부분)
