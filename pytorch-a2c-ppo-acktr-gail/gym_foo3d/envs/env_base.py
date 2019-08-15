@@ -281,14 +281,12 @@ class FooEnvBase(gym.Env):
         action[2] = (action[2])*np.pi/3
         action[3] = (action[3]-1)*np.pi/4
         action[4] = (action[4])*np.pi/9
-        action[5] = (action[5])*math.radians(20.0)
         action[6] = (action[6])*math.radians(60.0)
         action[7] = action[7]*np.pi/2
         action[8] = (action[8]-1)*np.pi/4
         action[9] = (action[9])*np.pi/9
         action[10] = (action[10]-1)*np.pi/4
         action[11] = (action[11])*np.pi/9
-        action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(60.0)
         action[14] = (action[14]+1)*math.radians(-45.0)/2
 
@@ -308,23 +306,21 @@ class FooEnvBase(gym.Env):
         #hpx
         #action[5] = ((action[5]+1)/2)*math.radians(20.0)
         action[5] = (action[5])*math.radians(20.0) 
-        action[6] = (action[6])*math.radians(45.0)
-        action[7] = ((action[7] - 1)/2)*np.pi/6
-        action[8] = ((action[8]-1)/2)*np.pi/9
-        action[9] = (action[9])*np.pi/9
-        action[10] = ((action[10]-1)/2)*np.pi/6
-        action[11] = (action[11])*np.pi/9
+        action[6] = ((action[6] - 1)/2)*np.pi/6
+        action[7] = ((action[7]-1)/2)*np.pi/9
+        action[8] = (action[8])*np.pi/9
+        action[9] = ((action[9]-1)/2)*np.pi/6
+        action[10] = (action[10])*np.pi/9
         #hpx
         #action[12] = ((action[12]+1)/2)*math.radians(20.0)
-        action[12] = (action[12])*math.radians(20.0)
-        action[13] = (action[13])*math.radians(45.0)
-        action[14] = (action[14]+1)*math.radians(-30.0)/2
+        action[11] = (action[11])*math.radians(20.0)
+        action[12] = (action[12]+1)*math.radians(-30.0)/2
 
         ##contact offset
-        action[15] = action[15]*150
+        action[13] = action[13]*150
 
         ##root
-        action[16] = (action[16])*np.pi/12
+        action[14] = (action[14])*np.pi/4
         #print(action)
         #self.ForceAction10(action)
 

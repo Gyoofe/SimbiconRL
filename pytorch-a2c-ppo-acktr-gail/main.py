@@ -191,7 +191,7 @@ def main():
                         np.median(episode_rewards), np.min(episode_rewards),
                         np.max(episode_rewards), dist_entropy, value_loss,
                         action_loss))
-            if mean > 2000:
+            if mean > 1500:
                 envs.venv.venv.setvalue(1)
 
 

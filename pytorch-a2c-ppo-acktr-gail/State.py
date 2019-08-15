@@ -227,8 +227,8 @@ class State():
         dq = self.mSkel.dq
 
         action = self.mDesiredGlobalPelvisAngleOnTransverse
-        action = 0
-
+        #action = 0
+        #print(action)
 
         defaultRot = np.zeros(3)
         defaultRot[0] = -0.5*np.pi

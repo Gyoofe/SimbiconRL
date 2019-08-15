@@ -28,7 +28,7 @@ class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
         observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(17,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(15,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.Rcontact_time_before = 0
@@ -62,6 +62,10 @@ class FooEnv6(env_base.FooEnvBase):
 
         self.targetspeed = 0.2
         self.targetMaxspeed = 2
+
+        ##Curriculum 관련
+        self.curValue = 0
+
         print(self.targetAngle)
 
     def get_state(self):
@@ -69,11 +73,12 @@ class FooEnv6(env_base.FooEnvBase):
 
     #curriculum Pd value
     def set(self,value):
-        if self.controller.mCurrentStateMachine.mCurrentState.mRootKp < 5000:            
-            for states in self.controller.mCurrentStateMachine.mStates:
-                states.mRootKp += 50
-                states.mRootKd = states.rootmKp/500
-                print(states.mRootKp)
+        self.curValue += 1
+        #if self.controller.mCurrentStateMachine.mCurrentState.mRootKp < 5000:            
+        #    for states in self.controller.mCurrentStateMachine.mStates:
+        #        states.mRootKp += 50
+        #        states.mRootKd = states.rootmKp/500
+        #        print(states.mRootKp)
 
     def reset(self):
         super().reset()
@@ -119,7 +124,9 @@ class FooEnv6(env_base.FooEnvBase):
         panelty = 0
         check = 0
         action = self.clip_Scaling_Actiond10(action)
-
+        #Curriculum Value 곱하기
+        #if self.curValue <= 20:
+        #    action[14] = (self.curValue/20)*action[14]
         self.previousState = self.controller.mCurrentStateMachine.mCurrentState.mName
         #done은 에피소드가 끝났는지..
         done,n_frames = self.do_simulation(action)
@@ -221,6 +228,7 @@ class FooEnv6(env_base.FooEnvBase):
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
             print("action Step", self.actionSteps,self.step_counter)
+            print("curValue", self.curValue)
             if self.controller.mCurrentStateMachine.mCurrentState.mRootKp:
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
@@ -249,7 +257,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.tausums = 0
         state_step = 0
         state_step_after_contact = 0
-        offset = np.round(action[15])
+        offset = np.round(action[13])
 
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0

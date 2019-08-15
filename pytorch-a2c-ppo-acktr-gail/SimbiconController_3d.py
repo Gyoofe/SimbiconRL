@@ -111,17 +111,17 @@ class StateMachine():
             stk02=  action[3]
             sta02 = action[4]
             swhx02 = action[5]
-            swhz02 = action[6]
-            swh13 = action[7]
-            swk13 = action[8]
-            swa13 = action[9]
-            stk13 = action[10]
-            sta13 = action[11]
-            swhx13 = action[12]
-            swhz13 = action[13]
-            pelvis = action[14]
+            #swhz02 = action[6]
+            swh13 = action[6]
+            swk13 = action[7]
+            swa13 = action[8]
+            stk13 = action[9]
+            sta13 = action[10]
+            swhx13 = action[11]
+            #swhz13 = action[13]
+            pelvis = action[12]
 
-            tauT = action[16]
+            tauT = action[14]
 
 
             wState0.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
@@ -156,7 +156,7 @@ class StateMachine():
             wState0.setDesiredJointPosition("l_leg_aky",-sta02)
 
             wState0.setDesiredJointPosition("r_leg_hpx", -swhx02)
-            wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
+            #wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
 
 
             wState1.setDesiredJointPosition("r_leg_hpy", -swh13)
@@ -167,7 +167,7 @@ class StateMachine():
             wState1.setDesiredJointPosition("l_leg_aky", -sta13)
             
             wState1.setDesiredJointPosition("r_leg_hpx", -swhx13)
-            wState1.setDesiredJointPosition("r_leg_hpz", -swhz13)
+            #wState1.setDesiredJointPosition("r_leg_hpz", -swhz13)
 
 
             wState2.setDesiredJointPosition("l_leg_hpy", -swh02)
@@ -178,7 +178,7 @@ class StateMachine():
             wState2.setDesiredJointPosition("r_leg_aky",-sta02)
 
             wState2.setDesiredJointPosition("l_leg_hpx", -swhx02)
-            wState2.setDesiredJointPosition("l_leg_hpz", -swhz02)
+            #wState2.setDesiredJointPosition("l_leg_hpz", -swhz02)
 
             wState3.setDesiredJointPosition("l_leg_hpy", -swh13)
             wState3.setDesiredJointPosition("l_leg_kny", -swk13)
@@ -188,7 +188,7 @@ class StateMachine():
             wState3.setDesiredJointPosition("r_leg_aky",-sta13)
 
             wState3.setDesiredJointPosition("l_leg_hpx", -swhx13)
-            wState3.setDesiredJointPosition("l_leg_hpz", -swhz13)
+            #wState3.setDesiredJointPosition("l_leg_hpz", -swhz13)
 
 
 
