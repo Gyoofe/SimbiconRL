@@ -309,7 +309,7 @@ class State():
             #    tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
             #    self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
            
-            tauTorsoTransverse = self.mRootKp*pos_d[2] - dq[2]
+            tauTorsoTransverse = 1000*pos_d[2] - dq[2]
             self.mTorque[self.mTransverseRightHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
 
             #print("mTRDOF",self.mTorque[self.mTransverseRightHipDOFIndex])
