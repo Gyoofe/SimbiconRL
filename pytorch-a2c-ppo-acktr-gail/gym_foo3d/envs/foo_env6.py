@@ -72,7 +72,7 @@ class FooEnv6(env_base.FooEnvBase):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
 
     #curriculum Pd value
-    def set(self,value):
+    def setvalue(self,value):
         self.curValue += 1
         #if self.controller.mCurrentStateMachine.mCurrentState.mRootKp < 5000:            
         #    for states in self.controller.mCurrentStateMachine.mStates:
@@ -211,18 +211,17 @@ class FooEnv6(env_base.FooEnvBase):
         self.episodeTotalReward += reward
         #self.set_desiredSpeed()
 
-        """
+        
         #수정
-        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
             #print(self.step_counter)
             #input()
-            self.changeDirection()
+                self.changeDirection()
             ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
             #self.change_targetspeed()
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
-        """
-
+        
          
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
