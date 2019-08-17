@@ -124,10 +124,10 @@ class StateMachine():
             tauT = action[14]
 
 
-            wState0.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState1.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState2.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
-            wState3.setDesiredPelvisGlobalAngleOnTransverse(math.radians(tauT))
+            wState0.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            wState1.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            wState2.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            wState3.setDesiredPelvisGlobalAngleOnTransverse(tauT)
 
             #swh02 = 0.5
             #swk02 = -1.10
