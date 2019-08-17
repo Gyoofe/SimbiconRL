@@ -98,8 +98,12 @@ class FooEnv6(env_base.FooEnvBase):
 
         #속도 초기화
         self.targetspeed = 0.2
-        self.XveloQueue = env_base.CircularQueue(16)
-        self.ZveloQueue = env_base.CircularQueue(16)
+        #self.XveloQueue = env_base.CircularQueue(16)
+        #self.ZveloQueue = env_base.CircularQueue(16)
+        self.XveloQueue.reset()
+        self.ZveloQueue.reset()
+
+
 
         #속도 관련
         self.StepCounterQueue = env_base.CircularQueue(16)
@@ -138,7 +142,13 @@ class FooEnv6(env_base.FooEnvBase):
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-        
+       
+        #속도 계산(단순하게)
+        xDis = self.XveloQueue.f_e_d()
+        zDis = self.ZveloQueue.f_e_d()
+        DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))*(16/self.XveloQueue.count))/2
+
+
         #1초간의 속도 계산
 
         ###수정 예정(env_base에서도 수정해야됨)###
@@ -200,7 +210,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
-        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
+        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1)
 
 
         self.step_counter += n_frames

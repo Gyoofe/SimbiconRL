@@ -237,7 +237,6 @@ class State():
         rm_qRc = cv2.Rodrigues(q[0:3])[0]
         rm_qRd1 = cv2.Rodrigues(defaultRot)[0]
         rm_qRd2 = cv2.Rodrigues(action*comY)[0]
-
         pos_d = -cv2.Rodrigues(rm_qRc.T@rm_qRd2@rm_qRd1)[0]
         #pos_d = self.mSkel.position_differences(q, desiredq)
 
