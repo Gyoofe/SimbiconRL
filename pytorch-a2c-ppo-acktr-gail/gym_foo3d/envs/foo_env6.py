@@ -185,6 +185,21 @@ class FooEnv6(env_base.FooEnvBase):
         self.ppreviousforward = self.previousforward
         self.previousforward = self.getCOMFrameXAxis()
 
+
+        #발의 위치로 early Termination
+        currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
+        rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+        leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+        if self.previousState is "0":
+            if rightFoot -leftFoot < 0.0001:
+                done = True
+        elif self.previousState is "2":
+            if leftFoot - rightFoot  < 0.0001:
+                done = True
+
+
+
+
         #walkPenalty(직선보행 페널티)
         ###Queue 수정해야됨!!!!!!!!!!!!! ###
         #self.a = [1,0,0]
