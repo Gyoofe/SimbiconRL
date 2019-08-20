@@ -65,6 +65,9 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##Curriculum 관련
         self.curValue = 0
+        
+        ##footstep 관련
+        self.prevFootstep = 0
 
         print(self.targetAngle)
 
@@ -110,6 +113,10 @@ class FooEnv6(env_base.FooEnvBase):
         self.VelocityQueue = env_base.CircularQueue(16)
         self.VelocityQueueY = env_base.CircularQueue(16)
         self.VelocityQueueZ = env_base.CircularQueue(16)
+
+
+        ##footstep 관련
+        self.prevFootstep = 0
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -186,17 +193,38 @@ class FooEnv6(env_base.FooEnvBase):
         self.previousforward = self.getCOMFrameXAxis()
 
 
-        #발의 위치로 early Termination
+        #발의 위치로 early Termination (비활성)
+        #보폭을 비슷하게
         currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
         rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
         leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+
+        """
         if self.previousState is "0":
             if rightFoot -leftFoot < 0.0001:
                 done = True
         elif self.previousState is "2":
             if leftFoot - rightFoot  < 0.0001:
                 done = True
+        """
+        FootstepDiff = 0
+        if self.previousState is "1":
+            FootstepDiff = np.abs((rightFoot - leftFoot) - self.prevFootstep)
+            #if rightFoot -leftFoot < 0.0001:
+            #    done = True
+            self.prevFootstep = rightFoot - leftFoot
+        elif self.previousState is "3":
+            FootstepDiff = np.abs((leftFoot - rightFoot) - self.prevFootstep)
+            #if leftFoot - rightFoot  < 0.0001:
+            #    done = True
+            self.prevFootstep = leftFoot - rightFoot
 
+        
+        ##torso 균형
+        torsoMSE = 0
+        for i in self.sim.skeletons[1].q[6:9]:
+            torsoMSE += i ** 2
+        torsoMSE = torsoMSE/3
 
 
 
@@ -225,7 +253,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
-        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1)
+        #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1)
+        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1) - 5*torsoMSE - 3*FootstepDiff
 
 
         self.step_counter += n_frames
