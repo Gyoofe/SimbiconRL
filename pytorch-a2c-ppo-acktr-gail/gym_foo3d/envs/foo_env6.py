@@ -65,7 +65,9 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##Curriculum 관련
         self.curValue = 0
-
+        
+        ##보폭 관련
+        self.prevFootstep = 0
         print(self.targetAngle)
 
     def get_state(self):
@@ -107,6 +109,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.VelocityQueueY = env_base.CircularQueue(16)
         self.VelocityQueueZ = env_base.CircularQueue(16)
 
+        ##보폭관련
+        self.prevFootstep = 0
+
         return self.get_state()
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
@@ -138,7 +143,7 @@ class FooEnv6(env_base.FooEnvBase):
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-        
+       
         #1초간의 속도 계산
 
         ###수정 예정(env_base에서도 수정해야됨)###
@@ -185,6 +190,45 @@ class FooEnv6(env_base.FooEnvBase):
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
 
+        #발의 치로 early Termination(비활성)
+        #보폭을 비슷하게
+        currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
+        rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+        leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+      
+        """
+        if self.previousState is "0":
+            if rightFoot -leftFoot < 0.0001:
+                done = True
+            self.prevrFoot = rightFoot
+            self.prevlFoot = leftFoot
+        elif self.previousState is "2":
+            if leftFoot - rightFoot  < 0.0001:
+                done = True
+            self.prevrFoot = rightFoot
+            self.prevlFoot = leftFoot
+        """
+
+        FootstepDiff = 0
+        if self.previousState is "1":
+            FootstepDiff = np.abs((rightFoot - leftFoot) - self.prevFootstep)
+            #if rightFoot -leftFoot < 0.0001:
+            #    done = True
+            self.prevFootstep = rightFoot - leftFoot
+        elif self.previousState is "3":
+            FootstepDiff = np.abs((leftFoot - rightFoot) - self.prevFootstep)
+            #if leftFoot - rightFoot  < 0.0001:
+            #    done = True
+            self.prevFootstep = leftFoot - rightFoot
+
+
+        ##torso 균형
+        torsoMSE = 0
+        for i in self.sim.skeletons[1].q[6:9]:
+            torsoMSE += i ** 2
+        torsoMSE = torsoMSE/3
+
+
 
         #print(self.skel.tau)
         #tausums = 0
@@ -200,7 +244,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
-        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
+        #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
+        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff
 
 
         self.step_counter += n_frames
