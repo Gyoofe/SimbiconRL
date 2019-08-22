@@ -143,7 +143,13 @@ class FooEnv6(env_base.FooEnvBase):
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-       
+      
+
+        #속도 계산(단순하게)
+        xDis = self.XveloQueue.f_e_d()
+        zDis = self.ZveloQueue.f_e_d()
+        DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))*(16/self.XveloQueue.count))/2
+
         #1초간의 속도 계산
 
         ###수정 예정(env_base에서도 수정해야됨)###
@@ -245,7 +251,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
         #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
-        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff
+        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
 
 
         self.step_counter += n_frames
@@ -267,7 +273,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
         
-         
+        """ 
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -277,7 +283,7 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        
+        """
         info = {
                 'pos':pos_after[2]
         }
