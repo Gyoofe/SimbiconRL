@@ -321,6 +321,9 @@ class FooEnvBase(gym.Env):
 
         ##root
         action[14] = (action[14])*np.pi/4
+
+        ##timer offset 
+        action[15] = action[15]*150
         #print(action)
         #self.ForceAction10(action)
 
