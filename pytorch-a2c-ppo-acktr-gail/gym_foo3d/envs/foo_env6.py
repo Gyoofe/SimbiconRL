@@ -254,7 +254,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
         #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1)
-        reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1) - 3*torsoMSE - 4*FootstepDiff
+        reward = alive_bonus - self.tausums/8000 - 2*walkPenalty - 2*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 4*FootstepDiff
 
 
         self.step_counter += n_frames
@@ -278,7 +278,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
         
-         
+        """ 
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -288,7 +288,7 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        
+        """
         info = {
                 'pos':pos_after[2]
         }

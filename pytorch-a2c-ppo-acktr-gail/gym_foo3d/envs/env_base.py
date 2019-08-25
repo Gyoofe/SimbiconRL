@@ -320,7 +320,7 @@ class FooEnvBase(gym.Env):
         action[13] = action[13]*150
 
         ##root
-        action[14] = (action[14])*np.pi/4
+        action[14] = (action[14])*np.pi/2
 
         ##timer offset 
         action[15] = action[15]*150
@@ -376,7 +376,7 @@ class FooEnvBase(gym.Env):
         self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)
         #self.XveloQueue.reset()
         #self.ZveloQueue.reset()
-        print("change Direction",self.targetFrameXAxis)
+        #print("change Direction",self.targetFrameXAxis)
 
 
     def rotateYAxis(self,theta,tVec):
