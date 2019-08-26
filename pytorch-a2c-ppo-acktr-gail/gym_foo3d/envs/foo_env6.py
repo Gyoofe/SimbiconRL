@@ -264,7 +264,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         
         #수정
-        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
+        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
             #print(self.step_counter)
             #input()
                 self.changeDirection()
