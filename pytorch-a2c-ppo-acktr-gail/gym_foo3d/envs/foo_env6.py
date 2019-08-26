@@ -272,6 +272,7 @@ class FooEnv6(env_base.FooEnvBase):
             
             #print(self.step_counter)
             #input()
+            ##회전 각 제한을 60도 정도로
                 self.changeDirection()
             ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
             #self.change_targetspeed()
