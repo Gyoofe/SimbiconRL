@@ -66,8 +66,12 @@ class FooEnv6(env_base.FooEnvBase):
         ##Curriculum 관련
         self.curValue = 0
         
-        ##보폭 관련
+        ##보폭, symmetry foot 관련[각도, Y크기 한쌍]
         self.prevFootstep = 0
+        self.prevStrikeRightfoot = None
+        self.prevContactRightfoot = None
+        self.prevStrikeLeftfoot = None
+        self.prevContactLeftfoot = None
         print(self.targetAngle)
 
     def get_state(self):
@@ -111,6 +115,13 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##보폭관련
         self.prevFootstep = 0
+
+        ##보폭, symmetry foot 관련[각도, Y크기 한쌍]
+        self.prevFootstep = 0
+        self.prevStrikeRightfoot = None
+        self.prevContactRightfoot = None
+        self.prevStrikeLeftfoot = None
+        self.prevContactLeftfoot = None
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -196,25 +207,16 @@ class FooEnv6(env_base.FooEnvBase):
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
 
+
+
+
         #발의 치로 early Termination(비활성)
         #보폭을 비슷하게
+        
         currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
         rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
         leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
       
-        """
-        if self.previousState is "0":
-            if rightFoot -leftFoot < 0.0001:
-                done = True
-            self.prevrFoot = rightFoot
-            self.prevlFoot = leftFoot
-        elif self.previousState is "2":
-            if leftFoot - rightFoot  < 0.0001:
-                done = True
-            self.prevrFoot = rightFoot
-            self.prevlFoot = leftFoot
-        """
-
         FootstepDiff = 0
         if self.previousState is "1":
             FootstepDiff = np.abs((rightFoot - leftFoot) - self.prevFootstep)
@@ -226,6 +228,53 @@ class FooEnv6(env_base.FooEnvBase):
             #if leftFoot - rightFoot  < 0.0001:
             #    done = True
             self.prevFootstep = leftFoot - rightFoot
+        
+
+        ##foot symmetry term
+        ##왼쪽발은 지난번 오른쪽과 비교
+        #self.prevStrikeRightfoot
+        #self.prevContactRightfoot
+        #self.prevStrikeLeftfoot
+        #self.prevContactLeftfoot
+        r_foot_vector = r_foot_pos - pos_after  
+        l_foot_vector = l_foot_pos - pos_after
+
+        ##[0]/각도 [1]/Y축
+        footSymmetryPenalty = 0
+        if self.previousState is "0":
+            fVY = r_foot_vector[1]
+            r_foot_vector[1] = 0 
+            bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
+            if self.prevStrikeLeftfoot is not None:
+                footSymmetryPenalty = np.abs(bAngle - self.prevStrikeLeftfoot[0]) + np.abs(fVY - self.prevStrikeLeftfoot[1])
+            #rightFoot - self.prevStrikeLeftfoot
+            self.prevStrikeRightfoot = [bAngle, fVY]
+        elif self.previousState is "1":
+            fVY = r_foot_vector[1]
+            r_foot_vector[1] = 0
+            bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
+            if self.prevContactLeftfoot is not None: 
+                footSymmetryPenalty = np.abs(bAngle - self.prevContactLeftfoot[0]) + np.abs(fVY - self.prevContactLeftfoot[1])
+
+            #rightFoot - self.prevContactLeftfoot
+            self.prevContactRightfoot = [bAngle, fVY] 
+        elif self.previousState is "2":
+            fVY = l_foot_vector[1]
+            l_foot_vector[1] = 0 
+            bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
+            if self.prevStrikeRightfoot is not None:
+                footSymmetryPenalty = np.abs(bAngle - self.prevStrikeRightfoot[0]) + np.abs(fVY - self.prevStrikeRightfoot[1])
+
+            #leftFoot - self.prevStrikeRightfoot
+            self.prevStrikeLeftfoot = [bAngle, fVY]
+        elif self.previousState is "3":
+            fVY = l_foot_vector[1]
+            l_foot_vector[1] = 0 
+            bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
+            if self.prevContactRightfoot is not None:
+                footSymmetryPenalty = np.abs(bAngle - self.prevContactRightfoot[0]) + np.abs(fVY - self.prevContactRightfoot[1]) 
+            #leftFoot - self.prevContactRightfoot
+            self.prevContactLeftfoot = [bAngle, fVY]
 
 
         ##torso 균형
@@ -255,8 +304,10 @@ class FooEnv6(env_base.FooEnvBase):
         ##다리 꼬는문제, 정면으로 못걷는문제
         ##reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
 
-        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
+        #reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
 
+
+        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*footSymmetryPenalty - np.abs(DisV - 1)
 
 
         self.step_counter += n_frames
