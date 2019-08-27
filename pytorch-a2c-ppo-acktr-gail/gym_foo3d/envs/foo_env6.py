@@ -251,7 +251,12 @@ class FooEnv6(env_base.FooEnvBase):
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
         #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle)
-        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
+        
+        ##다리 꼬는문제, 정면으로 못걷는문제
+        ##reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 5*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
+
+        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
+
 
 
         self.step_counter += n_frames
@@ -264,7 +269,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         
         #수정
-        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*15 and self.cDirection and self.step_counter is not 0:
             #print(self.step_counter)
             #input()
                 self.changeDirection()
@@ -442,7 +447,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 100:
+            elif self.actionSteps > self.step_per_walk * 200:
                 done = True
             if done is True:
                 break
