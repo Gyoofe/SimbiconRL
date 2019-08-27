@@ -320,7 +320,7 @@ class FooEnvBase(gym.Env):
         action[13] = action[13]*150
 
         ##root
-        action[14] = (action[14])*np.pi/2
+        action[14] = (action[14])*np.pi/4
 
         ##timer offset 
         action[15] = action[15]*150
