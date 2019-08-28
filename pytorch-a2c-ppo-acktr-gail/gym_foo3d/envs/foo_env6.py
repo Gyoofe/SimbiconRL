@@ -240,7 +240,7 @@ class FooEnv6(env_base.FooEnvBase):
         l_foot_vector = l_foot_pos - pos_after
 
         ##[0]/각도 [1]/Y축
-        footSymmetryPenalty = 0
+        footSymmetryPenalty = 4
         if self.previousState is "0":
             fVY = r_foot_vector[1]
             r_foot_vector[1] = 0 
