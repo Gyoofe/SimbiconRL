@@ -212,7 +212,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #발의 치로 early Termination(비활성)
         #보폭을 비슷하게
-        
+        """ 
         currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
         rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
         leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
@@ -228,7 +228,7 @@ class FooEnv6(env_base.FooEnvBase):
             #if leftFoot - rightFoot  < 0.0001:
             #    done = True
             self.prevFootstep = leftFoot - rightFoot
-        
+        """
 
         ##foot symmetry term
         ##왼쪽발은 지난번 오른쪽과 비교
