@@ -240,12 +240,13 @@ class FooEnv6(env_base.FooEnvBase):
         l_foot_vector = l_foot_pos - pos_after
 
         ##[0]/각도 [1]/Y축
-        footSymmetryPenalty = 1
+        footSymmetryPenalty = 0
         if self.previousState is "0":
             fVY = r_foot_vector[1]
             r_foot_vector[1] = 0 
             bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
-            if self.prevStrikeLeftfoot is not None:
+            ##자기 자신이 비어있을떄 처음이니까 그때는 기본 페널티 사용
+            if self.prevStrikeRightfoot is not None:
                 footSymmetryPenalty = np.abs(bAngle - self.prevStrikeLeftfoot[0]) + np.abs(fVY - self.prevStrikeLeftfoot[1])
             #rightFoot - self.prevStrikeLeftfoot
             self.prevStrikeRightfoot = [bAngle, fVY]
@@ -253,7 +254,7 @@ class FooEnv6(env_base.FooEnvBase):
             fVY = r_foot_vector[1]
             r_foot_vector[1] = 0
             bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
-            if self.prevContactLeftfoot is not None: 
+            if self.prevContactRightfoot is not None: 
                 footSymmetryPenalty = np.abs(bAngle - self.prevContactLeftfoot[0]) + np.abs(fVY - self.prevContactLeftfoot[1])
 
             #rightFoot - self.prevContactLeftfoot
@@ -262,7 +263,7 @@ class FooEnv6(env_base.FooEnvBase):
             fVY = l_foot_vector[1]
             l_foot_vector[1] = 0 
             bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
-            if self.prevStrikeRightfoot is not None:
+            if self.prevStrikeLeftfoot is not None:
                 footSymmetryPenalty = np.abs(bAngle - self.prevStrikeRightfoot[0]) + np.abs(fVY - self.prevStrikeRightfoot[1])
 
             #leftFoot - self.prevStrikeRightfoot
@@ -271,7 +272,7 @@ class FooEnv6(env_base.FooEnvBase):
             fVY = l_foot_vector[1]
             l_foot_vector[1] = 0 
             bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
-            if self.prevContactRightfoot is not None:
+            if self.prevContactLeftfoot is not None:
                 footSymmetryPenalty = np.abs(bAngle - self.prevContactRightfoot[0]) + np.abs(fVY - self.prevContactRightfoot[1]) 
             #leftFoot - self.prevContactRightfoot
             self.prevContactLeftfoot = [bAngle, fVY]
@@ -329,7 +330,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
         
-        """ 
+         
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -339,7 +340,7 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        """
+        
         info = {
                 'pos':pos_after[2]
         }
