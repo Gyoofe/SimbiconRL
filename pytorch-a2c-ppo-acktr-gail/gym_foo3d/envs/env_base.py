@@ -368,6 +368,8 @@ class FooEnvBase(gym.Env):
         xAxis = cMat.Matrix.normalize_2D(pelvisXAxis)
         return xAxis
 
+   
+
     def changeDirection(self):
         self.targetAngle = ((random.random()*2)-1)*np.pi
         self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)

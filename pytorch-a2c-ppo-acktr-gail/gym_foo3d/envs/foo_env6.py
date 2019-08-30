@@ -66,7 +66,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##Curriculum 관련
         self.curValue = 0
         
-        ##보폭, symmetry foot 관련[각도, Y크기 한쌍]
+        ##보폭, symmetry foot 관련 local coordinate
         self.prevFootstep = 0
         self.prevStrikeRightfoot = None
         self.prevContactRightfoot = None
@@ -116,7 +116,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##보폭관련
         self.prevFootstep = 0
 
-        ##보폭, symmetry foot 관련[각도, Y크기 한쌍]
+        ##보폭, symmetry foot 관련 local coordinate
         self.prevFootstep = 0
         self.prevStrikeRightfoot = None
         self.prevContactRightfoot = None
@@ -188,7 +188,10 @@ class FooEnv6(env_base.FooEnvBase):
         alive_bonus = 10
 
         #방향 맞춤
-        self.currentFrameXAxis = self.getCOMFrameXAxis()
+        self.currentFrame = self.controller.mCurrentStateMachine.mCurrentState.getCOMFrame()
+        #self.currentFrameXAxis = self.getCOMFrameXAxis()
+        self.currentFrameXAxis = self.currentFrame[0][0:3]
+        self.currentFrameInv = np.linalg.inv(self.currentFrame)
         for i in range(3):
             self.currentFrameXAxis[i] = (self.currentFrameXAxis[i] + self.ppreviousforward[i])
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
@@ -236,46 +239,44 @@ class FooEnv6(env_base.FooEnvBase):
         #self.prevContactRightfoot
         #self.prevStrikeLeftfoot
         #self.prevContactLeftfoot
-        r_foot_vector = r_foot_pos - pos_after  
-        l_foot_vector = l_foot_pos - pos_after
+        local_r_foot_pos = self.invF(r_foot_pos)
+        local_l_foot_pos = self.invF(l_foot_pos)
+
 
         ##[0]/각도 [1]/Y축
         footSymmetryPenalty = 0
         if self.previousState is "0":
-            fVY = r_foot_vector[1]
-            r_foot_vector[1] = 0 
-            bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
+            local_r_foot_pos = self.invF(r_foot_pos)
+
             ##자기 자신이 비어있을떄 처음이니까 그때는 기본 페널티 사용
             if self.prevStrikeRightfoot is not None:
-                footSymmetryPenalty = np.abs(bAngle - self.prevStrikeLeftfoot[0]) + np.abs(fVY - self.prevStrikeLeftfoot[1])
+                footSymmetryPenalty = sum(list([np.abs(i-j) for i,j in zip(local_r_foot_pos, self.prevStrikeLeftfoot)])) 
             #rightFoot - self.prevStrikeLeftfoot
-            self.prevStrikeRightfoot = [bAngle, fVY]
+            self.prevStrikeRightfoot = local_r_foot_pos
+            local_r_foot_pos[2] = -local_r_foot_pos[2]
         elif self.previousState is "1":
-            fVY = r_foot_vector[1]
-            r_foot_vector[1] = 0
-            bAngle = self._calAngleBetweenVectors(r_foot_vector,self.currentFrameXAxis)
+            local_r_foot_pos = self.invF(r_foot_pos)
+
             if self.prevContactRightfoot is not None: 
-                footSymmetryPenalty = np.abs(bAngle - self.prevContactLeftfoot[0]) + np.abs(fVY - self.prevContactLeftfoot[1])
-
+                footSymmetryPenalty = sum(list([np.abs(i-j) for i,j in zip(local_r_foot_pos, self.preContactLeftfoot)])) 
             #rightFoot - self.prevContactLeftfoot
-            self.prevContactRightfoot = [bAngle, fVY] 
+            local_r_foot_pos[2] = -local_r_foot_pos[2]
+            self.prevContactRightfoot = local_r_foot_pos 
         elif self.previousState is "2":
-            fVY = l_foot_vector[1]
-            l_foot_vector[1] = 0 
-            bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
+            local_l_foot_pos = self.invF(l_foot_pos)
             if self.prevStrikeLeftfoot is not None:
-                footSymmetryPenalty = np.abs(bAngle - self.prevStrikeRightfoot[0]) + np.abs(fVY - self.prevStrikeRightfoot[1])
-
+                 footSymmetryPenalty = sum(list([np.abs(i-j) for i,j in zip(self.prevStrikeRightfoot, local_l_foot_pos)])) 
             #leftFoot - self.prevStrikeRightfoot
-            self.prevStrikeLeftfoot = [bAngle, fVY]
+            local_l_foot_pos[2] = -local_l_foot_pos[2]
+            self.prevStrikeLeftfoot = local_l_foot_pos 
+        \
         elif self.previousState is "3":
-            fVY = l_foot_vector[1]
-            l_foot_vector[1] = 0 
-            bAngle = self._calAngleBetweenVectors(l_foot_vector,self.currentFrameXAxis)
+            local_l_foot_pos = self.invF(l_foot_pos)
             if self.prevContactLeftfoot is not None:
-                footSymmetryPenalty = np.abs(bAngle - self.prevContactRightfoot[0]) + np.abs(fVY - self.prevContactRightfoot[1]) 
+                 footSymmetryPenalty = sum(list([np.abs(i-j) for i,j in zip(self.prevContactRightfoot, local_l_foot_pos)])) 
             #leftFoot - self.prevContactRightfoot
-            self.prevContactLeftfoot = [bAngle, fVY]
+            local_l_foot_pos[2] = -local_l_foot_pos[2]
+            self.prevContactLeftfoot = local_l_foot_pos 
 
 
         ##torso 균형
