@@ -309,21 +309,26 @@ class FooEnvBase(gym.Env):
         action[6] = ((action[6] - 1)/2)*np.pi/6
         action[7] = ((action[7]-1)/2)*np.pi/9
         action[8] = (action[8])*np.pi/9
-        action[9] = ((action[9]-1)/2)*np.pi/6
-        action[10] = (action[10])*np.pi/9
         #hpx
         #action[12] = ((action[12]+1)/2)*math.radians(20.0)
-        action[11] = (action[11])*math.radians(20.0)
-        action[12] = (action[12]+1)*math.radians(-30.0)/2
+        
+        #swing hpy
+        action[9] = (action[9])*math.radians(20.0)
+        #stance hpx,hpy,hpz
+        action[10] = (action[10])*math.radians(20.0)
+        action[11] = (action[11])*math.radians(30.0)
+        action[12] = ((action[12]-1)/2)*math.radians(30.0)
+
+
 
         ##contact offset
         action[13] = action[13]*150
 
         ##root
-        action[14] = (action[14])*np.pi/4
+        #action[14] = (action[14])*np.pi/4
 
         ##timer offset 
-        action[15] = action[15]*150
+        #action[15] = action[15]*150
         #print(action)
         #self.ForceAction10(action)
 

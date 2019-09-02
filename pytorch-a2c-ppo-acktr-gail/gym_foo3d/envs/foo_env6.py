@@ -271,7 +271,7 @@ class FooEnv6(env_base.FooEnvBase):
         
         #수정
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
-        if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*15 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 15) == self.step_per_walk*10 and self.cDirection and self.step_counter is not 0:
             
             #print(self.step_counter)
             #input()
@@ -282,7 +282,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
         
-        """ 
+         
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -292,7 +292,7 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        """
+        
         info = {
                 'pos':pos_after[2]
         }

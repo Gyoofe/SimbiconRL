@@ -69,12 +69,12 @@ class StateMachine():
             wState3 = self.mStates[3]
             
              
-            if int(self.mCurrentState.mName) is 0:
-                tCond0 = st.TimerCondition(wState0, (300 - action[15])/1000)
-                wState0.setTerminalCondition(tCond0)
-            if int(self.mCurrentState.mName) is 2:
-                tCond2 = st.TimerCondition(wState2, (300 - action[15])/1000)
-                wState2.setTerminalCondition(tCond2)
+            #if int(self.mCurrentState.mName) is 0:
+            #    tCond0 = st.TimerCondition(wState0, (300 - action[15])/1000)
+            #    wState0.setTerminalCondition(tCond0)
+            #if int(self.mCurrentState.mName) is 2:
+            #    tCond2 = st.TimerCondition(wState2, (300 - action[15])/1000)
+            #    wState2.setTerminalCondition(tCond2)
             
             #swh02 = 0.5
             #swk02 = -1.10
@@ -116,19 +116,27 @@ class StateMachine():
             swh13 = action[6]
             swk13 = action[7]
             swa13 = action[8]
-            stk13 = action[9]
-            sta13 = action[10]
-            swhx13 = action[11]
+            stk13 = action[3]
+            sta13 = action[4]
+            swhx13 = action[5]
             #swhz13 = action[13]
-            pelvis = action[12]
+            #pelvis = action[12]
+            swhy02=action[9]
+            swhy13=action[9]
+            sthx02=action[10]
+            sthy02=action[11]
+            sthz02=action[12]
+            sthx13=action[10]
+            sthy13=action[11]
+            sthz13=action[12]
 
-            tauT = action[14]
+            #tauT = action[14]
 
 
-            wState0.setDesiredPelvisGlobalAngleOnTransverse(tauT)
-            wState1.setDesiredPelvisGlobalAngleOnTransverse(tauT)
-            wState2.setDesiredPelvisGlobalAngleOnTransverse(tauT)
-            wState3.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            #wState0.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            #wState1.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            #wState2.setDesiredPelvisGlobalAngleOnTransverse(tauT)
+            #wState3.setDesiredPelvisGlobalAngleOnTransverse(tauT)
 
             #swh02 = 0.5
             #swk02 = -1.10
@@ -143,10 +151,10 @@ class StateMachine():
             #sta13 = 0.0
 
 
-            wState0.setDesiredJointPosition("back_bky", -pelvis)
-            wState1.setDesiredJointPosition("back_bky", -pelvis)
-            wState2.setDesiredJointPosition("back_bky", -pelvis)
-            wState3.setDesiredJointPosition("back_bky", -pelvis)
+            #wState0.setDesiredJointPosition("back_bky", -pelvis)
+            #wState1.setDesiredJointPosition("back_bky", -pelvis)
+            #wState2.setDesiredJointPosition("back_bky", -pelvis)
+            #wState3.setDesiredJointPosition("back_bky", -pelvis)
 
 
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)
@@ -159,6 +167,10 @@ class StateMachine():
             wState0.setDesiredJointPosition("r_leg_hpx", -swhx02)
             #wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
 
+            #Stance Hip control
+            wState0.setDesiredJointPosition("l_leg_hpx", -sthx02)
+            wState0.setDesiredJointPosition("l_leg_hpy", -sthy02)
+            wState0.setDesiredJointPosition("l_leg_hpz", -sthz02)
 
             wState1.setDesiredJointPosition("r_leg_hpy", -swh13)
             wState1.setDesiredJointPosition("r_leg_kny", -swk13)
@@ -169,6 +181,11 @@ class StateMachine():
             
             wState1.setDesiredJointPosition("r_leg_hpx", -swhx13)
             #wState1.setDesiredJointPosition("r_leg_hpz", -swhz13)
+
+            #Stance Hip control
+            wState1.setDesiredJointPosition("l_leg_hpx", -sthx13)
+            wState1.setDesiredJointPosition("l_leg_hpy", -sthy13)
+            wState1.setDesiredJointPosition("l_leg_hpz", -sthz13)
 
 
             wState2.setDesiredJointPosition("l_leg_hpy", -swh02)
@@ -181,6 +198,12 @@ class StateMachine():
             wState2.setDesiredJointPosition("l_leg_hpx", -swhx02)
             #wState2.setDesiredJointPosition("l_leg_hpz", -swhz02)
 
+            #Stance Hip control
+            wState2.setDesiredJointPosition("r_leg_hpx", -sthx02)
+            wState2.setDesiredJointPosition("r_leg_hpy", -sthy02)
+            wState2.setDesiredJointPosition("r_leg_hpz", -sthz02)
+
+
             wState3.setDesiredJointPosition("l_leg_hpy", -swh13)
             wState3.setDesiredJointPosition("l_leg_kny", -swk13)
             wState3.setDesiredJointPosition("l_leg_aky", -swa13)
@@ -190,6 +213,11 @@ class StateMachine():
 
             wState3.setDesiredJointPosition("l_leg_hpx", -swhx13)
             #wState3.setDesiredJointPosition("l_leg_hpz", -swhz13)
+
+            #Stance Hip control
+            wState3.setDesiredJointPosition("r_leg_hpx", -sthx13)
+            wState3.setDesiredJointPosition("r_leg_hpy", -sthy13)
+            wState3.setDesiredJointPosition("r_leg_hpz", -sthz13)
 
 
 
