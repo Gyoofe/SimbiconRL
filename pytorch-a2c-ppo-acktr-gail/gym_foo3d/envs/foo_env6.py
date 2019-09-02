@@ -267,7 +267,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.prevStrikeLeftfoot = local_l_foot_pos 
         \
         elif self.previousState is "3":
-            local_l_foot_pos = self.currentFrameInvF@np.append(l_foot_pos,[1])
+            local_l_foot_pos = self.currentFrameInv@np.append(l_foot_pos,[1])
             if self.prevContactLeftfoot is not None:
                  footSymmetryPenalty = sum(list([np.abs(i-j) for i,j in zip(self.prevContactRightfoot, local_l_foot_pos)])) 
             #leftFoot - self.prevContactRightfoot
@@ -305,7 +305,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*FootstepDiff - np.abs(DisV - 1)
 
 
-        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 2*footSymmetryPenalty - np.abs(DisV - 1)
+        reward = alive_bonus - self.tausums/8000 - 5*walkPenalty - 4*np.abs(self.leftAngle) - 2*torsoMSE - 3*footSymmetryPenalty - np.abs(DisV - 1)
 
 
         self.step_counter += n_frames
@@ -318,7 +318,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         
         #수정
-        if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*15 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*15 and self.cDirection and self.step_counter is not 0:
             #print(self.step_counter)
             #input()
                 self.changeDirection()
