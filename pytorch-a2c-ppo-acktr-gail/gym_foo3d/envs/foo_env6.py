@@ -223,8 +223,8 @@ class FooEnv6(env_base.FooEnvBase):
         ##torso 균형
         torsoMSE = 0
         for i in self.sim.skeletons[1].q[6:9]:
-            torsoMSE += i ** 2
-        torsoMSE = torsoMSE/3
+            torsoMSE += np.abs(i)
+        #torsoMSE = torsoMSE/3
 
 
 
@@ -271,7 +271,7 @@ class FooEnv6(env_base.FooEnvBase):
         
         #수정
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
-        if self.actionSteps % (self.step_per_walk * 15) == self.step_per_walk*10 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
             
             #print(self.step_counter)
             #input()
@@ -442,7 +442,7 @@ class FooEnv6(env_base.FooEnvBase):
 
             if(self.isrender):
                 time.sleep(0.001)
-            if pos_after[1] < 0.020 or pos_after[1] > 0.5:
+            if pos_after[1] < -0.10 or pos_after[1] > 0.5:
                 done = True
             #정면으로 걷지않을경우 빠르게 종료
             #elif np.abs(pos_after[2]) > 2:
