@@ -40,8 +40,8 @@ class FooEnvBase(gym.Env):
         self.sim = pydart.World(1/900)
         self.sim.set_recording(False)
         self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
-        #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf"
-        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.urdf")
+        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
+        #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.urdf")
 
 
         self.data = None

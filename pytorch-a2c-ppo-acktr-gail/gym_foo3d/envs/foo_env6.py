@@ -487,7 +487,7 @@ class FooEnv6(env_base.FooEnvBase):
 
             if(self.isrender):
                 time.sleep(0.001)
-            if pos_after[1] < -0.10 or pos_after[1] > 0.5:
+            if pos_after[1] < -0.020 or pos_after[1] > 0.5:
                 done = True
             #정면으로 걷지않을경우 빠르게 종료
             #elif np.abs(pos_after[2]) > 2:
