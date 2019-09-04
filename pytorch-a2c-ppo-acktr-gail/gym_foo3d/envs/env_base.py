@@ -40,8 +40,8 @@ class FooEnvBase(gym.Env):
         self.sim = pydart.World(1/900)
         self.sim.set_recording(False)
         self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
-        #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
-        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.urdf")
+        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
+        #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.urdf")
        
         self.data = None
         self.viewer = None
@@ -320,8 +320,6 @@ class FooEnvBase(gym.Env):
         action[11] = (action[11])*math.radians(30.0)
         action[12] = ((action[12]-1)/2)*math.radians(30.0)
 
-
-
         ##contact offset
         action[13] = action[13]*150
 
@@ -330,7 +328,6 @@ class FooEnvBase(gym.Env):
 
         ##timer offset 
         #action[15] = action[15]*150
-        #print(action)
         #self.ForceAction10(action)
 
         return action
