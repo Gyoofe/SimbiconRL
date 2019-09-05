@@ -317,9 +317,8 @@ class FooEnvBase(gym.Env):
         action[9] = (action[9])*math.radians(20.0)
         #stance hpx,hpy,hpz
         action[10] = (action[10])*math.radians(20.0)
-        action[11] = (action[11])*math.radians(30.0)
-        action[12] = ((action[12]-1)/2)*math.radians(30.0)
-
+        action[11] = ((action[11]-1)/2)*math.radians(30.0)
+        action[12] = (action[12])*math.radians(30.0) 
         ##contact offset
         action[13] = action[13]*150
 
