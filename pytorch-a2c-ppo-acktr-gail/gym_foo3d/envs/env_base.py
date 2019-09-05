@@ -300,6 +300,42 @@ class FooEnvBase(gym.Env):
 
     def clip_Scaling_Actiond10(self, action):
         action = np.clip(action, -1, 1)
+        action[0] = ((action[0] + 1)/2)*np.pi/3
+        action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
+        action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
+        action[3] = ((action[3]-1)/2)*np.pi/9
+        action[4] = (action[4])*np.pi/9
+        #hpx
+        #action[5] = ((action[5]+1)/2)*math.radians(20.0)
+        action[5] = (action[5])*math.radians(20.0)
+        action[6] = ((action[6] - 1)/2)*np.pi/6
+        action[7] = ((action[7]-1)/2)*np.pi/9
+        action[8] = (action[8])*np.pi/9
+        #hpx
+        #action[12] = ((action[12]+1)/2)*math.radians(20.0)
+
+        #swing hpy
+        action[9] = (action[9])*math.radians(20.0)
+        #stance hpx,hpy,hpz
+        action[10] = (action[10])*math.radians(20.0)
+        action[11] = ((action[11]-1)/2)*math.radians(30.0)
+        action[12] = (action[12])*math.radians(30.0)
+        ##contact offset
+        action[13] = action[13]*150
+
+        ##root
+        #action[14] = (action[14])*np.pi/4
+
+        ##timer offset 
+        #action[15] = action[15]*150
+        #self.ForceAction10(action)
+        return action
+
+
+    #enable stace hip = root - swing hip
+    """
+    def clip_Scaling_Actiond10(self, action):
+        action = np.clip(action, -1, 1)
         action[0] = ((action[0] + 1)/2)*np.pi/3       
         action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
         action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
@@ -327,7 +363,7 @@ class FooEnvBase(gym.Env):
         #self.ForceAction10(action)
 
         return action
-
+    """
     def clip_Scaling_Actiond5(self, action):
         action = np.clip(action, -1, 1)
         action[0] = action[0]*np.pi/3

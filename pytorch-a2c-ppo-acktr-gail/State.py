@@ -158,7 +158,9 @@ class State():
         #input()
         #print("mTorqueprev", self.mTorque)
 
-        self._updateTorqueForStanceLeg(getCOMFrameLinear)
+
+        #enable stance hip = root - swing hip
+        #self._updateTorqueForStanceLeg(getCOMFrameLinear)
 
         #print("mTorque",self.mTorque)
         #print("dofs",dofs)
