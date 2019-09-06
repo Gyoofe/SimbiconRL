@@ -30,11 +30,11 @@ class FooEnv6(env_base.FooEnvBase):
         super().init_sim(cDirection,render)
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
 
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
+        observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[0,1,0,0],[0,0]])
 
 
 
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(16,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(11,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.Rcontact_time_before = 0
@@ -77,10 +77,13 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##change condition
         self.change_step = 0
+
+        ##current State
+        self.currentState = [0,0,0,0]
         print(self.targetAngle)
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
+        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,[self.desiredSpeed,self.leftAngle]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -129,6 +132,10 @@ class FooEnv6(env_base.FooEnvBase):
         ##change condition
         self.change_step = 0
 
+        ##current State
+        self.currentState = [0,0,0,0]
+
+
         return self.get_state()
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
@@ -142,7 +149,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.targetspeed += 0.025
 
 
-    def clip_Scaling_Actiond10(self, action, stateName)
+    def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -1, 1)
         #드는거 
         if stateName is "0" or stateName is "2":
@@ -166,13 +173,13 @@ class FooEnv6(env_base.FooEnvBase):
         #sta
         action[4] = (action[4])*np.pi/9
         #swhx
-        action[5] = (action[5])*math.radians(45.0) 
+        action[5] = (action[5])*math.radians(30.0) 
         #swing hpz
-        action[6] = (action[6])*math.radians(45.0)
+        action[6] = (action[6])*math.radians(30.0)
         #stance hpx,hpy,hpz
-        action[7] = (action[7])*math.radians(45.0)
+        action[7] = (action[7])*math.radians(30.0)
         action[8] = ((action[8]-1)/2)*math.radians(30.0)
-        action[9] = (action[9])*math.radians(45.0) 
+        action[9] = (action[9])*math.radians(30.0) 
         ##contact offset
         action[10] = action[10]*150
 
@@ -191,12 +198,12 @@ class FooEnv6(env_base.FooEnvBase):
         pos_before = self.sim.skeletons[1].com()
         panelty = 0
         check = 0
-        action = self.clip_Scaling_Actiond10(action)
         #Curriculum Value 곱하기
         #if self.curValue <= 20:
         #    action[14] = (self.curValue/20)*action[14]
         self.previousState = self.controller.mCurrentStateMachine.mCurrentState.mName
         #done은 에피소드가 끝났는지..
+        action = self.clip_Scaling_Actiond10(action, self.previousState)
         done,n_frames = self.do_simulation(action)
         
         #발의 위치
@@ -210,8 +217,8 @@ class FooEnv6(env_base.FooEnvBase):
         #속도 계산(단순하게)
         xDis = self.XveloQueue.f_e_d()
         zDis = self.ZveloQueue.f_e_d()
-        DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))*(16/self.XveloQueue.count))/2
-
+        #DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))*(16/self.XveloQueue.count))/2
+        DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))/self.StepCounterQueue.sum_all())*900
 
         #1초간의 속도 계산
 
@@ -237,7 +244,7 @@ class FooEnv6(env_base.FooEnvBase):
         #    speed_penalty = 0
 
 
-        alive_bonus = 10
+        alive_bonus = 20
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -361,6 +368,11 @@ class FooEnv6(env_base.FooEnvBase):
         #print(done)
         #print(self.previousState)
 
+        ##one hot incording으로 State 정보 넣어주기
+        self.currentState = [0,0,0,0]
+        self.currentState[int(self.controller.mCurrentStateMachine.mCurrentState.mName)] = 1
+
+
         thisState = self.get_state()
 
         if done is True:
@@ -379,7 +391,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.tausums = 0
         state_step = 0
         state_step_after_contact = 0
-        offset = np.round(action[13])
+        offset = np.round(action[10])
 
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
@@ -394,15 +406,15 @@ class FooEnv6(env_base.FooEnvBase):
             self.to_contact_counter_L = 0
 
         ##속도 관련 counter
-        step_counter_queue_value = 0
+        #step_counter_queue_value = 0
         ## self.previousState는 step 들어가기 전 현재 State
         ## previousState가 1,3일때는 자동 transite가 일어나지 않기 때문에 이걸 조건문으로 이용해도 된다.?
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName):
             self.controller.update()
             self.sim.step()
 
-            ##속도 관련
-            step_counter_queue_value += 1
+            ##속도 관련 n_frames로 대체
+            #step_counter_queue_value += 1
 
             #이 State에서의 step_counter
             state_step += 1
@@ -519,7 +531,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             if done is True:
                 break
-        self.StepCounterQueue.enqueue(step_counter_queue_value)
+        self.StepCounterQueue.enqueue(n_frames)
         return done,n_frames
    
     def render(self):
