@@ -3,6 +3,7 @@
 
 Pydart 2 
 - 학습속도 빠르게 하기위해 Contact 계산 안함
+- world.py에서 recording disable 할것
 - Skeleton의 Position Diff 바인딩 잘못된곳 수정(position과 velocity 반대로 바인딩 되어있음)
 
 
