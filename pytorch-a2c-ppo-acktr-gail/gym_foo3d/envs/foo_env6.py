@@ -244,7 +244,7 @@ class FooEnv6(env_base.FooEnvBase):
         #    speed_penalty = 0
 
 
-        alive_bonus = 20
+        alive_bonus = 10
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -351,7 +351,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
         #  self.changeDirection()
         
-        """         
+                
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -361,7 +361,7 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        """
+        
         info = {
                 'pos':pos_after[2]
         }
