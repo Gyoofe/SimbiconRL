@@ -295,6 +295,11 @@ class FooEnv6(env_base.FooEnvBase):
             torsoMSE += np.abs(i)
         #torsoMSE = torsoMSE/3
 
+        ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
+        ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
+        rootPenalty = 0
+        pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
+        rootPenalty = pelvisYAxis[2]
 
 
         #walkPenalty(직선보행 페널티)
@@ -330,7 +335,8 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 15*np.abs(self.currentLeftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 15*np.abs(self.currentLeftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff
+                - 5*rootPenalty)
 
 
         self.step_counter += n_frames
