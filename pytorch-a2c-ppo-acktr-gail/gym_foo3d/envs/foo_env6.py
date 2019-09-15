@@ -29,7 +29,7 @@ class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
-
+        self.sim.disable_recording()
         observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
 
 
@@ -78,12 +78,15 @@ class FooEnv6(env_base.FooEnvBase):
         ##change condition
         self.change_step = 0
 
+        #남은 회전 방향
+        self.currentLeftAngle = 0
+
         ##current State
         self.currentState = [1,0,0,0]
         print(self.targetAngle)
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,[self.desiredSpeed,self.leftAngle]])
+        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,[self.desiredSpeed,self.currentLeftAngle]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -135,6 +138,8 @@ class FooEnv6(env_base.FooEnvBase):
         ##current State
         self.currentState = [1,0,0,0]
 
+        #남은 회전 방향
+        self.currentLeftAngle = 0
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -173,11 +178,11 @@ class FooEnv6(env_base.FooEnvBase):
         #sta
         action[4] = (action[4])*np.pi/9
         #swhx
-        action[5] = (action[5])*math.radians(30.0) 
+        action[5] = (action[5])*math.radians(10.0) 
         #swing hpz
         action[6] = (action[6])*math.radians(30.0)
         #stance hpx,hpy,hpz
-        action[7] = (action[7])*math.radians(30.0)
+        action[7] = (action[7])*math.radians(10.0)
         action[8] = ((action[8]-1)/2)*math.radians(30.0)
         action[9] = (action[9])*math.radians(30.0) 
         ##contact offset
@@ -324,7 +329,8 @@ class FooEnv6(env_base.FooEnvBase):
         
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
+        #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 15*np.abs(self.currentLeftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
 
 
         self.step_counter += n_frames
@@ -375,6 +381,13 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentState = [0,0,0,0]
         self.currentState[int(self.controller.mCurrentStateMachine.mCurrentState.mName)] = 1
 
+        ##남은 각도 10도로 제한하는 코드
+        rad10deg = np.deg2rad(10)
+        if np.abs(self.leftAngle) > rad10deg:
+            ##남은 각도 10도
+            self.currentLeftAngle = -rad10deg if self.leftAngle< 0 else rad10deg
+        else:
+            self.currentLeftAngle = self.leftAngle
 
         thisState = self.get_state()
 
