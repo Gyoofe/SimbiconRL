@@ -5,6 +5,7 @@ import cMat
 import SimbiconController_3d as SC
 import math
 import queue
+import random
 #import Cgui
 
 from OpenGL.GL import *
@@ -30,13 +31,6 @@ class FooEnv6(env_base.FooEnvBase):
         super().init_sim(cDirection,render)
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),0,0]])
         self.sim.disable_recording()
-        observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
-
-
-
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(11,))
-        observation_spaces = np.zeros(len(observation_spaces))
-        self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
@@ -83,10 +77,32 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##current State
         self.currentState = [1,0,0,0]
+
+        ##Stride 관련 term
+        self.last_Rcontact_r_foot_pos = None
+        self.last_Rcontact_l_foot_pos = None
+        self.last_Lcontact_r_foot_pos = None
+        self.last_Lcontact_l_foot_pos = None
+        self.desiredStepLength = random.uniform(0.1,0.9)
+
+        ##Step Duration 관련
+        self.stepDuration = 0 
+        self.desiredStepDuration = random.uniform(0.1,0.5) 
+
+        #SwingFoot Height 관련
+        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
+
+        #observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
+        observation_spaces = self.get_state()
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(12,))
+        observation_spaces = np.zeros(len(observation_spaces))
+        self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
+
         print(self.targetAngle)
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,[self.desiredSpeed,self.currentLeftAngle]])
+        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
+            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -141,6 +157,20 @@ class FooEnv6(env_base.FooEnvBase):
         #남은 회전 방향
         self.currentLeftAngle = 0
 
+        ##Stride 관련 term
+        self.last_Rcontact_r_foot_pos = None
+        self.last_Rcontact_l_foot_pos = None
+        self.last_Lcontact_r_foot_pos = None
+        self.last_Lcontact_l_foot_pos = None
+        self.desiredStepLength = random.uniform(0.1,0.9)
+
+        ##Step Duration 관련
+        self.stepDuration = 0 
+        self.desiredStepDuration = random.uniform(0.1,0.5)
+
+        #SwingFoot Height 관련
+        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
+
         return self.get_state()
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
@@ -185,8 +215,11 @@ class FooEnv6(env_base.FooEnvBase):
         action[7] = (action[7])*math.radians(10.0)
         action[8] = ((action[8]-1)/2)*math.radians(30.0)
         action[9] = (action[9])*math.radians(30.0) 
-        ##contact offset
-        action[10] = action[10]*150
+        
+        ##Duration
+        action[10] = (action[10]+1/2)*0.4 + 0.1
+        ##Duration Ta ratio
+        action[11] = (action[11]+1/2)*0.45 + 0.5
 
         ##root
         #action[14] = (action[14])*np.pi/4
@@ -218,35 +251,6 @@ class FooEnv6(env_base.FooEnvBase):
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-       
-        #속도 계산(단순하게)
-        xDis = self.XveloQueue.f_e_d()
-        zDis = self.ZveloQueue.f_e_d()
-        #DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))*(16/self.XveloQueue.count))/2
-        DisV = ((np.sqrt(np.square(xDis) + np.square(zDis)))/self.StepCounterQueue.sum_all())*900
-
-        #1초간의 속도 계산
-
-        ###수정 예정(env_base에서도 수정해야됨)###
-        #velocity_s = self.distance()
-        #velocityReward = np.abs(velocity_s - self.desiredSpeed)
-        #print("vs",velocity_s)
-        #print("dS", self.desiredSpeed)
-
-        #두 걸음간의 속도 (X,Y,Z축 방향으로)
-
-        #self.VelocityQueue.enqueue(pos_after[0] - pos_before[0])
-        #self.VelocityQueueY.enqueue(pos_after[1] - pos_before[1])
-        #self.VelocityQueueZ.enqueue(pos_after[2] - pos_before[2])
-        
-        #sim_time = self.StepCounterQueue.sum_all()/900
-        #velocity_2step = [self.VelocityQueue.sum_all()/sim_time,self.VelocityQueueY.sum_all()/sim_time,self.VelocityQueueZ.sum_all()/sim_time]
-
-        ##speed reward(penalty)
-        #if velocity_2step[0] < self.targetspeed:
-        #    speed_penalty = self.targetspeed - velocity_2step[0]
-        #else:
-        #    speed_penalty = 0
 
 
         alive_bonus = 10
@@ -261,33 +265,6 @@ class FooEnv6(env_base.FooEnvBase):
         self.ppreviousforward = self.previousforward
         self.previousforward = self.getCOMFrameXAxis()
 
-
-        #발의 위치로 early Termination (비활성)
-        #보폭을 비슷하게
-        currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
-        rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
-        leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
-
-        """
-        if self.previousState is "0":
-            if rightFoot -leftFoot < 0.0001:
-                done = True
-        elif self.previousState is "2":
-            if leftFoot - rightFoot  < 0.0001:
-                done = True
-        """
-        FootstepDiff = 0
-        if self.previousState is "1":
-            FootstepDiff = np.abs((rightFoot - leftFoot) - self.prevFootstep)
-            #if rightFoot -leftFoot < 0.0001:
-            #    done = True
-            self.prevFootstep = rightFoot - leftFoot
-        elif self.previousState is "3":
-            FootstepDiff = np.abs((leftFoot - rightFoot) - self.prevFootstep)
-            #if leftFoot - rightFoot  < 0.0001:
-            #    done = True
-            self.prevFootstep = leftFoot - rightFoot
-
         
         ##torso 균형
         torsoMSE = 0
@@ -295,12 +272,13 @@ class FooEnv6(env_base.FooEnvBase):
             torsoMSE += np.abs(i)
         #torsoMSE = torsoMSE/3
 
+        """
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
         rootPenalty = 0
         pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
         rootPenalty = np.abs(pelvisYAxis[2])
-
+        """
 
         #walkPenalty(직선보행 페널티)
         ###Queue 수정해야됨!!!!!!!!!!!!! ###
@@ -312,6 +290,44 @@ class FooEnv6(env_base.FooEnvBase):
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
 
+
+
+        ##Stride Reward
+        #보폭을 비슷하게
+        currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
+        ##Step이전 State에 따라서 정해짐
+        ##rFoot 올릴때(rFoot Contact가 일어났다가 떨어짐)
+        if self.previousState is "1":
+            #rightFoot = np.dot(self.last_Rcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            #leftFoot = np.dot(self.last_Rcontact_l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            StepLengthPenalty = np.abs(np.abs(rightFoot - leftFoot) - self.desiredStepLength)
+        ##lFoot을 올렸을때 (lFoot Contact가 일어났다가 떨어짐)
+        elif self.previousState is "3":
+            #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            #leftFoot = np.dot(self.last_Lcontact_l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+            StepLengthPenalty = np.abs(np.abs(leftFoot - rightFoot) - self.desiredStepLength)
+        else:
+            StepLengthPenalty = 0
+
+
+        ##Step Duration Reward
+        if self.previousState is "1" or self.previousState is "3":
+            stepDurationPenalty = np.abs((self.stepDuration/900.0) - self.desiredStepDuration)
+        else:
+            stepDurationPenalty = 0
+
+
+        ##Desired Maximum swing foot Height
+        if self.previousState is "0":
+            FootHeightPenalty = np.abs(r_foot_pos[1] - self.desiredMaximumSwingfootHeight)
+        elif self.previousState is "2":
+            FootHeightPenalty = np.abs(l_foot_pos[1] - self.desiredMaximumSwingfootHeight)
+        else:
+            FootHeightPenalty = 0
 
         #print(self.skel.tau)
         #tausums = 0
@@ -335,8 +351,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 15*np.abs(self.currentLeftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff
-                - 5*rootPenalty)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 5*StepLengthPenalty - 5*stepDurationPenalty - 5*FootHeightPenalty)
 
 
         self.step_counter += n_frames
@@ -351,18 +366,7 @@ class FooEnv6(env_base.FooEnvBase):
         #수정
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
         if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
-        #if self.change_step % (SIMULATION_STEP_PER_SEC*10) > SIMULATION_STEP_PER_SEC*5 and self.change_step > 0 and self.cDirection:
-            #self.change_step = self.change_step - SIMULATION_STEP_PER_SEC*10
-
-            #print(self.step_counter)
-            #input()
-            ##회전 각 제한을 60도 정도로
-            self.changeDirection()
-            ###MAXtime수정할것!!!!!!!!!!!!!!!!!!1
-            #self.change_targetspeed()
-        #if self.step_counter == self.step_per_sec * 30 and self.cDirection:
-        #  self.changeDirection()
-        
+            self.ChangeRandom()        
                 
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
@@ -387,13 +391,6 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentState = [0,0,0,0]
         self.currentState[int(self.controller.mCurrentStateMachine.mCurrentState.mName)] = 1
 
-        ##남은 각도 10도로 제한하는 코드
-        rad10deg = np.deg2rad(10)
-        if np.abs(self.leftAngle) > rad10deg:
-            ##남은 각도 10도
-            self.currentLeftAngle = -rad10deg if self.leftAngle< 0 else rad10deg
-        else:
-            self.currentLeftAngle = self.leftAngle
 
         thisState = self.get_state()
 
@@ -402,6 +399,11 @@ class FooEnv6(env_base.FooEnvBase):
         return thisState, reward, done, info 
 
         #self.do_simulation(action, 60)
+
+    def ChangeRandom(self):
+        self.desiredStepLength = random.uniform(0.1,0.9)
+        self.desiredStepDuration = random.uniform(0.1,0.5)
+        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
 
 
 
@@ -413,19 +415,20 @@ class FooEnv6(env_base.FooEnvBase):
         self.tausums = 0
         state_step = 0
         state_step_after_contact = 0
-        offset = np.round(action[10])
 
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
         CFSM = self.controller.mCurrentStateMachine
 
-        #스윙힙이 최고 높이에 도달했을때
+        ##발을 들어올리기 시작할 때  Contact Boolean 초기화 
+        if int(CFSM.mCurrentState.mName) == 0: 
+            self.Rcontact_first = False
+            self.stepDuration = 0
+        elif int(CFSM.mCurrentState.mName) == 2:
+            self.Lcontact_first = False
+            self.stepDuration = 0
 
-        #print((CFSM.mCurrentState.mName))
-        if int(CFSM.mCurrentState.mName) == 1: 
-            self.to_contact_counter_R = 0
-        elif int(CFSM.mCurrentState.mName) == 3:
-            self.to_contact_counter_L = 0
+
 
         ##속도 관련 counter
         #step_counter_queue_value = 0
@@ -440,98 +443,32 @@ class FooEnv6(env_base.FooEnvBase):
 
             #이 State에서의 step_counter
             state_step += 1
-            self.to_contact_counter_R += 1
-            self.to_contact_counter_L += 1
             n_frames += 1
+            self.stepDuration += 1
 
 
-            #컨택일어난 이후의 step counter
-            if CFSM.mCurrentState is CFSM.mStates[1] and self.Rcontact_first is True:
-                state_step_after_contact += 1
-            elif CFSM.mCurrentState is CFSM.mStates[3] and self.Lcontact_first is True:
-                state_step_after_contact += 1
-            #print(self.previousState, "p") 
+            ##전체 몸에 가해지는 Torque 합
             if self.tausums is 0:
                 for i in self.skel.tau:
                     self.tausums += np.abs(i)
 
-            #if CFSM.mCurrentState is CFSM.mStates[2] or CFSM.mCurrentState is CFSM.mStates[1]:
-            if self.previousState is "1" or self.previousState is "2":
-                if self.controller.RContact.isSatisfied():
-                    if self.Rcontact_first is False:
-                        #반대쪽발 컨택트 초기화
-                        self.Lcontact_first = False
-                        #이쪽발 컨택트 만료
-                        self.Rcontact_first = True
-                        #컨택트 타임 저장
-                        #self.Rcontact_time_before_2step = self.Rcontact_time_before
-                        #self.Rcontact_time_before = self.Rcontact_time_current
-                        #self.Rcontact_time_current = self.to_contact_counter_R
-                        self.contact_time_before_2step = self.contact_time_before
-                        self.contact_time_before = self.contact_time_current
-                        self.contact_time_current = self.to_contact_counter_R
-                        #self.Rcontact_mean_step = np.round((self.Rcontact_time_current + self.Rcontact_time_before + self.Rcontact_time_before_2step)/3)
-                        self.Rcontact_mean_step = np.round((self.contact_time_current + self.contact_time_before + self.contact_time_before_2step)/3)
-
-            #elif CFSM.mCurrentState is CFSM.mStates[3] or CFSM.mCurrentState is CFSM.mStates[0]:
-            elif self.previousState is "3" or self.previousState is "0":    
-                if self.controller.LContact.isSatisfied() is True and self.Lcontact_first is False:
-                    #반대쪽 컨택트 초기화
-                    self.Rcontact_first = False
-                    #이쪽 발 컨택트 만료
-                    self.Lcontact_first = True
-                    #컨택트 타임 저장
-                    #self.Lcontact_time_before_2step = self.Lcontact_time_before
-                    #self.Lcontact_time_before = self.Lcontact_time_current
-                    #self.Lcontact_time_current = self.to_contact_counter_L
-                    #self.Lcontact_mean_step = np.round((self.Lcontact_time_current + self.Lcontact_time_before + self.Lcontact_time_before_2step)/3)
-
-                    self.contact_time_before_2step = self.contact_time_before
-                    self.contact_time_before = self.contact_time_current
-                    self.contact_time_current = self.to_contact_counter_L
-                    self.Lcontact_mean_step = np.round((self.contact_time_current + self.contact_time_before + self.contact_time_before_2step)/3)
-
-
-            if offset > 0 and state_step_after_contact == offset:
-                CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-            elif offset <= 0 and ((int(self.previousState) is 1) or (int(self.previousState) is 3)):
-                if CFSM.mCurrentState is CFSM.mStates[1]:
-                    #offset이 -이니 더해준다.
-                    if self.Rcontact_mean_step + offset <= 0:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                    elif self.Rcontact_mean_step + offset <= state_step:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                elif CFSM.mCurrentState is CFSM.mStates[3]:
-                    #offset이 -이니 더해준다.
-                    if self.Lcontact_mean_step + offset <= 0:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                    elif self.Lcontact_mean_step + offset <= state_step:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-            #elif offset is 0 and state_step_after_contact > 0:
-                #print("contact transite")
-                #print(state_step_after_contact, "ss", offset, " off")
-                #CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                #offset 0이면 컨택됐을 때환
-
-
-
             """
-            print(self.controller.mCurrentStateMachine.mCurrentState.mName)
-            if self.controller.mCurrentStateMachine.mCurrentState is self.controller.mCurrentStateMachine.mStates[1]:
-                print("11111")
-                print(self.controller.RContact.isSatisfied())
-                if self.controller.RContact.isSatisfied(): 
-                    print("RContact")
-                    print(self.controller.mCurrentStateMachine.mElapsedTime)
-                    #self.controller.mCurrentStateMachine.transiteTo(self.controller.mCurrentStateMachine.mCurrentState.getNextState(), self.controller.mCurrentStateMachine.mBeginTime + self.controller.mCurrentStateMachine.mElapsedTime)
-                #input()
-            if self.controller.LContact.isSatisfied() and self.controller.mCurrentStateMachine.mCurrentState is self.controller.mCurrentStateMachine.mStates[3]:
-                print("LContact")
-                print(self.controller.mCurrentStateMachine.mElapsedTime)
-                #self.controller.mCurrentStateMachine.transiteTo(self.controller.mCurrentStateMachine.mCurrentState.getNextState(), self.controller.mCurrentStateMachine.mBeginTime + self.controller.mCurrentStateMachine.mElapsedTime)
-                #input()
+            ###컨택이 처음 일어난다면 그 떄의 foot위치 저장
+            if self.Rcontact_first is False and self.controller.RContact.isSatisfied() is True:
+                self.Rcontact_first = True
+                ##반대쪽발 Contact를 초기화
+                self.Lcontact_first = False
+                ##발의 위치 저장
+                self.last_Rcontact_r_foot_pos = self._getJointPosition(self.r_foot) 
+                self.last_Rcontact_l_foot_pos = self._getJointPosition(self.l_foot)
+            elif self.Lcontact_first is False and self.controller.LContact.isSatisfied() is True:
+                self.Lcontact_first = True
+                ##반대쪽발 Contact는 초기화
+                self.Rcontact_first = False
+                ##발의 위치 저장
+                self.last_Lcontact_r_foot_pos = self._getJointPosition(self.r_foot) 
+                self.last_Lcontact_l_foot_pos = self._getJointPosition(self.l_foot)
             """
-            #print(self.controller.mCurrentStateMachine.mCurrentState.mName,"after")
 
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
