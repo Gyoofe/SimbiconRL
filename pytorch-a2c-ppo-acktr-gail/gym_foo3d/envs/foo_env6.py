@@ -299,7 +299,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
         rootPenalty = 0
         pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
-        rootPenalty = pelvisYAxis[2]
+        rootPenalty = np.abs(pelvisYAxis[2])
 
 
         #walkPenalty(직선보행 페널티)
