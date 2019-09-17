@@ -76,7 +76,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentLeftAngle = 0
 
         ##current State
-        self.currentState = [0,1,0,0]
+        self.currentState = [1,0,0,0]
 
         ##Stride 관련 term
         self.last_Rcontact_r_foot_pos = None
@@ -152,7 +152,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.change_step = 0
 
         ##current State
-        self.currentState = [0,1,0,0]
+        self.currentState = [1,0,0,0]
 
         #남은 회전 방향
         self.currentLeftAngle = 0
@@ -351,7 +351,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 5*StepLengthPenalty - 5*stepDurationPenalty - 5*FootHeightPenalty)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
 
 
         self.step_counter += n_frames

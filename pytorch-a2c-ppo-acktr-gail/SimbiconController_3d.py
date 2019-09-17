@@ -557,7 +557,7 @@ class Controller():
         self.walkingMachine.addState(wState2)
         self.walkingMachine.addState(wState3)
 
-        self.walkingMachine.setInitialState(wState1)
+        self.walkingMachine.setInitialState(wState0)
 
         return self.walkingMachine
 
