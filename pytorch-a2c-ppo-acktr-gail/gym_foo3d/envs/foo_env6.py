@@ -76,7 +76,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentLeftAngle = 0
 
         ##current State
-        self.currentState = [1,0,0,0]
+        self.currentState = [0,1,0,0]
 
         ##Stride 관련 term
         self.last_Rcontact_r_foot_pos = None
@@ -152,7 +152,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.change_step = 0
 
         ##current State
-        self.currentState = [1,0,0,0]
+        self.currentState = [0,1,0,0]
 
         #남은 회전 방향
         self.currentLeftAngle = 0
@@ -217,9 +217,9 @@ class FooEnv6(env_base.FooEnvBase):
         action[9] = (action[9])*math.radians(30.0) 
         
         ##Duration
-        action[10] = (action[10]+1/2)*0.4 + 0.1
+        action[10] = ((action[10]+1)/2)*0.4 + 0.1
         ##Duration Ta ratio
-        action[11] = (action[11]+1/2)*0.45 + 0.5
+        action[11] = ((action[11]+1)/2)*0.45 + 0.5
 
         ##root
         #action[14] = (action[14])*np.pi/4
