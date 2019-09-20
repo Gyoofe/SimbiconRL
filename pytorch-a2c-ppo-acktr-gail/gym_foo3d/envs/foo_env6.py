@@ -88,14 +88,14 @@ class FooEnv6(env_base.FooEnvBase):
         self.last_Rcontact_l_foot_pos = None
         self.last_Lcontact_r_foot_pos = None
         self.last_Lcontact_l_foot_pos = None
-        self.desiredStepLength = random.uniform(0.1,0.9)
+        self.desiredStepLength = 0
 
         ##Step Duration 관련
         self.stepDuration = 0 
-        self.desiredStepDuration = random.uniform(0.1,0.5) 
-
+        self.desiredStepDuration = 0
         #SwingFoot Height 관련
-        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
+        self.desiredMaximumSwingfootHeight = 0
+        self.ChangeRandom()
 
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
         observation_spaces = self.get_state()
@@ -171,14 +171,15 @@ class FooEnv6(env_base.FooEnvBase):
         self.last_Rcontact_l_foot_pos = None
         self.last_Lcontact_r_foot_pos = None
         self.last_Lcontact_l_foot_pos = None
-        self.desiredStepLength = random.uniform(0.1,0.9)
+        self.desiredStepLength = 0
 
         ##Step Duration 관련
         self.stepDuration = 0 
-        self.desiredStepDuration = random.uniform(0.1,0.5)
-
+        self.desiredStepDuration = 0 
         #SwingFoot Height 관련
-        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
+        self.desiredMaximumSwingfootHeight = 0 
+        self.ChangeRandom()
+
 
         return self.get_state()
         #self.Rcontact_time_before = 0
@@ -414,10 +415,10 @@ class FooEnv6(env_base.FooEnvBase):
         #self.do_simulation(action, 60)
 
     def ChangeRandom(self):
-        self.desiredStepLength = random.uniform(0.1,0.9)
+        self.desiredStepLength = random.uniform(0.1,0.6)
         self.desiredStepDuration = random.uniform(0.1,0.5)
-        self.desiredMaximumSwingfootHeight = -random.uniform(0.2, 0.9)
-
+        self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
+        return 
 
 
     def do_simulation(self, action):
@@ -429,7 +430,7 @@ class FooEnv6(env_base.FooEnvBase):
         state_step = 0
         state_step_after_contact = -1
 
-        offset = action[11]
+        offset = np.round(action[11])
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
         CFSM = self.controller.mCurrentStateMachine
@@ -547,7 +548,8 @@ class FooEnv6(env_base.FooEnvBase):
 
             if(self.isrender):
                 time.sleep(0.001)
-            if pos_after[1] < -0.030 or pos_after[1] > 0.5:
+            #if pos_after[1] < -0.030 or pos_after[1] > 0.5:
+            if self.pelvis.com()[1] < -0.08 or pos_after[1] > 0.5:
                 done = True
             #정면으로 걷지않을경우 빠르게 종료
             #elif np.abs(pos_after[2]) > 2:
