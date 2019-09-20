@@ -70,15 +70,15 @@ class StateMachine():
             
              
             if int(self.mCurrentState.mName) is 0:
-                tCond0 = st.TimerCondition(wState0, action[10]*action[11])
+                tCond0 = st.TimerCondition(wState0, action[10])
                 wState0.setTerminalCondition(tCond0)
-                tCond1 = st.TimerCondition(wState1, action[10]*(1-action[11]))
-                wState1.setTerminalCondition(tCond1)
+                #tCond1 = st.TimerCondition(wState1, action[10]*(1-action[11]))
+                #wState1.setTerminalCondition(tCond1)
             if int(self.mCurrentState.mName) is 2:
-                tCond2 = st.TimerCondition(wState2, action[10]*action[11])
+                tCond2 = st.TimerCondition(wState2, action[10])
                 wState2.setTerminalCondition(tCond2)
-                tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
-                wState3.setTerminalCondition(tCond3)
+                #tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
+                #wState3.setTerminalCondition(tCond3)
 
             
             #swh02 = 0.5
@@ -419,8 +419,8 @@ class Controller():
 
         wState0.setTerminalCondition(tCond0)
         wState1.setTerminalCondition(tCond1)
-        wState2.setTerminalCondition(tCond2)
-        wState3.setTerminalCondition(tCond3)
+        wState2.setTerminalCondition(tCond5)
+        wState3.setTerminalCondition(tCond6)
 
         wState0.setNextState(wState1)
         wState1.setNextState(wState2)

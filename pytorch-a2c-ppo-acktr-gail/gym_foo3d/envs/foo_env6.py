@@ -34,6 +34,9 @@ class FooEnv6(env_base.FooEnvBase):
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
+        
+
+        ##Contact Time 관련
         self.Rcontact_first = False
         self.Rcontact_mean_step = 0
         #self.Lcontact_time_before = 0
@@ -46,6 +49,8 @@ class FooEnv6(env_base.FooEnvBase):
         self.Lcontact_mean_step = 0
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
+        self.contactTimeQueue = env_base.CircularQueue(3)
+        self.contactTimeQueue.enqueue(75)
 
         #이전 정면방향
         self.previousforward = [1,0,0]
@@ -76,7 +81,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentLeftAngle = 0
 
         ##current State
-        self.currentState = [0,1,0,0]
+        self.currentState = [0,0,0,0]
 
         ##Stride 관련 term
         self.last_Rcontact_r_foot_pos = None
@@ -115,6 +120,8 @@ class FooEnv6(env_base.FooEnvBase):
 
     def reset(self):
         super().reset()
+
+        ##Contact Time 관련
         self.contact_time_before = 0
         self.contact_time_before_2step = 0
         self.contact_time_current = 0
@@ -124,6 +131,8 @@ class FooEnv6(env_base.FooEnvBase):
         self.Lcontact_mean_step = 0
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
+        self.contactTimeQueue.reset()
+        self.contactTimeQueue.enqueue(75)
 
         #이전 정면방향
         self.previousforward = [1,0,0]
@@ -152,7 +161,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.change_step = 0
 
         ##current State
-        self.currentState = [0,1,0,0]
+        self.currentState = [0,0,0,0]
 
         #남은 회전 방향
         self.currentLeftAngle = 0
@@ -218,8 +227,8 @@ class FooEnv6(env_base.FooEnvBase):
         
         ##Duration
         action[10] = ((action[10]+1)/2)*0.4 + 0.1
-        ##Duration Ta ratio
-        action[11] = ((action[11]+1)/2)*0.45 + 0.5
+        ##Offset
+        action[11] = (action[11])*150
 
         ##Torso
         action[12] = ((action[12]+1)/2)*math.radians(-20.0)
@@ -418,8 +427,9 @@ class FooEnv6(env_base.FooEnvBase):
         n_frames = 0 
         self.tausums = 0
         state_step = 0
-        state_step_after_contact = 0
+        state_step_after_contact = -1
 
+        offset = action[11]
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
         CFSM = self.controller.mCurrentStateMachine
@@ -431,7 +441,10 @@ class FooEnv6(env_base.FooEnvBase):
         elif int(CFSM.mCurrentState.mName) == 2:
             self.Lcontact_first = False
             self.stepDuration = 0
-
+        else:
+            self.to_contact_counter_R = 0
+            self.to_contact_counter_L = 0
+        
 
 
         ##속도 관련 counter
@@ -449,12 +462,44 @@ class FooEnv6(env_base.FooEnvBase):
             state_step += 1
             n_frames += 1
             self.stepDuration += 1
-
+            self.to_contact_counter_R += 1
+            self.to_contact_counter_L += 1
 
             ##전체 몸에 가해지는 Torque 합
             if self.tausums is 0:
                 for i in self.skel.tau:
                     self.tausums += np.abs(i)
+
+            ##컨택트가 일어났을때 Contact Time 저장하는 코드
+            ##Do simulation 하기 전 State가 1(Swing Hip R 내릴때), 2(swing Hip L 올릴때)
+            if self.previousState is "1" or self.previousState is "2":
+                ##R foot Contact가 일어나면
+                if self.controller.RContact.isSatisfied():
+                    ##반대쪽발 컨택트 초기화
+                    self.Lcontact_first=False
+                    ##이쪽 발 Contact True로(첫 Contact가 일어났다는 뜻)
+                    self.Rcontact_first=True
+                    ##큐에 다리를 내릴때부터 Contact까지의 시간 저장
+                    self.contactTimeQueue.enqueue(self.to_contact_counter_R)
+                    ##평균값
+                    self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+                    assert self.Rcontact_mean_step > 0, "contact Time is under zero"
+            ##반대쪽발(Left Foot)에 대하여
+            else:
+                if self.controller.LContact.isSatisfied():
+                    self.Rcontact_first=False
+                    self.Lcontact_first=True
+
+                    self.contactTimeQueue.enqueue(self.to_contact_counter_L)
+                    self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+                    assert self.Lcontact_mean_step > 0, "contact Time is under zero"
+            ##컨택이 일어난 이후의 Step 저장
+            ##현재 State가 1이고 Rfoot이 땅에 닿았을 떄
+            if self.previousState is "1" and self.Rcontact_first is True:
+                state_step_after_contact += 1
+            ##현재 State가 3이고 Rfoot이 땅에 닿았을 때
+            elif self.previousState is "3" and self.Lcontact_first is True:
+                state_step_after_contact += 1
 
             """
             ###컨택이 처음 일어난다면 그 떄의 foot위치 저장
@@ -473,6 +518,28 @@ class FooEnv6(env_base.FooEnvBase):
                 self.last_Lcontact_r_foot_pos = self._getJointPosition(self.r_foot) 
                 self.last_Lcontact_l_foot_pos = self._getJointPosition(self.l_foot)
             """
+            ##offset이 0이상이고 contact 이후의 step이 offset과 같을때
+            if offset >= 0 and state_step_after_contact == offset:
+                ##다음 State로 전이
+                CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+            ##offset이 0보다 작고 현재 State가 발을 내리는 동작일때
+            elif offset < 0:
+                if self.previousState is "1":
+                    ##offset이 -값이니 둘을 더해서 0이하면 바로 transition
+                    if self.Rcontact_mean_step + offset >= 0:
+                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+                   ##offset이 -값이 아닐땐 State_step이 offset을 더한 값 보다 커지면 transition  
+                    elif self.Rcontact_mean_step + offset <= state_step:
+                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+                if self.previousState is "3":
+                     ##offset이 -값이니 둘을 더해서 0이하면 바로 transition
+                    if self.Lcontact_mean_step + offset <= 0:
+                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+                   ##offset이 -값이 아닐땐 State_step이 offset을 더한 값 보다 커지면 transition  
+                    elif self.Lcontact_mean_step + offset <= state_step:
+                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
+               
+
 
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
@@ -494,6 +561,32 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             if done is True:
                 break
+        ##다음 다리가 다 올라갔는데도 Stance Hip이 Contact이 안났을 경우
+        ##이전 State가 0.. 즉 현재 State가 1이고, 아직 L이 Contact가 안됐을 경우
+        if self.previousState is "0" and self.Lcontact_first is False:
+            ##Contact이 일어난것처럼 처리
+            self.Rcontact_first=False
+            self.Lcontact_first=True
+
+            self.contactTimeQueue.enqueue(self.to_contact_counter_L)
+            self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+            assert self.Lcontact_mean_step > 0, "contact Time is under zero"
+
+        ##이전 State가 2.. 즉 현재 State가 3이고, 아직 R이 Contact가 안됐을 경우
+        elif self.previousState is "2" and self.Rcontact_first is False:
+            ##Contact이 일어난거처럼 처리
+            ##반대쪽발 컨택트 초기화
+            self.Lcontact_first=False
+            ##이쪽 발 Contact True로(첫 Contact가 일어났다는 뜻)
+            self.Rcontact_first=True
+            ##큐에 다리를 내릴때부터 Contact까지의 시간 저장
+            self.contactTimeQueue.enqueue(self.to_contact_counter_R)
+            ##평균값
+            self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+            assert self.Rcontact_mean_step > 0, "contact Time is under zero"
+
+
+
         self.StepCounterQueue.enqueue(n_frames)
         return done,n_frames
    
