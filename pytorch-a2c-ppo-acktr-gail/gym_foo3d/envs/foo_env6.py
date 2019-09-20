@@ -415,9 +415,12 @@ class FooEnv6(env_base.FooEnvBase):
         #self.do_simulation(action, 60)
 
     def ChangeRandom(self):
-        self.desiredStepLength = random.uniform(0.1,0.6)
-        self.desiredStepDuration = random.uniform(0.1,0.5)
-        self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
+        #self.desiredStepLength = random.uniform(0.1,0.6)
+        self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
+        #self.desiredStepDuration = random.uniform(0.1,0.5)
+        self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
+        #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
+        self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.06),0.4,0.8)
         return 
 
 
