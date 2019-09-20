@@ -76,7 +76,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentLeftAngle = 0
 
         ##current State
-        self.currentState = [1,0,0,0]
+        self.currentState = [0,1,0,0]
 
         ##Stride 관련 term
         self.last_Rcontact_r_foot_pos = None
@@ -94,7 +94,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
         observation_spaces = self.get_state()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(12,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(13,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
 
@@ -152,7 +152,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.change_step = 0
 
         ##current State
-        self.currentState = [1,0,0,0]
+        self.currentState = [0,1,0,0]
 
         #남은 회전 방향
         self.currentLeftAngle = 0
@@ -221,6 +221,9 @@ class FooEnv6(env_base.FooEnvBase):
         ##Duration Ta ratio
         action[11] = ((action[11]+1)/2)*0.45 + 0.5
 
+        ##Torso
+        action[12] = ((action[12]+1)/2)*math.radians(-20.0)
+
         ##root
         #action[14] = (action[14])*np.pi/4
 
@@ -253,7 +256,8 @@ class FooEnv6(env_base.FooEnvBase):
         self.ZveloQueue.enqueue(pos_after[2])
 
 
-        alive_bonus = 10
+        alive_bonus = 13
+        
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()

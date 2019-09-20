@@ -125,7 +125,7 @@ class StateMachine():
             sta13 = action[4]
             swhx13 = action[5]
             #swhz13 = action[13]
-            #pelvis = action[12]
+            pelvis = action[12]
             swhz02=action[6]
             swhz13=action[6]
             sthx02=action[7]
@@ -156,10 +156,10 @@ class StateMachine():
             #sta13 = 0.0
 
 
-            #wState0.setDesiredJointPosition("back_bky", -pelvis)
-            #wState1.setDesiredJointPosition("back_bky", -pelvis)
-            #wState2.setDesiredJointPosition("back_bky", -pelvis)
-            #wState3.setDesiredJointPosition("back_bky", -pelvis)
+            wState0.setDesiredJointPosition("back_bky", -pelvis)
+            wState1.setDesiredJointPosition("back_bky", -pelvis)
+            wState2.setDesiredJointPosition("back_bky", -pelvis)
+            wState3.setDesiredJointPosition("back_bky", -pelvis)
 
 
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)
@@ -557,7 +557,7 @@ class Controller():
         self.walkingMachine.addState(wState2)
         self.walkingMachine.addState(wState3)
 
-        self.walkingMachine.setInitialState(wState0)
+        self.walkingMachine.setInitialState(wState1)
 
         return self.walkingMachine
 
