@@ -196,53 +196,50 @@ class FooEnv6(env_base.FooEnvBase):
 
     def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -1, 1)
-        #드는거 
+        #다리 드는거 
+        """
         if stateName is "0" or stateName is "2":
-            #swh
-            action[0] = ((action[0] + 1)/2)*np.pi/3       
-            #swk
-            action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
-            #swa
-            action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
-        #내리는거
+            #swh(98 deg)
+            action[0] = ((action[0] + 1)/2)*1.72072
+            #action[0] = (action[0]+1/2)*(-self.sim.skeletons[1].dof("l_leg_hpy").position_lower_limits())
+        #다리 내리는거
         else:
-            #swh
-            action[0] = ((action[0] - 1)/2)*np.pi/6
-            #swk
-            action[1] = ((action[1]-1)/2)*np.pi/9
-            #swa
-            action[2] = (action[2])*np.pi/9
-        
-        #stk
-        action[3] = ((action[3]-1)/2)*np.pi/9
-        #sta
-        action[4] = (action[4])*np.pi/9
-        #swhx
-        action[5] = (action[5])*math.radians(10.0) 
-        #swing hpz
-        action[6] = (action[6])*math.radians(30.0)
-        #stance hpx,hpy,hpz
-        action[7] = (action[7])*math.radians(10.0)
-        action[8] = ((action[8]-1)/2)*math.radians(30.0)
-        action[9] = (action[9])*math.radians(30.0) 
-        
+            #swh(deg 30)
+            action[0] = ((action[0] - 1)/2)*0.524821
+            #action[0] = ((action[0] -1)/2)*(self.sim.skeletons[1].dof("l_leg_hpy").position_lower_limits())
+        """
+        ##SwingHip
+        action[0] = 0.5979495+(action[0])*1.1227705
+        #swa(-40 ~ 57)
+        action[2] = action[2]*0.85 + 0.15
+        #swk(-136 deg)
+        action[1] = ((action[1] - 1)/2)*2.38569
+        #action[1] = ((action[1] - 1)/2)*(self.sim.skeletons[1].dof("l_leg_hpy").position_lower_limits())
+        #stk(-136 deg)
+        action[3] = ((action[3]-1)/2)*2.38569
+        #sta(-40deg ~ 57 deg)
+        action[4] = (action[4])*0.85 + 0.15
+        #swhx(deg 30)
+        action[5] = (action[5])*0.523599
+        #swing hpz(deg10 ~ -70)
+        action[6] = (action[6] * 0.6981315) - 0.5235985
+        #stance hpx(deg30),hpy(deg30),hpz(deg 10 ~ - 70)
+        action[7] = (action[7])*0.523599
+        #action[8] = ((action[8]-1)/2)*0.524821
+        #action[8] = (action[8])*0.524821
+        action[0] = 0.5979495+(action[0])*1.1227705
+        action[9] = (action[9] * 0.6981315) - 0.5235985
+
         ##Duration
         action[10] = ((action[10]+1)/2)*0.4 + 0.1
+
         ##Offset
         action[11] = (action[11])*150
 
         ##Torso
         action[12] = ((action[12]+1)/2)*math.radians(-20.0)
 
-        ##root
-        #action[14] = (action[14])*np.pi/4
-
-        ##timer offset 
-        #action[15] = action[15]*150
-        #self.ForceAction10(action)
-
         return action
-
 
 
     def step(self, action):
@@ -365,7 +362,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)*(n_frames/SIMULATION_STEP_PER_SEC)
 
 
         self.step_counter += n_frames
@@ -561,8 +558,8 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 200:
-            #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
+            #elif self.actionSteps > self.step_per_walk * 200:
+            elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
                 done = True
             if done is True:
                 break
