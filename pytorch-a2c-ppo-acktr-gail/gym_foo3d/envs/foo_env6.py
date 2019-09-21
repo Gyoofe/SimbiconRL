@@ -93,21 +93,22 @@ class FooEnv6(env_base.FooEnvBase):
         ##Step Duration 관련
         self.stepDuration = 0 
         self.desiredStepDuration = 0
+        self.currentOffset = 0
         #SwingFoot Height 관련
         self.desiredMaximumSwingfootHeight = 0
         self.ChangeRandom()
 
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
         observation_spaces = self.get_state()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(13,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(12,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
-
+        #self.observation_space = self.get_state()
         print(self.targetAngle)
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
-            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight]])
+            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,self.currentOffset]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -177,7 +178,8 @@ class FooEnv6(env_base.FooEnvBase):
         self.stepDuration = 0 
         self.desiredStepDuration = 0 
         #SwingFoot Height 관련
-        self.desiredMaximumSwingfootHeight = 0 
+        self.desiredMaximumSwingfootHeight = 0
+        self.currentOffset = 0
         self.ChangeRandom()
 
 
@@ -233,11 +235,8 @@ class FooEnv6(env_base.FooEnvBase):
         ##Duration
         action[10] = ((action[10]+1)/2)*0.4 + 0.1
 
-        ##Offset
-        action[11] = (action[11])*150
-
-        ##Torso
-        action[12] = ((action[12]+1)/2)*math.radians(-20.0)
+        ##Torso(-22도 ~ 34도)
+        action[11] = (action[11])*0.524559-0.086132
 
         return action
 
@@ -413,11 +412,13 @@ class FooEnv6(env_base.FooEnvBase):
 
     def ChangeRandom(self):
         #self.desiredStepLength = random.uniform(0.1,0.6)
-        self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
+        self.desiredStepLength = np.clip(np.random.normal(0.4,0.1),0.1,0.6)
         #self.desiredStepDuration = random.uniform(0.1,0.5)
-        self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
+        self.desiredStepDuration = np.clip(np.random.normal(0.3,0.1),0.1,0.5)
         #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
-        self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.06),0.4,0.8)
+        self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.1),0.4,0.8)
+        #self.currentOffset = np.round(random.uniform(-100,100))
+        self.currentOffset = np.round(np.clip(np.random.normal(0,33),-100,100))
         return 
 
 
@@ -430,7 +431,7 @@ class FooEnv6(env_base.FooEnvBase):
         state_step = 0
         state_step_after_contact = -1
 
-        offset = np.round(action[11])
+        offset = self.currentOffset 
         #offset = np.round((np.random.rand()-0.5)*20)
         #offset = 0
         CFSM = self.controller.mCurrentStateMachine
@@ -520,7 +521,7 @@ class FooEnv6(env_base.FooEnvBase):
                 self.last_Lcontact_l_foot_pos = self._getJointPosition(self.l_foot)
             """
             ##offset이 0이상이고 contact 이후의 step이 offset과 같을때
-            if offset >= 0 and state_step_after_contact == offset:
+            if offset >= 0 and math.isclose(state_step_after_contact,offset):
                 ##다음 State로 전이
                 CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
             ##offset이 0보다 작고 현재 State가 발을 내리는 동작일때
