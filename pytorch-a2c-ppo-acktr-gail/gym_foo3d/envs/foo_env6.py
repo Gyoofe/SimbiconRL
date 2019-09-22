@@ -50,7 +50,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.to_contact_counter_R = 0
         self.to_contact_counter_L = 0
         self.contactTimeQueue = env_base.CircularQueue(3)
-        self.contactTimeQueue.enqueue(75)
+        self.contactTimeQueue.enqueue(50)
 
         #이전 정면방향
         self.previousforward = [1,0,0]
@@ -108,7 +108,8 @@ class FooEnv6(env_base.FooEnvBase):
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
-            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,self.currentOffset]])
+            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,
+            self.currentOffset,np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -286,8 +287,10 @@ class FooEnv6(env_base.FooEnvBase):
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
         rootPenalty = 0
-        pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
-        rootPenalty = np.abs(pelvisYAxis[2])
+        #pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
+        pelvisYAxis = cMat.Matrix.col(self.pelvis.world_transform(),2)
+        #rootPenalty = np.abs(pelvisYAxis[2])
+        rootPenalty = np.abs(1.0 - pelvisYAxis[1])
         """
 
         #walkPenalty(직선보행 페널티)
@@ -476,7 +479,7 @@ class FooEnv6(env_base.FooEnvBase):
             ##Do simulation 하기 전 State가 1(Swing Hip R 내릴때), 2(swing Hip L 올릴때)
             if self.previousState is "1" or self.previousState is "2":
                 ##R foot Contact가 일어나면
-                if self.controller.RContact.isSatisfied():
+                if self.controller.RContact.isSatisfied() and not self.Rcontact_first:
                     ##반대쪽발 컨택트 초기화
                     self.Lcontact_first=False
                     ##이쪽 발 Contact True로(첫 Contact가 일어났다는 뜻)
@@ -484,16 +487,16 @@ class FooEnv6(env_base.FooEnvBase):
                     ##큐에 다리를 내릴때부터 Contact까지의 시간 저장
                     self.contactTimeQueue.enqueue(self.to_contact_counter_R)
                     ##평균값
-                    self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+                    self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
                     assert self.Rcontact_mean_step > 0, "contact Time is under zero"
             ##반대쪽발(Left Foot)에 대하여
             else:
-                if self.controller.LContact.isSatisfied():
+                if self.controller.LContact.isSatisfied() and not self.Lcontact_first:
                     self.Rcontact_first=False
                     self.Lcontact_first=True
 
                     self.contactTimeQueue.enqueue(self.to_contact_counter_L)
-                    self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+                    self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
                     assert self.Lcontact_mean_step > 0, "contact Time is under zero"
             ##컨택이 일어난 이후의 Step 저장
             ##현재 State가 1이고 Rfoot이 땅에 닿았을 떄
@@ -572,7 +575,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.Lcontact_first=True
 
             self.contactTimeQueue.enqueue(self.to_contact_counter_L)
-            self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+            self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
             assert self.Lcontact_mean_step > 0, "contact Time is under zero"
 
         ##이전 State가 2.. 즉 현재 State가 3이고, 아직 R이 Contact가 안됐을 경우
@@ -585,7 +588,7 @@ class FooEnv6(env_base.FooEnvBase):
             ##큐에 다리를 내릴때부터 Contact까지의 시간 저장
             self.contactTimeQueue.enqueue(self.to_contact_counter_R)
             ##평균값
-            self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/3.0)
+            self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
             assert self.Rcontact_mean_step > 0, "contact Time is under zero"
 
 
