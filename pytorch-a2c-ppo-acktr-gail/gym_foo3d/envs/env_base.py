@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import random
 
 skel_path="/home/gyoofe/dart/data/sdf/atlas/"
-STEP_PER_WALK = 4
+STEP_PER_WALK = 2
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -129,6 +129,12 @@ class FooEnvBase(gym.Env):
         self.pelvisY = self.skel.joint("back_bky")
         self.pelvisZ = self.skel.joint("back_bkz")
         self.pelvis = self.skel.body("pelvis")
+
+        self.l_hand = self.skel.body("l_hand")
+        self.r_hand = self.skel.body("r_hand")
+        self.utorso = self.skel.body("utorso")
+
+
 
         self.XveloQueue = CircularQueue(self.frameskip*1)
         self.ZveloQueue = CircularQueue(self.frameskip*1)

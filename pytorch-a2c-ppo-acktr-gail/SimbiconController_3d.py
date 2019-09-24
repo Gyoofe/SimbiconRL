@@ -15,6 +15,12 @@ class StateMachine():
         self.mElapsedTime = 0.0
         self.mCurrentAction = None
 
+    def resetWalkingMachine(self):
+        self.mCurrentState = self.mStates[0] 
+        self.mBeginTime = 0
+        self.mFrame = 0
+        self.mElapsedTime = 0.0
+
     def addState(self, state):
         if state is not None:
             self.mStates.append(state)
@@ -67,15 +73,13 @@ class StateMachine():
             wState1 = self.mStates[1]
             wState2 = self.mStates[2]
             wState3 = self.mStates[3]
-            
-             
             if int(self.mCurrentState.mName) is 0:
-                tCond0 = st.TimerCondition(wState0, action[10])
+                tCond0 = st.TimerCondition(wState0, action[20])
                 wState0.setTerminalCondition(tCond0)
                 #tCond1 = st.TimerCondition(wState1, action[10]*(1-action[11]))
                 #wState1.setTerminalCondition(tCond1)
             if int(self.mCurrentState.mName) is 2:
-                tCond2 = st.TimerCondition(wState2, action[10])
+                tCond2 = st.TimerCondition(wState2, action[20])
                 wState2.setTerminalCondition(tCond2)
                 #tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
                 #wState3.setTerminalCondition(tCond3)
@@ -114,27 +118,29 @@ class StateMachine():
             swh02 = action[0]
             swk02 = action[1]
             swa02 = action[2]
-            stk02=  action[3]
-            sta02 = action[4]
-            swhx02 = action[5]
-            #swhz02 = action[6]
-            swh13 = action[0]
-            swk13 = action[1]
-            swa13 = action[2]
-            stk13 = action[3]
-            sta13 = action[4]
-            swhx13 = action[5]
-            #swhz13 = action[13]
-            pelvis = action[11]
-            swhz02=action[6]
-            swhz13=action[6]
-            sthx02=action[7]
-            sthy02=action[8]
-            sthz02=action[9]
-            sthx13=action[7]
-            sthy13=action[8]
-            sthz13=action[9]
+            swh13 = action[3]
+            swk13 = action[4]
+            swa13 = action[5]
 
+            stk02=  action[6]
+            sta02 = action[7]
+            stk13=  action[8]
+            sta13 = action[9]
+
+            swhx02 = action[10]
+            swhx13 = action[11]
+
+            swhz02=action[12]
+            swhz13=action[13]
+            sthx02=action[14]
+            sthy02=action[15]
+            sthz02=action[16]
+            sthx13=action[17]
+            sthy13=action[18]
+            sthz13=action[19]
+
+            pelvis02 = action[21]
+            pelvis13 = action[22]
             #tauT = action[14]
 
 
@@ -156,10 +162,10 @@ class StateMachine():
             #sta13 = 0.0
 
 
-            wState0.setDesiredJointPosition("back_bky", -pelvis)
-            wState1.setDesiredJointPosition("back_bky", -pelvis)
-            wState2.setDesiredJointPosition("back_bky", -pelvis)
-            wState3.setDesiredJointPosition("back_bky", -pelvis)
+            wState0.setDesiredJointPosition("back_bky", -pelvis02)
+            wState1.setDesiredJointPosition("back_bky", -pelvis13)
+            wState2.setDesiredJointPosition("back_bky", -pelvis02)
+            wState3.setDesiredJointPosition("back_bky", -pelvis13)
 
 
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)
@@ -557,7 +563,7 @@ class Controller():
         self.walkingMachine.addState(wState2)
         self.walkingMachine.addState(wState3)
 
-        self.walkingMachine.setInitialState(wState1)
+        self.walkingMachine.setInitialState(wState0)
 
         return self.walkingMachine
 
