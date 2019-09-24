@@ -109,7 +109,7 @@ class FooEnv6(env_base.FooEnvBase):
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
             [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,
-            self.currentOffset,np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)]])
+            self.currentOffset,np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count),self.controller.LContact.isSatisfied(),self.controller.RContact.isSatisfied()]])
 
     #curriculum Pd value
     def setvalue(self,value):
@@ -364,7 +364,7 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)*(n_frames/SIMULATION_STEP_PER_SEC)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
 
 
         self.step_counter += n_frames
@@ -573,6 +573,11 @@ class FooEnv6(env_base.FooEnvBase):
                 break
         ##다음 다리가 다 올라갔는데도 Stance Hip이 Contact이 안났을 경우
         ##이전 State가 0.. 즉 현재 State가 1이고, 아직 L이 Contact가 안됐을 경우
+        if self.previousState is "0" and not self.controller.LContact.isSatisfied():
+                done = True
+        elif self.previousState is "2" and not self.controller.RContact.isSatisfied():
+                done = True
+        
         if self.previousState is "0" and self.Lcontact_first is False:
             ##Contact이 일어난것처럼 처리
             self.Rcontact_first=False
