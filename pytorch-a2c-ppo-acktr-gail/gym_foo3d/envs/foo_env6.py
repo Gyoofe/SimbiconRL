@@ -408,12 +408,12 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##Step Duration Reward
         if self.previousState is "0" or self.previousState is "2":
-            #stepDurationPenalty = np.abs((self.stepDuration/900.0) - self.desiredStepDuration)
-            stepDurationPenalty = np.round(np.abs(self.stepDuration - np.round(self.desiredStepDuration*900)))
-            if math.isclose(stepDurationPenalty,0):
-                stepDurationPenalty = 1
-            else:
-                stepDurationPenalty = 1.0/stepDurationPenalty
+            stepDurationPenalty = np.abs((self.stepDuration/900.0) - self.desiredStepDuration)
+            #stepDurationPenalty = np.round(np.abs(self.stepDuration - np.round(self.desiredStepDuration*900)))
+            #if math.isclose(stepDurationPenalty,0):
+            #    stepDurationPenalty = 1
+            #else:
+            #    stepDurationPenalty = 1.0/stepDurationPenalty
 
         else:
             stepDurationPenalty = 0
@@ -444,9 +444,8 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 10*FootHeightPenalty)*stepDurationPenalty
-
-
+        #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 10*FootHeightPenalty)*stepDurationPenalty
+        reward = np.exp(-self.tausums/8000)*np.exp(-walkPenalty)*np.exp(-np.abs(self.leftAngle))*np.exp(-torsoMSE)*np.exp(-np.square(StepLengthPenalty))*np.exp(-np.square(stepDurationPenalty))*np.exp(-np.square(FootHeightPenalty))
         self.step_counter += n_frames
         self.change_step += n_frames
         thispos = pos_after[0]
