@@ -118,18 +118,18 @@ class FooEnv6(env_base.FooEnvBase):
 
 
     def updateEndEffectorLocalPosition(self):
-        pelvisPos = cMat.Matrix.col(self.pelvis.world_transform(),3)
+        pelMinv = np.linalg.inv(self.pelvis.world_transform())
         l_hand_pos = cMat.Matrix.col(self.l_hand.world_transform(),3)
         r_hand_pos = cMat.Matrix.col(self.r_hand.world_transform(),3)
         utorso = cMat.Matrix.col(self.utorso.world_transform(),3)
         l_foot_pos = cMat.Matrix.col(self.l_foot.world_transform(),3)
         r_foot_pos = cMat.Matrix.col(self.r_foot.world_transform(),3)
 
-        self.l_hand_relative_pos = (l_hand_pos - pelvisPos)[0:3]
-        self.r_hand_relative_pos = (r_hand_pos - pelvisPos)[0:3]
-        self.utorso_relative_pos = (utorso - pelvisPos)[0:3]
-        self.l_foot_relative_pos = (l_foot_pos - pelvisPos)[0:3]
-        self.r_foot_relative_pos = (r_foot_pos - pelvisPos)[0:3]
+        self.l_hand_relative_pos = (pelMinv@l_hand_pos)[0:3]
+        self.r_hand_relative_pos = (pelMinv@r_hand_pos)[0:3]
+        self.utorso_relative_pos = (pelMinv@utorso)[0:3]
+        self.l_foot_relative_pos = (pelMinv@l_foot_pos)[0:3]
+        self.r_foot_relative_pos = (pelMinv@r_foot_pos)[0:3]
 
 
     #curriculum Pd value
@@ -359,7 +359,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##torso 균형
         torsoMSE = 0
         for i in self.sim.skeletons[1].q[6:9]:
-            torsoMSE += np.abs(i)
+            torsoMSE += np.square(i)
         #torsoMSE = torsoMSE/3
 
         """
@@ -445,7 +445,15 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 10*FootHeightPenalty)*stepDurationPenalty
-        reward = np.exp(-self.tausums/8000)*np.exp(-walkPenalty)*np.exp(-np.abs(self.leftAngle))*np.exp(-torsoMSE)*np.exp(-np.square(StepLengthPenalty))*np.exp(-np.square(stepDurationPenalty))*np.exp(-np.square(FootHeightPenalty))
+        reward = (np.exp(-np.square(self.tausums/8000))*
+                np.exp(-np.square(walkPenalty))*
+                np.exp(-np.square(self.leftAngle))*
+                np.exp(-np.square(torsoMSE))*
+                np.exp(-4*np.square(StepLengthPenalty))*
+                np.exp(-9*np.square(2*stepDurationPenalty))*
+                np.exp(-9*np.square(FootHeightPenalty)))
+
+
         self.step_counter += n_frames
         self.change_step += n_frames
         thispos = pos_after[0]
