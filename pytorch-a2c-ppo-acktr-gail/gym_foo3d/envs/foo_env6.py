@@ -362,15 +362,14 @@ class FooEnv6(env_base.FooEnvBase):
             torsoMSE += np.square(i)
         #torsoMSE = torsoMSE/3
 
-        """
+        
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
         rootPenalty = 0
         #pelvisYAxis = cMat.Matrix.col(self.sim.skeletons[1].body("pelvis").T,2)
-        pelvisYAxis = cMat.Matrix.col(self.pelvis.world_transform(),2)
+        pelvisForward = cMat.Matrix.col(self.pelvis.world_transform(),0)[1]
         #rootPenalty = np.abs(pelvisYAxis[2])
-        rootPenalty = np.abs(1.0 - pelvisYAxis[1])
-        """
+        rootPenalty = pelvisForward if pelvisForward > 0 else 0        
 
         #walkPenalty(직선보행 페널티)
         ###Queue 수정해야됨!!!!!!!!!!!!! ###
@@ -445,10 +444,19 @@ class FooEnv6(env_base.FooEnvBase):
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 15*stepDurationPenalty - 20*FootHeightPenalty)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*torsoMSE - 10*StepLengthPenalty - 10*FootHeightPenalty)*stepDurationPenalty
+        """
         reward = (np.exp(-np.square(self.tausums/8000))*
                 np.exp(-np.square(walkPenalty))*
                 np.exp(-np.square(self.leftAngle))*
                 np.exp(-np.square(torsoMSE))*
+                np.exp(-4*np.square(StepLengthPenalty))*
+                np.exp(-9*np.square(2*stepDurationPenalty))*
+                np.exp(-9*np.square(FootHeightPenalty)))
+        """
+        reward = (np.exp(-np.square(self.tausums/8000))*
+                np.exp(-np.square(walkPenalty))*
+                np.exp(-np.square(self.leftAngle))*
+                np.exp(-4*np.square(rootPenalty))*
                 np.exp(-4*np.square(StepLengthPenalty))*
                 np.exp(-9*np.square(2*stepDurationPenalty))*
                 np.exp(-9*np.square(FootHeightPenalty)))
@@ -668,7 +676,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 20:
+            elif self.actionSteps > self.step_per_walk * 10:
             #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
                 done = True
             if done is True:
