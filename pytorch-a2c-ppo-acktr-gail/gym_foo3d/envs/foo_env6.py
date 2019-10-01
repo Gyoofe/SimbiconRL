@@ -222,7 +222,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.targetspeed += 0.025
 
     def clip_Scaling_Actiond10(self, action, stateName):
-        action = np.clip(action, -1, 1)
+        action = np.clip(action, -100, 100)/100
         #드는거 
         #swh02
         action[0] = ((action[0] + 1)/2)*np.pi/3
