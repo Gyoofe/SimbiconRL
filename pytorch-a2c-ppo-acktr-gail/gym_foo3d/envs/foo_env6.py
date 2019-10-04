@@ -699,12 +699,14 @@ class FooEnv6(env_base.FooEnvBase):
         #    print(CFSM.mCurrentState.mName, self.previousState)
         ##다음 다리가 다 올라갔는데도 Stance Hip이 Contact이 안났을 경우
         ##이전 State가 0.. 즉 현재 State가 1이고, 아직 L이 Contact가 안됐을 경우
+        """
         if self.previousState is "0" and not self.controller.LContact.isSatisfied():
             print("termination cause not contact")
             done = True
         elif self.previousState is "2" and not self.controller.RContact.isSatisfied():
             print("termination cause not contact")
             done = True
+        """
         if self.previousState is "0" and self.Lcontact_first is False:
             ##Contact이 일어난것처럼 처리
             self.Rcontact_first=False

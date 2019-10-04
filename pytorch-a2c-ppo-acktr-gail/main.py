@@ -21,8 +21,13 @@ from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
 from evaluation import evaluate
 
+from tensorboardX import SummaryWriter
+
 
 def main():
+    ##TensorboardX
+    summary = SummaryWriter()
+
     args = get_args()
 
     torch.manual_seed(args.seed)
@@ -183,6 +188,16 @@ def main():
             total_num_steps = (j + 1) * args.num_processes * args.num_steps
             end = time.time()
             mean = np.mean(episode_rewards)
+
+            summary.add_scalar('steps', total_num_steps/(end-start), j)
+            summary.add_scalar('mean_reward', mean, j)
+            summary.add_scalar('median_reward', np.median(episode_rewards), j)
+            summary.add_scalar('max_reward', np.max(episode_rewards), j)
+            summary.add_scalar('min_reward', np.min(episode_rewards), j)
+            summary.add_scalar('dist_entropy', dist_entropy, j)
+            summary.add_scalar('value_loss', value_loss, j)
+            summary.add_scalar('action_loss', action_loss, j)
+
             print(
                 "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.1f}/{:.1f}, min/max reward {:.1f}/{:.1f}\n"
                 .format(j, total_num_steps,
