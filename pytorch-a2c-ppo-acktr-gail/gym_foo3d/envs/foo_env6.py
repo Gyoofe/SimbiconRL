@@ -94,6 +94,10 @@ class FooEnv6(env_base.FooEnvBase):
         self.stepDuration = 0 
         self.desiredStepDuration = 0
         self.currentOffset = 0
+
+        self.cStepDuration = 0
+        self.cStepLength = 0
+        self.cMaximumSwingfootHeight = 0 
         #SwingFoot Height 관련
         self.desiredMaximumSwingfootHeight = 0
         self.footPosWhenS0S2End = None
@@ -267,7 +271,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[19] = (action[19])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.4 + 0.1
+        action[20] = ((action[20]+1)/2)*0.7 + 0.1
         ##Torso02
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         ##Torso13
@@ -394,6 +398,7 @@ class FooEnv6(env_base.FooEnvBase):
             rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             StepLengthPenalty = np.abs(rightFoot - leftFoot - self.desiredStepLength)
+            self.cStepLength = rightFoot - leftFoot
         ##lFoot을 올렸을때 (lFoot Contact가 일어났다가 떨어짐)
         elif self.previousState is "2":
             #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
@@ -401,6 +406,7 @@ class FooEnv6(env_base.FooEnvBase):
             rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             StepLengthPenalty = np.abs(leftFoot - rightFoot - self.desiredStepLength)
+            self.cStepLength = lefttFoot - righttFoot
         else:
             StepLengthPenalty = 0
 
@@ -408,6 +414,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##Step Duration Reward
         if self.previousState is "0" or self.previousState is "2":
             stepDurationPenalty = np.abs((self.stepDuration/900.0) - self.desiredStepDuration)
+            self.cStepDuration = self.stepDuration/900.0
             #stepDurationPenalty = np.round(np.abs(self.stepDuration - np.round(self.desiredStepDuration*900)))
             #if math.isclose(stepDurationPenalty,0):
             #    stepDurationPenalty = 1
@@ -419,6 +426,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##Desired Maximum swing foot Height
         FootHeightPenalty = np.abs(self.footPosWhenS0S2End - self.desiredMaximumSwingfootHeight)
+        self.cMaximumSwingfootHeight = self.footPosWhenS0S2End
         #print(self.footPosWhenS0S2End)
         #print(self.skel.tau)
         #tausums = 0
@@ -453,6 +461,8 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-9*np.square(2*stepDurationPenalty))*
                 np.exp(-9*np.square(FootHeightPenalty)))
         """
+
+        """
         reward = (np.exp(-np.square(self.tausums/8000))*
                 np.exp(-np.square(walkPenalty))*
                 np.exp(-np.square(self.leftAngle))*
@@ -460,6 +470,10 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-4*np.square(StepLengthPenalty))*
                 np.exp(-9*np.square(2*stepDurationPenalty))*
                 np.exp(-9*np.square(FootHeightPenalty)))
+        """
+
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty)
+
 
 
         self.step_counter += n_frames
@@ -510,6 +524,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #self.do_simulation(action, 60)
 
+    """
     def ChangeRandom(self):
         self.desiredStepLength = random.uniform(0.1,0.6)
         #self.desiredStepLength = np.clip(np.random.normal(0.4,0.1),0.1,0.6)
@@ -524,6 +539,25 @@ class FooEnv6(env_base.FooEnvBase):
         #self.currentOffset = np.round(np.clip(np.random.normal(0,33),-100,100))
         #self.currentOffset = 0
         return 
+    """
+    def ChangeRandom(self):
+        #self.desiredStepLength = random.uniform(0.1,0.6)
+        #self.desiredStepDuration = random.uniform(0.1,0.5)
+        #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
+
+        self.desiredStepDuration = random.uniform(0.2,0.8)
+        #self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
+        stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
+        self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)
+        #self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
+        swingfootHeightMax = 1.0 - self.desiredStepDuration/2.0
+        swingfootHeightGap = (1.0 + (self.desiredStepDuration-0.2)*10/6)/10
+        self.desiredMaximumSwingfootHeight = -random.uniform(swingfootHeightMax-swingfootHeightGap, swingfootHeightMax)
+        #self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.06),0.4,0.8)
+        self.currentOffset = np.round(random.uniform(-100,100))
+        #self.currentOffset = np.round(np.clip(np.random.normal(0,33),-100,100))
+
+        return
 
 
     def do_simulation(self, action):
@@ -676,7 +710,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 10:
+            elif self.actionSteps > self.step_per_walk * 20:
             #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
                 done = True
             if done is True:
