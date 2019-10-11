@@ -406,7 +406,7 @@ class FooEnv6(env_base.FooEnvBase):
             rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             StepLengthPenalty = np.abs(leftFoot - rightFoot - self.desiredStepLength)
-            self.cStepLength = lefttFoot - righttFoot
+            self.cStepLength = leftFoot - rightFoot
         else:
             StepLengthPenalty = 0
 
