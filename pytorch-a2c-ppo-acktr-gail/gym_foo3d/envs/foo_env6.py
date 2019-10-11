@@ -554,7 +554,8 @@ class FooEnv6(env_base.FooEnvBase):
         swingfootHeightGap = (1.0 + (self.desiredStepDuration-0.2)*10/6)/10
         self.desiredMaximumSwingfootHeight = -random.uniform(swingfootHeightMax-swingfootHeightGap, swingfootHeightMax)
         #self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.06),0.4,0.8)
-        self.currentOffset = np.round(random.uniform(-100,100))
+        #self.currentOffset = np.round(random.uniform(-100,100))
+        self.currentOffset = 0
         #self.currentOffset = np.round(np.clip(np.random.normal(0,33),-100,100))
 
         return
