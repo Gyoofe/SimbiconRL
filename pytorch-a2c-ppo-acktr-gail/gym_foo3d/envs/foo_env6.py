@@ -229,9 +229,10 @@ class FooEnv6(env_base.FooEnvBase):
         action = np.clip(action, -100, 100)/100
         #드는거 
         #swh02
-        action[0] = ((action[0] + 1)/2)*np.pi/3
+        action[0] = ((action[0] + 1)/2)*np.pi/2
         #swk02
-        action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
+        #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
+        action[1] = ((action[1] - 1)*0.35-0.3)*math.radians(100.0)
         #swa02
         action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
         #내리는거
@@ -361,11 +362,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         
         ##torso 균형
-        torsoMSE = 0
-        for i in self.sim.skeletons[1].q[6:9]:
-            torsoMSE += np.square(i)
-        #torsoMSE = torsoMSE/3
-
+        torsoYVec = self.mtorso.world_transform()[0:3,2]
+        torsoUprightPenalty = 1 - np.dot(torsoYVec, [0,1,0])
         
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
@@ -472,7 +470,7 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-9*np.square(FootHeightPenalty)))
         """
 
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty)
+        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
 
 
@@ -545,7 +543,7 @@ class FooEnv6(env_base.FooEnvBase):
         #self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
 
-        self.desiredStepDuration = random.uniform(0.2,0.8)
+        self.desiredStepDuration = random.uniform(0.2,0.6)
         #self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
         stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
         self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)

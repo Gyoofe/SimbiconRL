@@ -190,8 +190,8 @@ def main():
             mean = np.mean(episode_rewards)
 
             summary.add_scalar('steps', total_num_steps/(end-start), j)
-            summary.add_scalar('mean_reward', mean, j)
-            summary.add_scalar('mean_reward', mean, total_num_steps)
+            summary.add_scalar('mean_reward_update', mean, j)
+            summary.add_scalar('mean_reward_step', mean, total_num_steps)
             summary.add_scalar('median_reward', np.median(episode_rewards), j)
             summary.add_scalar('max_reward', np.max(episode_rewards), j)
             summary.add_scalar('min_reward', np.min(episode_rewards), j)

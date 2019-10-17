@@ -133,7 +133,7 @@ class FooEnvBase(gym.Env):
         self.l_hand = self.skel.body("l_hand")
         self.r_hand = self.skel.body("r_hand")
         self.utorso = self.skel.body("utorso")
-
+        self.mtorso = self.skel.body("mtorso")
 
 
         self.XveloQueue = CircularQueue(self.frameskip*1)
