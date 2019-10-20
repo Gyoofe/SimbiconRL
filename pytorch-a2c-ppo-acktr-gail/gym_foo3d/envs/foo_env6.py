@@ -26,6 +26,7 @@ from . import env_base
 
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 SIMULATION_STEP_PER_SEC=900
+GROUND_Y = -0.85
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
@@ -113,11 +114,18 @@ class FooEnv6(env_base.FooEnvBase):
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.observation_space = self.get_state()
         print(self.targetAngle)
-
+    """
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
             [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,
             self.currentOffset,np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count),self.controller.LContact.isSatisfied(),self.controller.RContact.isSatisfied()],
+           self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
+    """
+
+    def get_state(self):
+        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
+            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,
+            self.controller.LContact.isSatisfied(),self.controller.RContact.isSatisfied()],
            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
 
@@ -347,7 +355,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.ZveloQueue.enqueue(pos_after[2])
 
 
-        alive_bonus = 13
+        alive_bonus = 10
         
 
         #방향 맞춤
@@ -470,9 +478,9 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-9*np.square(FootHeightPenalty)))
         """
 
-        reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
+        #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
-
+        reward = (alive_bonus - self.tausums/8000 - 3*np.abs(pos_after[2]) - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty) 
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -548,9 +556,8 @@ class FooEnv6(env_base.FooEnvBase):
         stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
         self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)
         #self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
-        swingfootHeightMax = 1.0 - self.desiredStepDuration/2.0
-        swingfootHeightGap = (1.0 + (self.desiredStepDuration-0.2)*10/6)/10
-        self.desiredMaximumSwingfootHeight = -random.uniform(swingfootHeightMax-swingfootHeightGap, swingfootHeightMax)
+        swingfootHeightMin = self.desiredStepDuration/4.0
+        self.desiredMaximumSwingfootHeight = random.uniform(swingfootHeightMin, swingfootHeightMin+0.15)
         #self.desiredMaximumSwingfootHeight = -np.clip(np.random.normal(0.6,0.06),0.4,0.8)
         #self.currentOffset = np.round(random.uniform(-100,100))
         self.currentOffset = 0
@@ -591,6 +598,9 @@ class FooEnv6(env_base.FooEnvBase):
         #step_counter_queue_value = 0
         ## self.previousState는 step 들어가기 전 현재 State
         ## previousState가 1,3일때는 자동 transite가 일어나지 않기 때문에 이걸 조건문으로 이용해도 된다.?
+
+        ##값 초기화
+        self.footPosWhenS0S2End = 0
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName
                 or (int(self.previousState)+1)%4 is int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
             self.controller.update()
@@ -614,13 +624,15 @@ class FooEnv6(env_base.FooEnvBase):
                     self.tausums += np.abs(i)
 
             if self.controller.mCurrentStateMachine.mCurrentState.mName is "0":
-                self.footPosWhenS0S2End = r_foot_pos[1] 
+                if self.footPosWhenS0S2End < r_foot_pos[1] - GROUND_Y:
+                    self.footPosWhenS0S2End = r_foot_pos[1] - GROUND_Y
                 self.to_contact_counter_L += 1
             elif self.controller.mCurrentStateMachine.mCurrentState.mName is "1":
                 self.to_contact_counter_R += 1
             elif self.controller.mCurrentStateMachine.mCurrentState.mName is "2":
                 self.to_contact_counter_R += 1
-                self.footPosWhenS0S2End = l_foot_pos[1] 
+                if self.footPosWhenS0S2End < l_foot_pos[1] - GROUND_Y:
+                    self.footPosWhenS0S2End = l_foot_pos[1] - GROUND_Y
             elif self.controller.mCurrentStateMachine.mCurrentState.mName is "3":
                 self.to_contact_counter_L += 1
 
