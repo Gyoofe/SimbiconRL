@@ -480,7 +480,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
-        reward = (alive_bonus - self.tausums/8000 - 3*np.abs(pos_after[2]) - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty) 
+        reward = (alive_bonus - self.tausums/8000 -3*rootPenalty - 3*np.abs(pos_after[2]) - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty) 
 
         self.step_counter += n_frames
         self.change_step += n_frames
