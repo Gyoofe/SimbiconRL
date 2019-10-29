@@ -424,9 +424,9 @@ class Controller():
         tCond6 = st.TimerCondition(wState3, 1)
 
         wState0.setTerminalCondition(tCond0)
-        wState1.setTerminalCondition(tCond5)
+        wState1.setTerminalCondition(tCond1)
         wState2.setTerminalCondition(tCond2)
-        wState3.setTerminalCondition(tCond6)
+        wState3.setTerminalCondition(tCond3)
 
         wState0.setNextState(wState1)
         wState1.setNextState(wState2)

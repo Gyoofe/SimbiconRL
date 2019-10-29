@@ -27,6 +27,7 @@ from . import env_base
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 SIMULATION_STEP_PER_SEC=900
 GROUND_Y = -0.85
+ALIVE_BONUS = 10
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
@@ -234,7 +235,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.targetspeed += 0.025
 
     def clip_Scaling_Actiond10(self, action, stateName):
-        action = np.clip(action, -100, 100)/100
+        action = np.clip(action, -200, 200)/100
         #드는거 
         #swh02
         action[0] = ((action[0] + 1)/2)*np.pi/2
@@ -280,7 +281,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[19] = (action[19])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.7 + 0.1
+        action[20] = ((action[20]+1)/2)*0.55 + 0.1
         ##Torso02
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         ##Torso13
@@ -353,10 +354,6 @@ class FooEnv6(env_base.FooEnvBase):
         pos_after = self.sim.skeletons[1].com()
         self.XveloQueue.enqueue(pos_after[0])
         self.ZveloQueue.enqueue(pos_after[2])
-
-
-        alive_bonus = 10
-        
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
@@ -480,7 +477,9 @@ class FooEnv6(env_base.FooEnvBase):
 
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
-        reward = (alive_bonus - self.tausums/8000 -3*rootPenalty - 3*np.abs(pos_after[2]) - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty) 
+        alive_bonus = ALIVE_BONUS
+
+        reward = (alive_bonus - self.tausums/16000 -2*rootPenalty - np.abs(pos_after[2]) - 10*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty) 
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -637,36 +636,6 @@ class FooEnv6(env_base.FooEnvBase):
                 self.to_contact_counter_L += 1
 
 
-            ##컨택트가 일어났을때 Contact Time 저장하는 코드
-            ##Do simulation 하기 전 State가 1(Swing Hip R 내릴때), 2(swing Hip L 올릴때)
-            if self.controller.mCurrentStateMachine.mCurrentState.mName is "1" or self.controller.mCurrentStateMachine.mCurrentState.mName is "2":
-                ##R foot Contact가 일어나면
-                if self.controller.RContact.isSatisfied() and not self.Rcontact_first:
-                    ##반대쪽발 컨택트 초기화
-                    self.Lcontact_first=False
-                    ##이쪽 발 Contact True로(첫 Contact가 일어났다는 뜻)
-                    self.Rcontact_first=True
-                    ##큐에 다리를 내릴때부터 Contact까지의 시간 저장
-                    self.contactTimeQueue.enqueue(self.to_contact_counter_R)
-                    ##평균값
-                    self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
-                    assert self.Rcontact_mean_step > 0, "contact Time is under zero"
-            ##반대쪽발(Left Foot)에 대하여
-            else:
-                if self.controller.LContact.isSatisfied() and not self.Lcontact_first:
-                    self.Rcontact_first=False
-                    self.Lcontact_first=True
-
-                    self.contactTimeQueue.enqueue(self.to_contact_counter_L)
-                    self.Lcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
-                    assert self.Lcontact_mean_step > 0, "contact Time is under zero"
-            ##컨택이 일어난 이후의 Step 저장
-            ##현재 State가 1이고 Rfoot이 땅에 닿았을 떄
-            if self.controller.mCurrentStateMachine.mCurrentState.mName is "1" and self.Rcontact_first is True:
-                state_step_after_contact += 1
-            ##현재 State가 3이고 Rfoot이 땅에 닿았을 때
-            elif self.controller.mCurrentStateMachine.mCurrentState.mName is "3" and self.Lcontact_first is True:
-                state_step_after_contact += 1
 
             """
             ###컨택이 처음 일어난다면 그 떄의 foot위치 저장
@@ -685,29 +654,6 @@ class FooEnv6(env_base.FooEnvBase):
                 self.last_Lcontact_r_foot_pos = self._getJointPosition(self.r_foot) 
                 self.last_Lcontact_l_foot_pos = self._getJointPosition(self.l_foot)
             """
-            ##offset이 0이상이고 contact 이후의 step이 offset과 같을때
-            if offset >= 0 and math.isclose(state_step_after_contact,offset):
-                ##다음 State로 전이
-                #print(CFSM.mCurrentState.mName)
-                #if int(CFSM.mCurrentState.mName)%2 is 0:
-                #    print(state_step_after_contact)
-                CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-            ##offset이 0보다 작고 현재 State가 발을 내리는 동작일때
-            elif offset < 0:
-                if CFSM.mCurrentState.mName is "1":
-                    ##offset이 -값이니 둘을 더해서 0이하면 바로 transition
-                    if self.Rcontact_mean_step + offset >= 0:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                   ##offset이 -값이 아닐땐 State_step이 offset을 더한 값 보다 커지면 transition  
-                    elif self.Rcontact_mean_step + offset <= state_step:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                if CFSM.mCurrentState.mName is "3":
-                     ##offset이 -값이니 둘을 더해서 0이하면 바로 transition
-                    if self.Lcontact_mean_step + offset <= 0:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
-                   ##offset이 -값이 아닐땐 State_step이 offset을 더한 값 보다 커지면 transition  
-                    elif self.Lcontact_mean_step + offset <= state_step:
-                        CFSM.transiteTo(CFSM.mCurrentState.getNextState(), CFSM.mBeginTime + CFSM.mElapsedTime)
                
             if(self.isrender):
                 time.sleep(0.001)
@@ -721,7 +667,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 20:
+            elif self.actionSteps > self.step_per_walk * 10:
             #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
                 done = True
             if done is True:
