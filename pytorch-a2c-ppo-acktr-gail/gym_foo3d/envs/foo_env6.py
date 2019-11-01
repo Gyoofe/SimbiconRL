@@ -281,7 +281,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[19] = (action[19])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.55 + 0.1
+        action[20] = ((action[20]+1)/2)*0.45 + 0.1
         ##Torso02
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         ##Torso13
@@ -550,10 +550,10 @@ class FooEnv6(env_base.FooEnvBase):
         #self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
 
-        self.desiredStepDuration = random.uniform(0.2,0.6)
+        self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
         stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
-        self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)
+        self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.26)
         #self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
         swingfootHeightMin = self.desiredStepDuration/4.0
         self.desiredMaximumSwingfootHeight = random.uniform(swingfootHeightMin, swingfootHeightMin+0.15)
