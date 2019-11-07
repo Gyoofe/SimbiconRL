@@ -27,7 +27,7 @@ from . import env_base
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 SIMULATION_STEP_PER_SEC=900
 GROUND_Y = -0.85
-ALIVE_BONUS = 10
+ALIVE_BONUS = 11
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
@@ -83,7 +83,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.currentLeftAngle = 0
 
         ##current State
-        self.currentState = [0,0,0,0]
+        self.currentState = [0]
 
         ##Stride 관련 term
         self.last_Rcontact_r_foot_pos = None
@@ -125,8 +125,7 @@ class FooEnv6(env_base.FooEnvBase):
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
-            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight,
-            self.controller.LContact.isSatisfied(),self.controller.RContact.isSatisfied()],
+            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight],
            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
 
@@ -197,7 +196,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.change_step = 0
 
         ##current State
-        self.currentState = [0,0,0,0]
+        self.currentState = [0]
 
         #남은 회전 방향
         self.currentLeftAngle = 0
@@ -479,7 +478,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/16000 -2*rootPenalty - np.abs(pos_after[2]) - 10*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty) 
+        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - 3*np.abs(pos_after[2]) - 10*StepLengthPenalty - 17*FootHeightPenalty - 14*stepDurationPenalty - 8*torsoUprightPenalty) 
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -496,7 +495,14 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
         if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
             self.ChangeRandom()        
-                
+
+
+        ##one hot incording으로 State 정보 넣어주기
+        if self.controller.mCurrentStateMachine.mCurrentState.mName is "0" or self.controller.mCurrentStateMachine.mCurrentState.mName is "1":
+            self.currentState = [0]
+        else:
+            self.currentState = [1]
+
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -515,11 +521,6 @@ class FooEnv6(env_base.FooEnvBase):
         #print(reward)
         #print(done)
         #print(self.previousState)
-
-        ##one hot incording으로 State 정보 넣어주기
-        self.currentState = [0,0,0,0]
-        self.currentState[int(self.controller.mCurrentStateMachine.mCurrentState.mName)] = 1
-
 
         thisState = self.get_state()
 
@@ -654,11 +655,11 @@ class FooEnv6(env_base.FooEnvBase):
                 self.last_Lcontact_r_foot_pos = self._getJointPosition(self.r_foot) 
                 self.last_Lcontact_l_foot_pos = self._getJointPosition(self.l_foot)
             """
-               
+            pelvisYpos = self.pelvis.world_transform()[1][3]   
             if(self.isrender):
                 time.sleep(0.001)
             #if pos_after[1] < -0.030 or pos_after[1] > 0.5:
-            if self.pelvis.com()[1] < -0.08 or pos_after[1] > 0.5:
+            if pelvisYpos < -0.2 or pos_after[1] > 0.5:
                 done = True
             #정면으로 걷지않을경우 빠르게 종료
             #elif np.abs(pos_after[2]) > 2:
