@@ -114,6 +114,12 @@ class FooEnv6(env_base.FooEnvBase):
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.observation_space = self.get_state()
+
+        #UI사용
+        self.foot_pos = [0,0,0]
+        self.rightFoot = 0
+        self.leftFoot = 0
+        self.FXAnorm = [1,0,0]
         print(self.targetAngle)
     """
     def get_state(self):
@@ -392,6 +398,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##Stride Reward
         #보폭을 비슷하게
         currentFrameXAxisN = np.linalg.norm(self.currentFrameXAxis)
+        self.FXAnorm = self.currentFrameXAxis/currentFrameXAxisN
         ##Step이전 State에 따라서 정해짐
         ##rFoot 올릴때(rFoot Contact가 일어났다가 떨어짐)
         if self.previousState is "0":
@@ -401,6 +408,8 @@ class FooEnv6(env_base.FooEnvBase):
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             StepLengthPenalty = np.abs(rightFoot - leftFoot - self.desiredStepLength)
             self.cStepLength = rightFoot - leftFoot
+            self.endFoot = pos_after + leftFoot*self.FXAnorm
+            self.endFoot[1] = -0.95
         ##lFoot을 올렸을때 (lFoot Contact가 일어났다가 떨어짐)
         elif self.previousState is "2":
             #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
@@ -409,6 +418,8 @@ class FooEnv6(env_base.FooEnvBase):
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             StepLengthPenalty = np.abs(leftFoot - rightFoot - self.desiredStepLength)
             self.cStepLength = leftFoot - rightFoot
+            self.endFoot = pos_after + rightFoot*self.FXAnorm
+            self.endFoot[1] = -0.95
         else:
             StepLengthPenalty = 0
 
@@ -590,7 +601,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.Lcontact_first = False
             self.stepDuration = 0
             self.to_contact_counter_L = 0
-        
+ 
 
         #print(CFSM.mCurrentState.mName)
 
@@ -609,6 +620,12 @@ class FooEnv6(env_base.FooEnvBase):
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
+
+
+            if self.previousState is "0":
+                self.foot_pos = self.r_foot.world_transform()[0:3,3]
+            else:
+                self.foot_pos = self.l_foot.world_transform()[0:3,3]
 
             ##속도 관련 n_frames로 대체
             #step_counter_queue_value += 1
