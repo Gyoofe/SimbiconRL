@@ -562,10 +562,10 @@ class FooEnv6(env_base.FooEnvBase):
         #self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
 
-        self.desiredStepDuration = random.uniform(0.15,0.5)
+        self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
         stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
-        self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.26)
+        self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)
         #self.desiredStepLength = np.clip(np.random.normal(0.4,0.06),0.1,0.6)
         swingfootHeightMin = self.desiredStepDuration/4.0
         self.desiredMaximumSwingfootHeight = random.uniform(swingfootHeightMin, swingfootHeightMin+0.15)
@@ -685,7 +685,7 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 10:
+            elif self.actionSteps > self.step_per_walk * 30:
             #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
                 done = True
             if done is True:
