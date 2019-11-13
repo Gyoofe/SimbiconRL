@@ -96,6 +96,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.stepDuration = 0 
         self.desiredStepDuration = 0
         self.currentOffset = 0
+        ##Parameter값 Change 관련
+        self.advancedActionstepPrevParameter = 0
+
 
         self.cStepDuration = 0
         self.cStepLength = 0
@@ -489,13 +492,12 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - 3*np.abs(pos_after[2]) - 10*StepLengthPenalty - 17*FootHeightPenalty - 14*stepDurationPenalty - 8*torsoUprightPenalty) 
+        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - 3*np.abs(pos_after[2]) - 10*StepLengthPenalty - 17*FootHeightPenalty - 14*stepDurationPenalty - 8*torsoUprightPenalty)/int(3/self.desiredStepDuration)
 
         self.step_counter += n_frames
         self.change_step += n_frames
         thispos = pos_after[0]
        
-        self.actionSteps += 1
         self.episodeTotalReward += reward
         #self.set_desiredSpeed()
 
@@ -503,10 +505,11 @@ class FooEnv6(env_base.FooEnvBase):
         self.updateEndEffectorLocalPosition()
      
         #수정
-        #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:
-        if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
-            self.ChangeRandom()        
-
+        #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:/
+        #if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+        if self.actionSteps - self.advancedActionstepPrevParameter > int(3/self.desiredStepDuration):
+            self.ChangeRandom()
+            self.advancedActionstepPrevParameter = self.actionSteps
 
         ##one hot incording으로 State 정보 넣어주기
         if self.controller.mCurrentStateMachine.mCurrentState.mName is "0" or self.controller.mCurrentStateMachine.mCurrentState.mName is "1":
@@ -585,6 +588,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.tausums = 0
         state_step = 0
         state_step_after_contact = -2
+        self.actionSteps += 1
 
         offset = self.currentOffset 
         #offset = np.round((np.random.rand()-0.5)*20)
@@ -685,8 +689,8 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            elif self.actionSteps > self.step_per_walk * 30:
-            #elif self.step_counter > SIMULATION_STEP_PER_SEC*40:
+            #elif self.actionSteps > self.step_per_walk * 30:
+            elif self.step_counter > SIMULATION_STEP_PER_SEC*(0.3)*15:
                 done = True
             if done is True:
                 break
