@@ -41,10 +41,10 @@ Video
 # Requirement
 
 물리 시뮬레이션
-* dart
-* pydart2
+* [DART](https://dartsim.github.io/)
+* [pydart2](https://github.com/sehoonha/pydart2)
 
 심층 강화학습 환경
-* pyTorch
-* OpenAI baselines
+* [OpenAI gym](https://github.com/openai/gym)
+* [OpenAI baselines](https://github.com/openai/baselines)
 * [pytorch-a2c-ppo-acktr-gail](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail)
