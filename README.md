@@ -26,7 +26,7 @@
 
 2. 사용자가 상호작용 가능한  매개변수(보폭, 보행 중 들어올리는 발의 높이, 한 걸음에 걸리는 시간)에 적합한 보행동작을 생성하고 직선 보행하는 제어기
 
-<div
+<div>
   <img src="https://user-images.githubusercontent.com/47879393/68889021-6706ae00-075f-11ea-97da-8e63bc1cb4d8.jpg" width="90%"></img>
 </div>
 <div>
