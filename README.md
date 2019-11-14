@@ -33,7 +33,8 @@
   <img src="https://user-images.githubusercontent.com/47879393/68889022-6706ae00-075f-11ea-9857-1bd6b240522d.jpg" width="90%"></img>
 </div>
 
-[![Video Label](http://img.youtube.com/vi/M3hM3zJd0Rc/0.jpg)](https://youtu.be/M3hM3zJd0Rc?t=0s) Video Label
+[![Video Label](http://img.youtube.com/vi/M3hM3zJd0Rc/0.jpg)](https://youtu.be/M3hM3zJd0Rc?t=0s) 
+Video
 
 
 
