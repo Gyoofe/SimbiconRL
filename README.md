@@ -47,4 +47,4 @@ Video
 심층 강화학습 환경
 * pyTorch
 * OpenAI baselines
-* pytorch-a2c-ppo-acktr-gail
+* [pytorch-a2c-ppo-acktr-gail](https://github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail)
