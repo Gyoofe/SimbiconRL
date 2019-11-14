@@ -13,21 +13,23 @@
 
 이를 보이기 위하여 아래와 같은 2가지 보행동작 제어기를 학습하였다.
 
+
+1. 사용자와 상호작용 가능한 보행 방향에 따라 방향 전환을 하며 보행 할 수 있는 제어기
+
 <img src="https://user-images.githubusercontent.com/47879393/68868887-a8856200-073b-11ea-9413-66fc657a118f.jpg" width="90%"></img>
 <img src="https://user-images.githubusercontent.com/47879393/68868890-a91df880-073b-11ea-8bc4-e0c576141b33.jpg" width="90%"></img>
 
-1. 사용자와 상호작용 가능한 보행 방향에 따라 방향 전환을 하며 보행 할 수 있는 제어기
+
+
+
+2. 사용자가 상호작용 가능한  매개변수(보폭, 보행 중 들어올리는 발의 높이, 한 걸음에 걸리는 시간)에 적합한 보행동작을 생성하고 직선 보행하는 제어기
 
 <div
   <img src="https://user-images.githubusercontent.com/47879393/68889021-6706ae00-075f-11ea-97da-8e63bc1cb4d8.jpg" width="90%"></img>
 </div>
-
-
 <div>
   <img src="https://user-images.githubusercontent.com/47879393/68889022-6706ae00-075f-11ea-9857-1bd6b240522d.jpg" width="90%"></img>
-
 </div>
-2. 사용자가 상호작용 가능한  매개변수(보폭, 보행 중 들어올리는 발의 높이, 한 걸음에 걸리는 시간)에 적합한 보행동작을 생성하고 직선 보행하는 제어기
 
 
 
