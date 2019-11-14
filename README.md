@@ -33,12 +33,7 @@
   <img src="https://user-images.githubusercontent.com/47879393/68889022-6706ae00-075f-11ea-9857-1bd6b240522d.jpg" width="90%"></img>
 </div>
 
-[![Video Label](http://img.youtube.com/vi/M3hM3zJd0Rc/0.jpg)](https://youtu.be/M3hM3zJd0Rc?t=0s) 
-
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/M3hM3zJd0Rc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-<iframe width="640" height="360" src="https://www.youtube.com/embed/6Az2cNU7gUw" frameborder="0" gesture="media" allowfullscreen=""></iframe>
+[![Video Label](http://img.youtube.com/vi/M3hM3zJd0Rc/0.jpg)](https://youtu.be/M3hM3zJd0Rc?t=0s)video
 
 # Requirement
 
