@@ -17,6 +17,25 @@
 <img src="https://user-images.githubusercontent.com/47879393/68868890-a91df880-073b-11ea-8bc4-e0c576141b33.jpg" width="90%"></img>
 
 1. 사용자와 상호작용 가능한 보행 방향에 따라 방향 전환을 하며 보행 할 수 있는 제어기
+
+<div>
+  <img src="https://user-images.githubusercontent.com/47879393/68882837-420c3e00-0753-11ea-8f17-ce2207469887.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882823-40427a80-0753-11ea-949d-a58ea0551be0.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882824-40db1100-0753-11ea-96bb-df982f8d2c83.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882825-40db1100-0753-11ea-9bf0-c8e06a91e545.jpg" width="90
+ </img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882826-40db1100-0753-11ea-9cfa-c8ff6b8cbd1e.jpg" width="90%"></img>
+</div>
+
+
+<div>
+  <img src="https://user-images.githubusercontent.com/47879393/68882829-40db1100-0753-11ea-9dcc-4fff8b2cf333.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882831-4173a780-0753-11ea-999e-e3e0d9f718a7.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882834-4173a780-0753-11ea-8129-981fc74d0cc1.jpg" width="90%"></img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882835-4173a780-0753-11ea-835d-4a030c6eaab4.jpg" width="90
+ </img>
+  <img src="https://user-images.githubusercontent.com/47879393/68882836-4173a780-0753-11ea-8231-5439fe0e6b6a.jpg" width="90%"></img>
+</div>
 2. 사용자가 상호작용 가능한  매개변수(보폭, 보행 중 들어올리는 발의 높이, 한 걸음에 걸리는 시간)에 적합한 보행동작을 생성하고 직선 보행하는 제어기
 
 
