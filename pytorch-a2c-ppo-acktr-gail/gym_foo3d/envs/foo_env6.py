@@ -229,6 +229,8 @@ class FooEnv6(env_base.FooEnvBase):
         self.updateEndEffectorLocalPosition()
         ##State초기화
         self.controller.mCurrentStateMachine.resetWalkingMachine()
+        ##Parameter값 Change 관련
+        self.advancedActionstepPrevParameter = 0
 
         return self.get_state()
         #self.Rcontact_time_before = 0
