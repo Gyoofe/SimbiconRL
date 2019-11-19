@@ -27,7 +27,7 @@ from . import env_base
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 SIMULATION_STEP_PER_SEC=900
 GROUND_Y = -0.85
-ALIVE_BONUS = 11
+ALIVE_BONUS = 10
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
@@ -539,7 +539,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - 3*np.abs(pos_after[2]) - 10*StepLengthPenalty - 17*FootHeightPenalty - 14*stepDurationPenalty - 8*torsoUprightPenalty)/int(3/self.desiredStepDuration)
+        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - np.abs(pos_after[2]) - 10*StepLengthPenalty - 15*FootHeightPenalty - 12*stepDurationPenalty - 6*torsoUprightPenalty)/int(3/self.desiredStepDuration)
 
         self.step_counter += n_frames
         self.change_step += n_frames
