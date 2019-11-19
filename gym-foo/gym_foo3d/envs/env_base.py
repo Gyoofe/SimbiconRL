@@ -22,9 +22,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/qfei/dart/data/sdf/atlas/"
-STEP_PER_SEC = 900
-DESIRED_MAX_SPEED = 1.5
+skel_path="/home/gyoofe/dart/data/sdf/atlas/"
+STEP_PER_WALK = 4
+DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
     metadata = {'render.modes': ['human']}
 
@@ -37,7 +37,7 @@ class FooEnvBase(gym.Env):
     def init_sim(self,cDirection,render):
         self.querystep = 1
         self.frameskip = 30
-        self.sim = pydart.World(1/STEP_PER_SEC)
+        self.sim = pydart.World(1/900)
         self.sim.set_recording(False)
         self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
         self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
@@ -72,7 +72,7 @@ class FooEnvBase(gym.Env):
             app = wx.App(0)
             frame = wx.Frame(None, -1, size=(1200,960))
             #self.gui = Cgui.dartGui(frame,self.sim,self.controller)
-            self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller)
+            self.gui = ModuleTest_drawMesh_new.dartGui(frame,self.sim,self.controller,self)
             frame.Show(True)
 
 
@@ -129,15 +129,15 @@ class FooEnvBase(gym.Env):
         self.pelvisZ = self.skel.joint("back_bkz")
         self.pelvis = self.skel.body("pelvis")
 
-        self.XveloQueue = CircularQueue(self.frameskip*2)
-        self.ZveloQueue = CircularQueue(self.frameskip*2)
+        self.XveloQueue = CircularQueue(self.frameskip*1)
+        self.ZveloQueue = CircularQueue(self.frameskip*1)
         self.actionSteps = 0
         self.episodeTotalReward = 0
         self.isrender = False
         self.p_targetspeed = 0
         self.targetspeed = DESIRED_MAX_SPEED
         self.desiredSpeed = 0
-        self.step_per_sec = STEP_PER_SEC
+        self.step_per_walk = STEP_PER_WALK
 
         self.cDirection = cDirection
         
@@ -152,14 +152,19 @@ class FooEnvBase(gym.Env):
 
         self.targetFrameXAxis = self.getCOMFrameXAxis()
         self.currentFrameXAxis = self.getCOMFrameXAxis()
-
+        self.aStepWspeedChanged = 0
+        self.tausums = 0
     def set_desiredSpeed(self):
-        #print(actionSteps)
-        maxtime = self.actionSteps/(self.targetspeed*self.frameskip*1.5)
+        maxtime = (self.actionSteps - self.aStepWspeedChanged)/(self.targetspeed*self.frameskip*1.5)
         #print(maxtime)
         if maxtime <= 1:
-            self.desiredSpeed = (self.targetspeed - self.p_targetspeed)*maxtime
+            self.desiredSpeed = self.p_targetspeed + (self.targetspeed - self.p_targetspeed)*maxtime
         return
+
+    def change_targetspeed(self):
+        self.p_targetspeed = self.targetspeed
+        self.targetspeed = 0.9+(np.random.rand())*0.8
+        self.aStepWspeedChanged = self.actionSteps
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[1:3],self.sim.skeletons[1].q[6:],self.sim.skeletons[1].dq[1:3],self.sim.skeletons[1].dq[6:],[int(self.controller.mCurrentStateMachine.mCurrentState.mName),self.desiredSpeed,self.leftAngle]])
@@ -189,6 +194,7 @@ class FooEnvBase(gym.Env):
         print("need implementation")
 
     def reset(self):
+        print("reset!")
         self.step_counter = 0
         self.sim.reset()
         self.reset_model()
@@ -196,10 +202,15 @@ class FooEnvBase(gym.Env):
         self.ZveloQueue.reset()
         self.actionSteps = 0
         self.episodeTotalReward = 0
+        self.aStepWspeedChanged = 0
+        self.targetspeed = 1.1
+        self.p_targetspeed = 0 
         if self.cDirection:
         #    self.changeDirection()
             self.targetAngle = 0
         self.targetFrameXAxis = self.getCOMFrameXAxis()
+        self.previousState = 0
+        self.tausums = 0
         return self.get_state()
 
     def start_render(self, mode='human', close=False):
@@ -280,7 +291,8 @@ class FooEnvBase(gym.Env):
         action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(60.0)
         action[14] = (action[14]+1)*math.radians(-45.0)/2
-        self.ForceAction10(action)
+        action[15] = (action[15]+1) + 1
+        #self.ForceAction10(action)
 
         return action
 
@@ -301,8 +313,9 @@ class FooEnvBase(gym.Env):
         action[12] = (action[12])*math.radians(20.0)
         action[13] = (action[13])*math.radians(45.0)
         action[14] = (action[14]+1)*math.radians(-30.0)/2
+        action[15] = (action[15]+1) + 1
         #print(action)
-        self.ForceAction10(action)
+        #self.ForceAction10(action)
 
         return action
 
@@ -351,9 +364,9 @@ class FooEnvBase(gym.Env):
     def changeDirection(self):
         self.targetAngle = ((random.random()*2)-1)*np.pi
         self.targetFrameXAxis = self.rotateYAxis(self.targetAngle, self.currentFrameXAxis)
-        self.XveloQueue.reset()
-        self.ZveloQueue.reset()
-        print("change Direction")
+        #self.XveloQueue.reset()
+        #self.ZveloQueue.reset()
+        print("change Direction",self.targetFrameXAxis)
 
 
     def rotateYAxis(self,theta,tVec):
@@ -361,6 +374,12 @@ class FooEnvBase(gym.Env):
                 [0,1,0],
                 [-np.sin(theta), 0, np.cos(theta)]]
         return rotM@(np.transpose(tVec))
+    
+    def distance(self):
+        dis = 0
+        for i in range(self.XveloQueue.count-1):
+            dis += np.sqrt(np.square(self.XveloQueue.array[self.XveloQueue.end-1-i] -self.XveloQueue.array[self.XveloQueue.end-2-i]) + np.square(self.ZveloQueue.array[self.ZveloQueue.end-1-i] - self.ZveloQueue.array[self.ZveloQueue.end-2-i]))
+        return dis
 
 class FooEnvBase_rs(FooEnvBase):
     def init_sim(self):

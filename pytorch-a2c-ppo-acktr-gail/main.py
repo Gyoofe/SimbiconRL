@@ -21,8 +21,12 @@ from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
 from evaluation import evaluate
 
+<<<<<<< HEAD
 from tensorboardX import SummaryWriter
 
+=======
+import time
+>>>>>>> master
 
 def main():
     ##TensorboardX
@@ -109,7 +113,15 @@ def main():
         args.num_env_steps) // args.num_steps // args.num_processes
 
     print(num_updates)
+<<<<<<< HEAD
     #input()
+=======
+    input()
+    total_step = 0
+    interval_steps = 0
+    wallClock_interval = 0
+    start = time.time()
+>>>>>>> master
     for j in range(num_updates):
 
         if args.use_linear_lr_decay:
@@ -131,6 +143,10 @@ def main():
             for info in infos:
                 if 'episode' in info.keys():
                     episode_rewards.append(info['episode']['r'])
+
+            for info in infos:
+                if 'env_step' in info.keys():
+                    total_step += info['n_frames']
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor(
@@ -168,6 +184,39 @@ def main():
         value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
+       
+        
+        # save for wallClock Time
+        if (time.time() - start)%3600 > wallClock_interval:
+            wallClock_interval += 1
+            save_path = os.path.join(args.save_dir+"wall_clock", args.algo)
+            try:
+                os.makedirs(save_path)
+            except OSError:
+                pass
+            
+            torch.save([
+                actor_critic,
+                getattr(utils.get_vec_normalize(envs), 'ob_rms', None)
+            ], os.path.join(save_path, args.env_name + str(time.time() - start) + ".pt"))
+
+
+
+        # save for total steps
+        if total_step%1000000 > interval_steps:
+            interval_steps += 1
+            save_path = os.path.join(args.save_dir+"total_steps", args.algo)
+            try:
+                os.makedirs(save_path)
+            except OSError:
+                pass
+            
+            torch.save([
+                actor_critic,
+                getattr(utils.get_vec_normalize(envs), 'ob_rms', None)
+            ], os.path.join(save_path, args.env_name + str(total_step) + ".pt"))
+       
+
 
         # save for every interval-th episode or for the last epoch
         print(j)
@@ -187,6 +236,7 @@ def main():
         if j % args.log_interval == 0 and len(episode_rewards) > 1:
             total_num_steps = (j + 1) * args.num_processes * args.num_steps
             end = time.time()
+<<<<<<< HEAD
             mean = np.mean(episode_rewards)
 
             summary.add_scalar('steps', total_num_steps/(end-start), j)
@@ -199,6 +249,9 @@ def main():
             summary.add_scalar('value_loss', value_loss, j)
             summary.add_scalar('action_loss', action_loss, j)
 
+=======
+            print("elapsed time: ", end - start)
+>>>>>>> master
             print(
                 "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.1f}/{:.1f}, min/max reward {:.1f}/{:.1f}\n"
                 .format(j, total_num_steps,
@@ -216,7 +269,7 @@ def main():
             ob_rms = utils.get_vec_normalize(envs).ob_rms
             evaluate(actor_critic, ob_rms, args.env_name, args.seed,
                      args.num_processes, eval_log_dir, device)
-
+    print("end time: ", end - start)        
 
 if __name__ == "__main__":
     main()
