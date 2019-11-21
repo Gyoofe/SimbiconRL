@@ -74,12 +74,12 @@ class StateMachine():
             wState2 = self.mStates[2]
             wState3 = self.mStates[3]
             if int(self.mCurrentState.mName) is 0:
-                tCond0 = st.TimerCondition(wState0, action[20])
+                tCond0 = st.TimerCondition(wState0, env.desiredStepDuration)
                 wState0.setTerminalCondition(tCond0)
                 #tCond1 = st.TimerCondition(wState1, action[10]*(1-action[11]))
                 #wState1.setTerminalCondition(tCond1)
             if int(self.mCurrentState.mName) is 2:
-                tCond2 = st.TimerCondition(wState2, action[20])
+                tCond2 = st.TimerCondition(wState2, env.desiredStepDuration)
                 wState2.setTerminalCondition(tCond2)
                 #tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
                 #wState3.setTerminalCondition(tCond3)
@@ -139,8 +139,8 @@ class StateMachine():
             sthy13=action[18]
             sthz13=action[19]
 
-            pelvis02 = action[21]
-            pelvis13 = action[22]
+            pelvis02 = action[20]
+            pelvis13 = action[21]
             #tauT = action[14]
 
 
