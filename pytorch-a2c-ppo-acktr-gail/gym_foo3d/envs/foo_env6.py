@@ -517,6 +517,7 @@ class FooEnv6(env_base.FooEnvBase):
         else:
             self.currentState = [1]
 
+        """
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -526,7 +527,9 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        
+        """
+
+
         info = {
                 'pos':pos_after[2]
         }
