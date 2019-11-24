@@ -282,20 +282,24 @@ class FooEnv6(env_base.FooEnvBase):
         action[13] = (action[13])*math.radians(30.0)
         #stance hpx,hpy,hpz02
         action[14] = (action[14])*math.radians(10.0)
-        action[15] = ((action[15]-1)/2)*math.radians(30.0)
-        action[16] = (action[16])*math.radians(30.0)
+        
+        #action[15] = ((action[15]-1)/2)*math.radians(30.0)
+        
+        action[15] = (action[15])*math.radians(30.0)
     
         #stance hpx,hpy,hpz13
-        action[17] = (action[17])*math.radians(10.0)
-        action[18] = ((action[18]-1)/2)*math.radians(30.0)
-        action[19] = (action[19])*math.radians(30.0)
+        action[16] = (action[16])*math.radians(10.0)
+        
+        #action[18] = ((action[18]-1)/2)*math.radians(30.0)
+        
+        action[17] = (action[17])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.45 + 0.1
+        action[18] = ((action[18]+1)/2)*0.45 + 0.1
         ##Torso02
-        action[21] = ((action[21]+1)/2)*math.radians(-30.0)
+        action[19] = ((action[19]+1)/2)*math.radians(-30.0)
         ##Torso13
-        action[22] = ((action[22]+1)/2)*math.radians(-30.0)
+        action[20] = ((action[20]+1)/2)*math.radians(-30.0)
         return action
 
 
@@ -519,6 +523,7 @@ class FooEnv6(env_base.FooEnvBase):
         else:
             self.currentState = [1]
 
+        """
         if done is True:
             print("episodeDone... mean Reward: " + str(self.episodeTotalReward/self.actionSteps))
             #print("velocityReward: " + str(velocityReward) + "__" + str(velocity_s)+ "__" + str(self.desiredSpeed))
@@ -528,7 +533,9 @@ class FooEnv6(env_base.FooEnvBase):
               print(self.controller.mCurrentStateMachine.mCurrentState.mRootKp)
             #self.reset()
             #input()
-        
+        """
+
+
         info = {
                 'pos':pos_after[2]
         }
