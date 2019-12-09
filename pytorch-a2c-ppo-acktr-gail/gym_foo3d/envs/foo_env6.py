@@ -492,7 +492,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - np.abs(pos_after[2]) - 10*StepLengthPenalty - 15*FootHeightPenalty - 12*stepDurationPenalty - 6*torsoUprightPenalty)/int(3/self.desiredStepDuration)
+        reward = (alive_bonus - self.tausums/32000 -2*rootPenalty - np.abs(pos_after[2]) - 10*StepLengthPenalty - 15*FootHeightPenalty - 12*stepDurationPenalty - 6*torsoUprightPenalty)
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -506,8 +506,8 @@ class FooEnv6(env_base.FooEnvBase):
      
         #수정
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:/
-        #if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
-        if self.actionSteps - self.advancedActionstepPrevParameter > int(3/self.desiredStepDuration):
+        if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
+        #if self.actionSteps - self.advancedActionstepPrevParameter > int(3/self.desiredStepDuration):
             self.ChangeRandom()
             self.advancedActionstepPrevParameter = self.actionSteps
 
@@ -692,8 +692,8 @@ class FooEnv6(env_base.FooEnvBase):
                 done = True
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
-            #elif self.actionSteps > self.step_per_walk * 30:
-            elif self.step_counter > SIMULATION_STEP_PER_SEC*(0.3)*15:
+            elif self.actionSteps > self.step_per_walk * 10:
+            #elif self.step_counter > SIMULATION_STEP_PER_SEC*(0.3)*15:
                 done = True
             if done is True:
                 break
