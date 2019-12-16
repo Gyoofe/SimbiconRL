@@ -83,13 +83,15 @@ def calc_adv_ref(trajectory, net_crt, states_v, device="cuda"):
     for val, next_val, (exp,) in zip(reversed(values[:-1]), reversed(values[1:]),
                                      reversed(trajectory[:-1])):
         if exp.done:
+            reward_sum = exp.reward
             delta = exp.reward - val
             last_gae = delta
         else:
             delta = exp.reward + GAMMA * next_val - val
             last_gae = delta + GAMMA * GAE_LAMBDA * last_gae
+            reward_sum = exp.reward + GAMMA * exp.reward
         result_adv.append(last_gae)
-        result_ref.append(last_gae + val)
+        result_ref.append(reward_sum)
 
     adv_v = torch.FloatTensor(list(reversed(result_adv))).to(device)
     ref_v = torch.FloatTensor(list(reversed(result_ref))).to(device)
