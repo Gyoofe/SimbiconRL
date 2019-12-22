@@ -1,7 +1,7 @@
 # Learning finite state machine-based biped controller using deep reinforcement learning 
 
 # Paper
-초록 : https://drive.google.com/open?id=1MLpaWqzolFIZ-QLsyJ6RH7mMI2F449wu
+초록(KCGS 2019 구두발표) : https://drive.google.com/open?id=1MLpaWqzolFIZ-QLsyJ6RH7mMI2F449wu
 
 학위논문 : https://drive.google.com/file/d/1bhrjX0yeYrNkwAi6geoFtm5ifq8xJssx/view
 
