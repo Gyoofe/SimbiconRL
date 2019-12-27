@@ -137,6 +137,15 @@ class FooEnv6(env_base.FooEnvBase):
             [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight],
            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
+    ## 추후에 변수로 변경
+    def state_scaling(self,state):
+        state[0:18] = (state[0:18]+np.pi)/(np.pi + np.pi)
+        state[18:36] = (state[18:36])/20
+        state[37] = state[37] #current State
+        state[38] = (state[38]-0.1)/(0.5-0.1) # desiredStepLength
+        state[39] = (state[39]-2*self.desiredStepDuration/3)/(0.2)
+        state[40] = (state[40]-self.desiredStepDuration/4)/(0.15)
+        return state
 
     def updateEndEffectorLocalPosition(self):
         pelMinv = np.linalg.inv(self.pelvis.world_transform())
@@ -232,7 +241,7 @@ class FooEnv6(env_base.FooEnvBase):
         ##Parameter값 Change 관련
         self.advancedActionstepPrevParameter = 0
 
-        return self.get_state()
+        return self.state_scaling(self.get_state())
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
@@ -541,7 +550,7 @@ class FooEnv6(env_base.FooEnvBase):
         #print(done)
         #print(self.previousState)
 
-        thisState = self.get_state()
+        thisState = self.state_scaling(self.get_state())
 
         if done is True:
             return thisState, 0, done, info
