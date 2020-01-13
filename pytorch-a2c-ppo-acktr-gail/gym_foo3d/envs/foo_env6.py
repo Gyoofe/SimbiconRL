@@ -113,7 +113,7 @@ class FooEnv6(env_base.FooEnvBase):
         #정보업데이트
         self.updateEndEffectorLocalPosition()
         observation_spaces = self.get_state()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(23,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(22,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.observation_space = self.get_state()
@@ -134,7 +134,7 @@ class FooEnv6(env_base.FooEnvBase):
 
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
-            [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight],
+            [self.desiredStepLength,self.desiredMaximumSwingfootHeight],
            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
     ## 추후에 변수로 변경
@@ -300,11 +300,11 @@ class FooEnv6(env_base.FooEnvBase):
         action[19] = (action[19])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.45 + 0.1
+        #action[20] = ((action[20]+1)/2)*0.45 + 0.1
         ##Torso02
-        action[21] = ((action[21]+1)/2)*math.radians(-30.0)
+        action[20] = ((action[20]+1)/2)*math.radians(-30.0)
         ##Torso13
-        action[22] = ((action[22]+1)/2)*math.radians(-30.0)
+        action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         return action
 
 
@@ -503,7 +503,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/12000 -2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - self.tausums/12000 -2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -579,7 +579,7 @@ class FooEnv6(env_base.FooEnvBase):
         #self.desiredStepDuration = random.uniform(0.1,0.5)
         #self.desiredMaximumSwingfootHeight = -random.uniform(0.4, 0.8)
 
-        self.desiredStepDuration = random.uniform(0.1,0.5)
+        self.desiredStepDuration = 0.3
         #self.desiredStepDuration = np.clip(np.random.normal(0.3,0.06),0.1,0.5)
         stepLengthMin = self.desiredStepDuration - self.desiredStepDuration/3.0
         self.desiredStepLength = random.uniform(stepLengthMin,stepLengthMin+0.2)
