@@ -118,8 +118,8 @@ class State():
         getCOMFrameLinear = cMat.Matrix.linear(self.getCOMFrame())
         self.getStanceAnklePosition()
         
-        self.mDesiredJointPositionBalance = self.mDesiredJointPosition + self.getSagitalCOMDistance(getCOMFrameLinear) * self.mSagitalCd + self.getSagitalCOMVelocity(getCOMFrameLinear) * self.mSagitalCv + self.getCoronalCOMDistance(getCOMFrameLinear) * self.mCoronalCd + self.getCoronalCOMVelocity(getCOMFrameLinear) * self.mCoronalCv
-        #self.mDesiredJointPositionBalance = self.mDesiredJointPosition
+        #self.mDesiredJointPositionBalance = self.mDesiredJointPosition + self.getSagitalCOMDistance(getCOMFrameLinear) * self.mSagitalCd + self.getSagitalCOMVelocity(getCOMFrameLinear) * self.mSagitalCv + self.getCoronalCOMDistance(getCOMFrameLinear) * self.mCoronalCd + self.getCoronalCOMVelocity(getCOMFrameLinear) * self.mCoronalCv
+        self.mDesiredJointPositionBalance = self.mDesiredJointPosition
         #print("desiredPos",self.mDesiredJointPosition)
         #print("DesiredPosb",self.mDesiredJointPositionBalance)
         #print("sd", self.getSagitalCOMDistance())
