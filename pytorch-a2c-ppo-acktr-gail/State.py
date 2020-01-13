@@ -161,11 +161,8 @@ class State():
         
         
         ##비활성 
-        #self._updateTorqueForStanceLeg(getCOMFrameLinear)
-
-        
-        
-        
+        self._updateTorqueForStanceLeg(getCOMFrameLinear)
+    
         #print("mTorque",self.mTorque)
         #print("dofs",dofs)
         #input("torq")
