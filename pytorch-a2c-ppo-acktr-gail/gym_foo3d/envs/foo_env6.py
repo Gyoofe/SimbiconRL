@@ -254,57 +254,59 @@ class FooEnv6(env_base.FooEnvBase):
             self.targetspeed += 0.025
 
     def clip_Scaling_Actiond10(self, action, stateName):
-        action = np.clip(action, -200, 200)/100
+        action = np.clip(action, -200, 200)/200
         #드는거 
         #swh02
-        action[0] = ((action[0] + 1)/2)*np.pi/2
+        action[0] = 0.5979495+(action[0])*1.1227705
         #swk02
-        #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
-        action[1] = ((action[1] - 1)*0.35-0.3)*math.radians(100.0)
-        #swa02
-        action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
+        #swk(-136 deg)
+        action[1] = ((action[1] - 1)/2)*2.38569
+        #swa02(-40~57)
+        action[2] = action[2]*0.85 + 0.15
         #내리는거
         #swh13
-        action[3] = ((action[3] - 1)/2)*np.pi/6
+        action[3] = 0.5979495+(action[3])*1.1227705
         #swk13
-        action[4] = ((action[4]-1)/2)*np.pi/9
+        action[4] = ((action[4] - 1)/2)*2.38569
         #swa13
-        action[5] = (action[5])*np.pi/9
+        action[5] = action[5]*0.85 + 0.15
 
         #stk02
-        action[6] = ((action[6]-1)/2)*np.pi/9
-        #sta02
-        action[7] = (action[7])*np.pi/9
+        #stk(-136 deg)
+        action[6] = ((action[6] - 1)/2)*2.38569
+        #sta(-40deg ~ 57 deg)
+        action[7] = action[7]*0.85 + 0.15
 
         #stk13
-        action[8] = ((action[8]-1)/2)*np.pi/9
+        action[8] = ((action[8] - 1)/2)*2.38569
         #sta13
-        action[9] = (action[9])*np.pi/9
+        action[9] = action[9]*0.85 + 0.15
 
-        #swhx02
-        action[10] = (action[10])*math.radians(10.0)
+        #swhx(deg 30)
+        action[10] = (action[10])*0.523599
         #swhx13
-        action[11] = (action[11])*math.radians(10.0) 
+        action[11] = (action[11])*0.523599
         #swing hpz02
-        action[12] = (action[12])*math.radians(30.0)
+        #swing hpz(deg10 ~ -70)
+        action[12] = (action[12] * 0.6981315) - 0.5235985
         #swing hpz13
-        action[13] = (action[13])*math.radians(30.0)
+        action[13] = (action[13] * 0.6981315) - 0.5235985
         #stance hpx,hpy,hpz02
-        action[14] = (action[14])*math.radians(10.0)
-        action[15] = ((action[15]-1)/2)*math.radians(30.0)
-        action[16] = (action[16])*math.radians(30.0)
+        action[14] = (action[14])*0.523599
+        action[15] = 0.5979495+(action[15])*1.1227705
+        action[16] = (action[16] * 0.6981315) - 0.5235985
     
         #stance hpx,hpy,hpz13
-        action[17] = (action[17])*math.radians(10.0)
-        action[18] = ((action[18]-1)/2)*math.radians(30.0)
-        action[19] = (action[19])*math.radians(30.0)
+        action[17] = (action[17])*0.523599
+        action[18] = 0.5979495+(action[18])*1.1227705
+        action[19] = (action[19] * 0.6981315) - 0.5235985
 
         ##Duration
         action[20] = ((action[20]+1)/2)*0.45 + 0.1
         ##Torso02
-        action[21] = ((action[21]+1)/2)*math.radians(-30.0)
+        action[21] = (action[21])*0.524559-0.086132
         ##Torso13
-        action[22] = ((action[22]+1)/2)*math.radians(-30.0)
+        action[22] = (action[22])*0.524559-0.086132
         return action
 
 
