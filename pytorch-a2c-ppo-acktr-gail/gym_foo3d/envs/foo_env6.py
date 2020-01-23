@@ -241,7 +241,8 @@ class FooEnv6(env_base.FooEnvBase):
         ##Parameter값 Change 관련
         self.advancedActionstepPrevParameter = 0
 
-        return self.state_scaling(self.get_state())
+        #return self.state_scaling(self.get_state())
+        return self.get_state()
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
@@ -310,7 +311,7 @@ class FooEnv6(env_base.FooEnvBase):
 
 
 
-    """
+    
     def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -1, 1)
         #다리 드는거 
@@ -352,7 +353,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[11] = (action[11])*0.524559-0.086132
 
         return action
-    """
+    
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
@@ -550,7 +551,8 @@ class FooEnv6(env_base.FooEnvBase):
         #print(done)
         #print(self.previousState)
 
-        thisState = self.state_scaling(self.get_state())
+        #thisState = self.state_scaling(self.get_state())
+        thisState = self.get_state()
 
         if done is True:
             return thisState, 0, done, info
