@@ -180,16 +180,17 @@ class drawingMesh():
 
     
         else:
-            diffuse = numpy.array(mat.properties.get("diffuse", [0.8, 0.8, 0.8, 1.0]))
-            specular = numpy.array(mat.properties.get("specular", [0., 0., 0., 1.0]))
-            ambient = numpy.array(mat.properties.get("ambient", [0.2, 0.2, 0.2, 1.0]))
+            diffuse = numpy.array(mat.properties.get("diffuse", [192/255, 192/255, 192/255, 1.0]))
+            specular = numpy.array(mat.properties.get("specular", [0/255, 0/255, 0/255, 1.0]))
+            ambient = numpy.array(mat.properties.get("ambient", [192/255, 192/255, 192/255, 1.0]))
             emissive = numpy.array(mat.properties.get("emissive", [0., 0., 0., 1.0]))   
-            shininess = min(mat.properties.get("shininess", 1.0), 128)   
+            shininess = min(mat.properties.get("shininess", 10000.0), 128)   
             wireframe = mat.properties.get("wireframe", 0)   
             twosided = mat.properties.get("twosided", 1)   
     
             setattr(mat, "gl_mat", glGenLists(1))   
             glNewList(mat.gl_mat,GL_COMPILE)
+            glShadeModel(GL_SMOOTH)
 
             glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse)
             glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular)

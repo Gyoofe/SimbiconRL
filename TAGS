@@ -1,0 +1,1501 @@
+
+gym-foo/__init__.py,17
+__init__.py1,0
+
+gym-foo/a2cNetSample.py,2219
+a2cNetSample.py1,0
+HID_SIZE = 128HID_SIZE14,245
+ENV_ID = "foo-v0"ENV_ID15,260
+class ModelA2C(nn.Module) :ModelA2C17,279
+    def __init__(self, obs_size, act_size) :__init__18,307
+    def forward(self, x):forward42,980
+class AgentA2C(ptan.agent.BaseAgent):AgentA2C47,1115
+    def __init__(self, net, device="cuda"):__init__48,1153
+    def __call__(self, states, agent_states):__call__52,1250
+def test_net(net, env, count=10, device="cuda"):test_net65,1684
+def calc_logprob(mu_v, var_v, action_v):calc_logprob83,2242
+def unpack_batch_a2c(batch, net, last_val_gamma , device = "cuda"):unpack_batch_a2c89,2420
+GAMMA = 0.99GAMMA123,3575
+REWARD_STEPS = 2REWARD_STEPS124,3588
+BATCH_SIZE = 32BATCH_SIZE125,3605
+LEARNING_RATE = 5e-5LEARNING_RATE126,3621
+ENTROPY_BETA = 1e-4ENTROPY_BETA127,3642
+TEST_ITERS = 5000TEST_ITERS129,3663
+usingPlot = 0usingPlot131,3682
+    device = torch.device("cuda")device133,3723
+    env = gym.make(ENV_ID)env134,3757
+    test_env = gym.make(ENV_ID)test_env135,3784
+    network = ModelA2C(env.observation_space.shape[0],env.action_space.shape[0]).to(device)network145,4080
+    agent = AgentA2C(network, device = device)agent151,4316
+    exp_source = ptan.experience.ExperienceSourceFirstLast(env, agent, GAMMA, steps_count=REWARD_STEPS)exp_source153,4364
+    optimizer = optim.Adam(network.parameters(), lr=5e-5)optimizer154,4468
+    batch = []batch156,4527
+    best_reward = Nonebest_reward157,4542
+        rewards_steps = exp_source.pop_rewards_steps()rewards_steps162,4742
+            ts = time.time()ts173,5218
+            usingPlot = usingPlot + 1usingPlot179,5523
+                best_reward = rewardsbest_reward188,6067
+        loss_value_v = F.mse_loss(value_v.squeeze(-1), vals_ref_v)loss_value_v203,6514
+        adv_v = vals_ref_v.unsqueeze(dim=-1) - value_v.detach()adv_v207,6591
+        log_prob_v = adv_v * calc_logprob(mu_v, var_v, actions_v)log_prob_v208,6655
+        loss_policy_v = -log_prob_v.mean()loss_policy_v210,6722
+        entropy_loss_v = ENTROPY_BETA * (-(torch.log(2*math.pi*var_v) + 1)/2).mean()entropy_loss_v211,6765
+        loss_v = loss_policy_v + entropy_loss_v + loss_value_vloss_v213,6851
+
+gym-foo/Cgui.py,2863
+Cgui.py1,0
+class GuiBase(glcanvas.GLCanvas):GuiBase21,396
+    def __init__(self, parent, sim, controller):__init__22,430
+    def OnEraseBackground(self,event):OnEraseBackground46,1134
+    def OnSize(self, event):OnSize49,1187
+    def OnPaint(self, event):OnPaint57,1404
+    def OnMouseDown(self, event):OnMouseDown64,1576
+    def OnMouseUP(self,event):OnMouseUP67,1626
+    def TimerEvent(self, event):TimerEvent70,1673
+    def TimerFunc(self):TimerFunc73,1736
+class dartGuiNew(GuiBase):dartGuiNew79,1829
+    def InitGL(self):InitGL80,1856
+    def OnDraw(self):OnDraw125,2899
+    def drawSkeletons(self,):drawSkeletons132,3045
+    def drawSkeleton(self, skeleton):drawSkeleton136,3186
+    def drawBodyNode(self, root_node):drawBodyNode139,3278
+    def drawEntity(self, entity):drawEntity161,3931
+    def drawShapeFrame(self, shape_frame):drawShapeFrame168,4086
+    def drawShape(self, shape, color):drawShape176,4336
+    def loadMesh(self, path, postprocess = None):loadMesh209,5512
+    def drawMesh(self, mesh):drawMesh231,6241
+    def apply_material(self, mat):apply_material258,7067
+    def load_Model(self, path, postprocess = None):load_Model284,8348
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer305,9047
+    def drawCube(self,_size):drawCube330,9841
+class dartGui(GuiBase):dartGui381,11088
+    def InitGL(self):InitGL382,11112
+    def OnDraw(self):OnDraw404,11698
+    def drawBody(self,root):drawBody428,12278
+    def drawingBox(self,body):drawingBox435,12416
+    def TimerFunc(self,):TimerFunc503,14173
+    def drawSkeletons(self,):drawSkeletons514,14379
+    def drawSkeleton(self, skeleton):drawSkeleton518,14520
+    def drawBodyNode(self, root_node):drawBodyNode521,14612
+    def drawEntity(self, entity):drawEntity543,15265
+    def drawShapeFrame(self, shape_frame):drawShapeFrame550,15420
+    def drawShape(self, shape, color):drawShape558,15670
+    def loadMesh(self, path, postprocess = None):loadMesh590,16771
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer611,17468
+    def drawCube(self,_size):drawCube634,18204
+    def drawSphere(self, radius):drawSphere684,19453
+    def drawEllipsoid(self, size):drawEllipsoid686,19515
+    def drawList(self, index):drawList688,19581
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path691,19645
+    world = pydart.World(1/1000)world696,19738
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground699,19773
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas700,19830
+    skel = world.skeletons[1]skel702,19907
+    q = skel.qq704,19938
+    controller = SC.Controller(skel,world)controller709,20023
+    app = wx.App(0)app711,20067
+    frame = wx.Frame(None, -1, size=(1200,960))frame713,20088
+    gui = dartGuiNew(frame,world,controller)gui715,20179
+
+gym-foo/cMat.py,1121
+cMat.py1,0
+class Matrix:Matrix5,44
+    def identityMat4x4():identityMat4x46,58
+    def linear(data):linear13,191
+    def col(data,i):col18,311
+    def UnitY():UnitY23,424
+    def size(data):size29,517
+    def normalize(data):normalize41,754
+    def size_2D(data):size_2D52,999
+    def normalize_2D(data):normalize_2D62,1210
+    def setTranslation(data, trans):setTranslation73,1454
+    def setlinearCol(data, i, setData):setlinearCol76,1520
+    def getTranslation(data):getTranslation81,1631
+    def multTrans(transM, pos):multTrans85,1732
+    def getNormal(a,b,c):getNormal90,1853
+    data = Matrix.identityMat4x4()data99,2055
+    data2 =Matrix.linear(data)data2100,2090
+    data3 = Matrix.col(data2,0)data3105,2179
+    Unityy = Matrix.UnitY()Unityy111,2281
+    data4=Matrix.normalize(data3)data4115,2333
+    newData = Matrix.identityMat4x4()newData119,2402
+    trans = [3,5,7]trans121,2441
+    xx = [1,2,3]xx122,2461
+    yy = [4,5,6]yy123,2478
+    zz = [7,8,9]zz124,2495
+    xx = Matrix.normalize(xx)xx126,2513
+    trrr = Matrix.getTranslation(newData)trrr136,2721
+
+gym-foo/DQNc.py,1044
+DQNc.py1,0
+Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward'))Transition18,324
+device = torch.device("cpu")device20,478
+class ReplayMemory(object):ReplayMemory22,508
+    def __init__(self, capacity):__init__23,536
+    def push(self, *args):push28,655
+    def sample(self, batch_size):sample34,880
+    def __len__(self):__len__37,969
+class DQN(nn.Module):DQN52,1351
+    def __init__(self):__init__54,1374
+    def forward(self, x):forward67,1867
+BATCH_SIZE = 128BATCH_SIZE90,2460
+GAMMA = 0.999GAMMA91,2477
+EPS_START = 0.9EPS_START92,2491
+EPS_END = 0.05EPS_END93,2507
+EPS_DECAY = 400EPS_DECAY94,2522
+TARGET_UPDATE = 10TARGET_UPDATE95,2538
+policy_net = DQN().to(device)policy_net97,2558
+target_net = DQN().to(device)target_net98,2588
+optimizer = optim.RMSprop(policy_net.parameters())optimizer102,2689
+memory = ReplayMemory(10000)memory103,2740
+steps_done = 0steps_done105,2770
+def select_action(state):select_action111,2790
+def optimize_model():optimize_model134,3635
+
+gym-foo/models.py,748
+models.py1,0
+def square(a):square9,134
+class ActorCritic(nn.Module):ActorCritic12,178
+    def __init__(self, num_inputs, num_outputs, hidden=64):__init__14,209
+    def backup(self):backup30,898
+    def forward(self, x, old=False):forward34,1057
+class Policy(nn.Module):Policy56,1809
+    def __init__(self, num_inputs, num_outputs):__init__58,1835
+    def backup(self):backup71,2510
+    def kl_div_p_q(self, p_mean, p_std, q_mean, q_std):kl_div_p_q75,2669
+    def kl_old_new(self):kl_old_new85,3269
+    def entropy(self):entropy90,3496
+    def forward(self, x, old=False):forward95,3678
+class Value(nn.Module):Value114,4336
+    def __init__(self, num_inputs):__init__115,4360
+    def forward(self, x):forward123,4658
+
+gym-foo/myWindow.py,375
+myWindow.py1,0
+class MyWindow(GLUTWindow):MyWindow11,260
+    def __init__(self, sim, title,controller):__init__12,288
+    def idle(self, ):idle17,467
+    def keyPressed(self, key, x, y):keyPressed38,1222
+def launch_MyWindow(sim, controller,title=None, default_camera=None):launch_MyWindow72,2976
+def launch_window(sim, win, default_camera):launch_window76,3131
+
+gym-foo/ppo_baseline.py,4739
+ppo_baseline.py1,0
+HID_SIZE = 64HID_SIZE18,282
+ENTROPY_BETA = 1e-3ENTROPY_BETA19,296
+VALUE_LOSS_COEF = 0.5VALUE_LOSS_COEF20,316
+class ModelActor(nn.Module):ModelActor23,367
+    def __init__(self, obs_size, act_size):__init__24,396
+    def forward(self, x):forward37,828
+class ModelCritic(nn.Module):ModelCritic40,881
+    def __init__(self, obs_size):__init__41,911
+    def forward(self,x):forward53,1246
+class AgentA2C(ptan.agent.BaseAgent):AgentA2C56,1301
+    def __init__(self,net,device ="cuda"):__init__57,1339
+    def __call__(self, states, agent_states):__call__61,1435
+ENV_ID = "foo-v0"ENV_ID78,1918
+GAMMA = 0.99GAMMA79,1936
+GAE_LAMBDA = 0.95GAE_LAMBDA80,1949
+TRAJECTORY_SIZE = 4097TRAJECTORY_SIZE82,1968
+LEARNING_RATE_ACTOR = 1e-5LEARNING_RATE_ACTOR83,1991
+LEARNING_RATE_CRITIC = 1e-3LEARNING_RATE_CRITIC84,2018
+PPO_EPS = 0.2PPO_EPS85,2046
+PPO_EPOCHES = 10PPO_EPOCHES86,2060
+PPO_BATCH_SIZE = 256PPO_BATCH_SIZE87,2077
+TEST_ITERS = 100000TEST_ITERS89,2099
+def test_net(net, env, count=1, device = "cuda"):test_net91,2120
+def calc_logprob(mu_v, logstd_v, actions_v):calc_logprob116,2927
+def calc_adv_ref(trajectory, net_crt, states_v, device="cuda"):calc_adv_ref121,3143
+    device = torch.device("cuda")device153,4141
+    save_path = os.path.join("saves", "ppo-samples")save_path155,4176
+    env = gym.make(ENV_ID)env158,4274
+    net_act = ModelActor(env.observation_space.shape[0], env.action_space.shape[0]).to(device)net_act168,4496
+    net_crt = ModelCritic(env.observation_space.shape[0]).to(device)net_crt169,4591
+    writer = SummaryWriter(comment="-ppo_Sample")writer173,4699
+    agent = AgentA2C(net_act, device = device)agent174,4749
+    exp_source = ptan.experience.ExperienceSource(env,agent,steps_count = 1, steps_delta = 1)exp_source175,4796
+    opt_act = optim.Adam(net_act.parameters(), lr = LEARNING_RATE_ACTOR)opt_act177,4891
+    opt_crt = optim.Adam(net_crt.parameters(), lr=LEARNING_RATE_CRITIC)opt_crt178,4964
+    trajectory = []trajectory180,5037
+    best_reward = Nonebest_reward181,5057
+    what = 0what183,5081
+    usingPlot = 0usingPlot184,5094
+    inter_save = 0inter_save185,5112
+            rewards_steps = exp_source.pop_rewards_steps()rewards_steps189,5300
+                ts = time.time()ts198,5689
+                    name = "inter_saves%d" % (step_idx)name221,6822
+                    fname = os.path.join(save_path, name)fname222,6878
+                    inter_save = inter_save % 100000inter_save224,6996
+            traj_states = [t[0].state for t in trajectory]traj_states234,7230
+            traj_actions = [t[0].action for t in trajectory]traj_actions235,7289
+            traj_states_v = torch.FloatTensor(traj_states).to(device)traj_states_v236,7350
+            traj_actions_v = torch.FloatTensor(traj_actions).to(device)traj_actions_v237,7420
+            mu_v = net_act(traj_states_v)mu_v239,7593
+            old_logprob_v = calc_logprob(mu_v, net_act.logstd, traj_actions_v)old_logprob_v240,7635
+            traj_adv_v = (traj_adv_v - torch.mean(traj_adv_v)) / torch.std(traj_adv_v)traj_adv_v243,7749
+            trajectory = trajectory[:-1]trajectory246,7935
+            old_logprob_v = old_logprob_v[:-1].detach()old_logprob_v247,7976
+            sum_loss_value = 0.0sum_loss_value249,8033
+            sum_loss_policy = 0.0sum_loss_policy250,8066
+            count_steps = 0count_steps251,8100
+                    states_v = traj_states_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]states_v255,8250
+                    actions_v = traj_actions_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]actions_v256,8333
+                    batch_adv_v = traj_adv_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE].unsqueeze(-1)batch_adv_v257,8418
+                    batch_ref_v = traj_ref_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]batch_ref_v258,8515
+                    batch_old_logprob_v = old_logprob_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]batch_old_logprob_v259,8598
+                    value_v = net_crt(states_v)value_v263,8771
+                    loss_value_v = F.mse_loss(value_v.squeeze(-1), batch_ref_v)loss_value_v264,8819
+                    mu_v = net_act(states_v)mu_v276,9325
+                    logprob_pi_v = calc_logprob(mu_v, net_act.logstd, actions_v)logprob_pi_v278,9411
+                    ratio_v = torch.exp(logprob_pi_v - batch_old_logprob_v)ratio_v279,9492
+                    surr_obj_v = batch_adv_v * ratio_vsurr_obj_v280,9568
+                    clipped_surr_v = batch_adv_v * torch.clamp(ratio_v, 1.0 - PPO_EPS, 1.0 + PPO_EPS)clipped_surr_v281,9623
+                    loss_policy_v = -torch.min(surr_obj_v, clipped_surr_v).mean()loss_policy_v282,9725
+
+gym-foo/ppoSample_3d.py,5947
+ppoSample_3d.py1,0
+HID_SIZE = 64HID_SIZE21,365
+ENTROPY_BETA = 1e-3ENTROPY_BETA22,379
+VALUE_LOSS_COEF = 0.5VALUE_LOSS_COEF23,399
+ENV_ID = "foo-v0"ENV_ID28,452
+GAMMA = 0.99GAMMA29,470
+GAE_LAMBDA = 0.95GAE_LAMBDA30,483
+TRAJECTORY_SIZE = 2049TRAJECTORY_SIZE32,502
+LEARNING_RATE_ACTOR = 1e-4LEARNING_RATE_ACTOR33,525
+LEARNING_RATE_CRITIC = 1e-4LEARNING_RATE_CRITIC34,552
+PPO_EPS = 0.2PPO_EPS35,580
+PPO_EPOCHES = 10PPO_EPOCHES36,594
+PPO_BATCH_SIZE = 2048PPO_BATCH_SIZE37,611
+TEST_ITERS = 10000TEST_ITERS39,634
+NUM_UPDATES = 5000NUM_UPDATES40,653
+TRAINING_UPDATE = 50TRAINING_UPDATE42,693
+def test_net(net, env, count=5, device = "cuda"):test_net44,715
+def calc_logprob(mu_v, logstd_v, actions_v):calc_logprob65,1388
+def calc_adv_ref(trajectory, net_crt, states_v, device="cuda"):calc_adv_ref70,1604
+def update_linear_schedule(optimizer, epoch, total_num_epochs, initial_lr,writer):update_linear_schedule99,2534
+    parser = argparse.ArgumentParser()parser110,2969
+    args = parser.parse_args()args116,3360
+    updateCount = 0updateCount119,3418
+        linearSchedule = FalselinearSchedule121,3460
+        linearSchedule = TruelinearSchedule123,3501
+        cDirection = FalsecDirection126,3555
+        cDirection = TruecDirection128,3592
+        render = Falserender131,3646
+        render = Truerender133,3679
+        ENV_ID = "3d-v0"ENV_ID136,3724
+        ENV_ID = "3d-v1"ENV_ID138,3773
+        ENV_ID = "3d-v2"ENV_ID140,3822
+        ENV_ID = "3d-v3"ENV_ID142,3871
+        ENV_ID = "3d-v4"ENV_ID144,3920
+        ENV_ID = "3d-v5"ENV_ID146,3969
+        ENV_ID = "3d-v6"ENV_ID148,4018
+        ENV_ID = "3d-v7"ENV_ID150,4067
+    device = torch.device("cuda")device154,4145
+    save_path = os.path.join("saves", "ppo-samples")save_path156,4180
+    env = gym.make(ENV_ID)env159,4278
+    test_env = gym.make(ENV_ID)test_env160,4305
+    net_act = Model.ModelActor(env.observation_space.shape[0], env.action_space.shape[0]).to(device)net_act169,4496
+    net_crt = Model.ModelCritic(env.observation_space.shape[0]).to(device)net_crt170,4597
+    writer = SummaryWriter(comment="-ppo_Sample3d")writer174,4711
+    agent = Model.AgentA2C(net_act, device = device)agent175,4763
+    exp_source = ptan.experience.ExperienceSource(env,agent,steps_count = 1, steps_delta = 1)exp_source176,4816
+    opt_act = optim.Adam(net_act.parameters(), lr = LEARNING_RATE_ACTOR)opt_act178,4911
+    opt_crt = optim.Adam(net_crt.parameters(), lr=LEARNING_RATE_CRITIC)opt_crt179,4984
+    trajectory = []trajectory181,5057
+    best_reward = Nonebest_reward182,5077
+    what = 0what184,5101
+    usingPlot = 0usingPlot185,5114
+    inter_save = 0inter_save186,5132
+        linR = FalselinR189,5178
+        linearActionRatio = 0.1linearActionRatio193,5288
+        linR = TruelinR199,5442
+    tUpdate = 0tUpdate201,5517
+            rewards_steps = exp_source.pop_rewards_steps()rewards_steps204,5646
+                ts = time.time()ts213,6068
+                        name = "PPO_CRITIC_No_contact_2049128_best_%+.3f_%d.dat" % (rewards, step_idx) + ENV_ID + args.rdname222,6655
+                        fname = os.path.join(save_path, name)fname223,6777
+                    best_reward = rewardsbest_reward226,6955
+                    name = "inter_savesi1e-3%d" % (step_idx)name230,7097
+                    fname = os.path.join(save_path, name)fname231,7158
+                    inter_save = inter_save % TEST_ITERSinter_save233,7276
+            traj_states = [t[0].state for t in trajectory]traj_states243,7514
+            traj_actions = [t[0].action for t in trajectory]traj_actions244,7573
+            traj_states_v = torch.FloatTensor(traj_states).to(device)traj_states_v245,7634
+            traj_actions_v = torch.FloatTensor(traj_actions).to(device)traj_actions_v246,7704
+            mu_v = net_act(traj_states_v)mu_v248,7877
+            old_logprob_v = calc_logprob(mu_v, net_act.logstd, traj_actions_v)old_logprob_v249,7919
+            traj_adv_v = (traj_adv_v - torch.mean(traj_adv_v)) / torch.std(traj_adv_v)traj_adv_v252,8033
+            trajectory = trajectory[:-1]trajectory255,8219
+            old_logprob_v = old_logprob_v[:-1].detach()old_logprob_v256,8260
+            sum_loss_value = 0.0sum_loss_value258,8317
+            sum_loss_policy = 0.0sum_loss_policy259,8350
+            count_steps = 0count_steps260,8384
+                    states_v = traj_states_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]states_v273,8833
+                    actions_v = traj_actions_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]actions_v274,8916
+                    batch_adv_v = traj_adv_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE].unsqueeze(-1)batch_adv_v275,9001
+                    batch_ref_v = traj_ref_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]batch_ref_v276,9098
+                    batch_old_logprob_v = old_logprob_v[batch_ofs:batch_ofs + PPO_BATCH_SIZE]batch_old_logprob_v277,9181
+                    value_v = net_crt(states_v)value_v281,9354
+                    loss_value_v = F.mse_loss(value_v.squeeze(-1), batch_ref_v)loss_value_v282,9402
+                    mu_v = net_act(states_v)mu_v294,9908
+                    logprob_pi_v = calc_logprob(mu_v, net_act.logstd, actions_v)logprob_pi_v296,9994
+                    ratio_v = torch.exp(logprob_pi_v - batch_old_logprob_v)ratio_v297,10075
+                    surr_obj_v = batch_adv_v * ratio_vsurr_obj_v298,10151
+                    clipped_surr_v = batch_adv_v * torch.clamp(ratio_v, 1.0 - PPO_EPS, 1.0 + PPO_EPS)clipped_surr_v299,10206
+                    loss_policy_v = -torch.min(surr_obj_v, clipped_surr_v).mean()loss_policy_v300,10308
+                current = TRAINING_UPDATE*linearActionRatio*10current331,11734
+                        tUpdate = updateCounttUpdate334,11906
+                            linearActionRatio = 1linearActionRatio337,12052
+
+gym-foo/SimbiconController_3d.py,1414
+SimbiconController_3d.py1,0
+class StateMachine():StateMachine8,100
+    def __init__(self, name):__init__9,122
+    def addState(self, state):addState18,354
+    def setInitialState(self, state):setInitialState25,523
+    def end(self,currentTime):end31,698
+    def begin(self,currentTime):begin34,767
+    def computeControlForce_state(self,dt):computeControlForce_state39,899
+    def setTrainedDesiredAction(self,action,env):setTrainedDesiredAction61,1704
+    def transiteTo(self, _state, _currentTime):transiteTo193,6053
+    def getName(self):getName202,6321
+    def returnDesiredJP(self):returnDesiredJP205,6371
+class Controller():Controller208,6439
+    def __init__(self, skel,world, collisionSolver=None): __init__209,6459
+    def _buildStateMachine(self):_buildStateMachine222,7028
+    def changeStateMachine(self,StateMachine, _currentTime):changeStateMachine242,7627
+    def _createRunningStateMachine(self):_createRunningStateMachine256,8030
+    def _createWalkingStateMachine(self):_createWalkingStateMachine347,11702
+    def _createWIPStateMachine(self):_createWIPStateMachine526,19392
+    def _createStandingStateMachine(self):_createStandingStateMachine690,26561
+    def _setJointDamping(self):_setJointDamping716,27665
+    def update(self):update723,27939
+    def _getLeftFoot(self):_getLeftFoot734,28337
+    def _getRightFoot(self):_getRightFoot737,28407
+
+gym-foo/State.py,2979
+State.py1,0
+class State():State8,110
+    def __init__(self,skel,name):__init__9,125
+    def setFeedBackCoronalCOMDistance(self,index,val):setFeedBackCoronalCOMDistance61,2067
+    def setFeedBackCoronalCOMVelocity(self,index,val):setFeedBackCoronalCOMVelocity64,2160
+    def setFeedBackSagitalCOMDistance(self,index,val):setFeedBackSagitalCOMDistance67,2253
+    def setFeedBackSagitalCOMVelocity(self,index,val):setFeedBackSagitalCOMVelocity70,2350
+    def setDesiredPelvisGlobalAngleOnSagital(self,val):setDesiredPelvisGlobalAngleOnSagital73,2443
+    def setDesiredPelvisGlobalAngleOnCoronal(self,val):setDesiredPelvisGlobalAngleOnCoronal76,2554
+    def setStanceFootToLeft(self):setStanceFootToLeft79,2665
+    def setStanceFootToRight(self):setStanceFootToRight82,2743
+    def getNextState(self):getNextState85,2823
+    def end(self,_currentTime):end87,2882
+    def begin(self, _currentTime):begin90,2952
+    def setTerminalCondition(self,terminalCondition):setTerminalCondition95,3083
+    def setNextState(self,nextState):setNextState98,3191
+    def setDesiredJointPosition(self,jointName, value):setDesiredJointPosition101,3264
+    def computeControlForce(self, timestep):computeControlForce105,3421
+    def _updateTorqueForStanceLeg(self,getCOMFrameLinear):_updateTorqueForStanceLeg208,7766
+    def getSagitalPelvisAngle(self,getCOMFrameLinear,comY,pelvisZ):getSagitalPelvisAngle278,10571
+    def _getAnglesBetweenTwoVectors(self, v1, v2):_getAnglesBetweenTwoVectors298,11265
+    def getCoronalPelvisAngle(self,getCOMFrameLinear,comY,pelvisZ):getCoronalPelvisAngle318,12118
+    def skew(self,x):skew347,12914
+    def getSagitalCOMDistance(self,getCOMFrameLinear):getSagitalCOMDistance353,13066
+    def getSagitalCOMVelocity(self,getCOMFrameLinear): getSagitalCOMVelocity364,13500
+    def getCoronalCOMDistance(self,getCOMFrameLinear): getCoronalCOMDistance373,13758
+    def getCoronalCOMVelocity(self,getCOMFrameLinear):getCoronalCOMVelocity382,14103
+    def getCOMFrame(self):getCOMFrame391,14365
+    def getCOM(self):getCOM415,15153
+    def getCOMVelocity(self):getCOMVelocity418,15208
+    def returnStanceAnklePositionValue(self):returnStanceAnklePositionValue421,15284
+    def getStanceAnklePosition(self):getStanceAnklePosition424,15372
+    def _getJointPosition(self,node):_getJointPosition430,15598
+    def getElapsedTime(self):getElapsedTime442,16023
+    def isTerminalConditionSatisfied(self,):isTerminalConditionSatisfied445,16087
+class TerminalCondition():TerminalCondition450,16239
+    def __init__(self,state):__init__451,16266
+class TimerCondition(TerminalCondition):TimerCondition455,16352
+    def __init__(self,state,duration):__init__456,16393
+    def isSatisfied(self):isSatisfied460,16527
+class CollisionCondition(TerminalCondition):CollisionCondition472,16863
+    def __init__(self,state,world,bodynode):__init__473,16908
+    def isSatisfied(self):isSatisfied482,17205
+
+gym-foo/trained_play_3d.py,1249
+trained_play_3d.py1,0
+ENV_ID = "foo-v0"ENV_ID15,206
+    parser = argparse.ArgumentParser()parser41,842
+    args = parser.parse_args()args46,1207
+        ENV_ID = "3d-v0"ENV_ID48,1262
+        ENV_ID = "3d-v1"ENV_ID50,1313
+        ENV_ID = "3d-v2"ENV_ID52,1364
+        ENV_ID = "3d-v3"ENV_ID54,1415
+        ENV_ID = "3d-v4"ENV_ID56,1466
+        ENV_ID = "3d-v5"ENV_ID58,1517
+        ENV_ID = "3d-v6"ENV_ID60,1568
+        ENV_ID = "3d-v7"ENV_ID62,1619
+        cDirection = FalsecDirection68,1733
+        cDirection = TruecDirection70,1770
+        render = Falserender73,1824
+        render = Truerender75,1857
+    env = gym.make(ENV_ID)env77,1880
+    net = torch.load(args.model)net83,2115
+    obs = env.reset()obs86,2165
+    total_reward = 0.0total_reward91,2278
+    total_steps = 0total_steps92,2301
+    count = 2count93,2321
+        obs = env.reset()obs95,2362
+        episodeReward = 0episodeReward96,2388
+        start_time = time.time()start_time97,2414
+            obs_v = torch.cuda.FloatTensor(obs)obs_v99,2467
+            mu_v = net(obs_v)mu_v101,2559
+            action = mu_v.squeeze(dim=0).data.cpu().numpy()action102,2589
+            action = np.clip(action, -1, 1)action103,2649
+
+pytorch-a2c-ppo-acktr-gail/cMat.py,1121
+cMat.py1,0
+class Matrix:Matrix5,44
+    def identityMat4x4():identityMat4x46,58
+    def linear(data):linear13,191
+    def col(data,i):col18,311
+    def UnitY():UnitY23,424
+    def size(data):size29,517
+    def normalize(data):normalize41,754
+    def size_2D(data):size_2D52,999
+    def normalize_2D(data):normalize_2D62,1210
+    def setTranslation(data, trans):setTranslation73,1454
+    def setlinearCol(data, i, setData):setlinearCol76,1520
+    def getTranslation(data):getTranslation81,1631
+    def multTrans(transM, pos):multTrans85,1732
+    def getNormal(a,b,c):getNormal90,1853
+    data = Matrix.identityMat4x4()data99,2055
+    data2 =Matrix.linear(data)data2100,2090
+    data3 = Matrix.col(data2,0)data3105,2179
+    Unityy = Matrix.UnitY()Unityy111,2281
+    data4=Matrix.normalize(data3)data4115,2333
+    newData = Matrix.identityMat4x4()newData119,2402
+    trans = [3,5,7]trans121,2441
+    xx = [1,2,3]xx122,2461
+    yy = [4,5,6]yy123,2478
+    zz = [7,8,9]zz124,2495
+    xx = Matrix.normalize(xx)xx126,2513
+    trrr = Matrix.getTranslation(newData)trrr136,2721
+
+pytorch-a2c-ppo-acktr-gail/enjoy.py,1165
+enjoy.py1,0
+parser = argparse.ArgumentParser(description='RL')parser14,287
+    type=int,type19,470
+    default=10,default20,484
+    help='log interval, one log per n updates (default: 10)')help21,500
+    default='PongNoFrameskip-v4',default24,601
+    help='environment to train on (default: PongNoFrameskip-v4)')help25,635
+    default='./trained_models/',default28,740
+    help='directory to save agent logs (default: ./trained_models/)')help29,773
+    action='store_true',action32,881
+    default=False,default33,906
+    help='whether to use a non-deterministic policy')help34,925
+args = parser.parse_args()args35,979
+env = make_vec_envs(env39,1036
+    device='cuda',device45,1125
+    allow_early_resets=False)allow_early_resets46,1144
+render_func = get_render_func(env)render_func49,1199
+vec_norm = get_vec_normalize(env)vec_norm55,1411
+recurrent_hidden_states = torch.zeros(1,recurrent_hidden_states60,1520
+masks = torch.zeros(1, 1)masks62,1641
+obs = env.reset()obs64,1668
+    torsoId = -1torsoId71,1806
+            torsoId = itorsoId74,1915
+            distance = 5distance88,2312
+            yaw = 0yaw89,2337
+
+pytorch-a2c-ppo-acktr-gail/evaluation.py,114
+evaluation.py1,0
+def evaluate(actor_critic, ob_rms, env_name, seed, num_processes, eval_log_dir,evaluate8,112
+
+pytorch-a2c-ppo-acktr-gail/generate_tmux_yaml.py,914
+generate_tmux_yaml.py1,0
+parser = argparse.ArgumentParser(description='Process some integers.')parser5,30
+    type=int,type8,141
+    default=4,default9,155
+    help='number of random seeds to generate')help10,170
+    default="PongNoFrameskip-v4",default13,257
+    help='environment name separated by semicolons')help14,291
+args = parser.parse_args()args15,344
+ppo_mujoco_template = "python main.py --env-name {0} --algo ppo --use-gae --log-interval 1 --num-steps 2048 --num-processes 1 --lr 3e-4 --entropy-coef 0 --value-loss-coef 0.5 --ppo-epoch 10 --num-mini-batch 32 --gamma 0.99 --tau 0.95 --num-env-steps 1000000 --use-linear-lr-decay --no-cuda --log-dir /tmp/gym/{1}/{1}-{2} --seed {2} --use-proper-time-limits"ppo_mujoco_template17,372
+template = ppo_atari_templatetemplate21,1040
+config = {"session_name": "run-all", "windows": []}config23,1071
+    panes_list = []panes_list26,1156
+
+pytorch-a2c-ppo-acktr-gail/main.py,37
+main.py1,0
+def main():main25,507
+
+pytorch-a2c-ppo-acktr-gail/setup.py,208
+setup.py1,0
+    name='a2c-ppo-acktr',name4,52
+    packages=find_packages(),packages5,78
+    version='0.0.1',version6,108
+    install_requires=['gym', 'matplotlib', 'pybullet'])install_requires7,129
+
+pytorch-a2c-ppo-acktr-gail/SimbiconController_3d.py,1477
+SimbiconController_3d.py1,0
+class StateMachine():StateMachine8,100
+    def __init__(self, name):__init__9,122
+    def resetWalkingMachine(self):resetWalkingMachine18,354
+    def addState(self, state):addState24,520
+    def setInitialState(self, state):setInitialState31,689
+    def end(self,currentTime):end37,864
+    def begin(self,currentTime):begin40,933
+    def computeControlForce_state(self,dt):computeControlForce_state45,1065
+    def setTrainedDesiredAction(self,action,env):setTrainedDesiredAction67,1870
+    def transiteTo(self, _state, _currentTime):transiteTo235,7798
+    def getName(self):getName244,8066
+    def returnDesiredJP(self):returnDesiredJP247,8116
+class Controller():Controller250,8184
+    def __init__(self, skel,world, collisionSolver=None): __init__251,8204
+    def _buildStateMachine(self):_buildStateMachine264,8773
+    def changeStateMachine(self,StateMachine, _currentTime):changeStateMachine284,9372
+    def _createRunningStateMachine(self):_createRunningStateMachine298,9775
+    def _createWalkingStateMachine(self):_createWalkingStateMachine389,13447
+    def _createWIPStateMachine(self):_createWIPStateMachine574,21402
+    def _createStandingStateMachine(self):_createStandingStateMachine738,28571
+    def _setJointDamping(self):_setJointDamping764,29675
+    def update(self):update770,29910
+    def _getLeftFoot(self):_getLeftFoot781,30308
+    def _getRightFoot(self):_getRightFoot784,30378
+
+pytorch-a2c-ppo-acktr-gail/State.py,3089
+State.py1,0
+class State():State9,121
+    def __init__(self,skel,name):__init__10,136
+    def setFeedBackCoronalCOMDistance(self,index,val):setFeedBackCoronalCOMDistance67,2364
+    def setFeedBackCoronalCOMVelocity(self,index,val):setFeedBackCoronalCOMVelocity70,2457
+    def setFeedBackSagitalCOMDistance(self,index,val):setFeedBackSagitalCOMDistance73,2550
+    def setFeedBackSagitalCOMVelocity(self,index,val):setFeedBackSagitalCOMVelocity76,2647
+    def setDesiredPelvisGlobalAngleOnSagital(self,val):setDesiredPelvisGlobalAngleOnSagital79,2740
+    def setDesiredPelvisGlobalAngleOnCoronal(self,val):setDesiredPelvisGlobalAngleOnCoronal82,2851
+    def setDesiredPelvisGlobalAngleOnTransverse(self,val):setDesiredPelvisGlobalAngleOnTransverse85,2962
+    def setStanceFootToLeft(self):setStanceFootToLeft88,3079
+    def setStanceFootToRight(self):setStanceFootToRight91,3157
+    def getNextState(self):getNextState94,3237
+    def end(self,_currentTime):end96,3296
+    def begin(self, _currentTime):begin99,3366
+    def setTerminalCondition(self,terminalCondition):setTerminalCondition104,3497
+    def setNextState(self,nextState):setNextState107,3605
+    def setDesiredJointPosition(self,jointName, value):setDesiredJointPosition110,3678
+    def computeControlForce(self, timestep):computeControlForce114,3835
+    def _updateTorqueForStanceLeg(self,getCOMFrameLinear):_updateTorqueForStanceLeg223,8318
+    def getSagitalPelvisAngle(self,getCOMFrameLinear,comY,pelvisZ):getSagitalPelvisAngle323,12939
+    def _getAnglesBetweenTwoVectors(self, v1, v2):_getAnglesBetweenTwoVectors343,13633
+    def getCoronalPelvisAngle(self,getCOMFrameLinear,comY,pelvisZ):getCoronalPelvisAngle364,14589
+    def skew(self,x):skew393,15385
+    def getSagitalCOMDistance(self,getCOMFrameLinear):getSagitalCOMDistance399,15537
+    def getSagitalCOMVelocity(self,getCOMFrameLinear): getSagitalCOMVelocity410,15971
+    def getCoronalCOMDistance(self,getCOMFrameLinear): getCoronalCOMDistance419,16229
+    def getCoronalCOMVelocity(self,getCOMFrameLinear):getCoronalCOMVelocity428,16574
+    def getCOMFrame(self):getCOMFrame437,16836
+    def getCOM(self):getCOM461,17624
+    def getCOMVelocity(self):getCOMVelocity464,17679
+    def returnStanceAnklePositionValue(self):returnStanceAnklePositionValue467,17755
+    def getStanceAnklePosition(self):getStanceAnklePosition470,17843
+    def _getJointPosition(self,node):_getJointPosition476,18069
+    def getElapsedTime(self):getElapsedTime488,18494
+    def isTerminalConditionSatisfied(self,):isTerminalConditionSatisfied491,18558
+class TerminalCondition():TerminalCondition496,18710
+    def __init__(self,state):__init__497,18737
+class TimerCondition(TerminalCondition):TimerCondition501,18823
+    def __init__(self,state,duration):__init__502,18864
+    def isSatisfied(self):isSatisfied506,18998
+class CollisionCondition(TerminalCondition):CollisionCondition518,19334
+    def __init__(self,state,world,bodynode):__init__519,19379
+    def isSatisfied(self):isSatisfied528,19676
+
+gym-foo/guiModule/Cgui.py,1531
+Cgui.py1,0
+class dartGui(guiBase.GuiBase):dartGui31,544
+    def InitGL(self):InitGL32,576
+    def OnDraw(self):OnDraw54,1162
+    def drawBody(self,root):drawBody81,1857
+    def drawingBox(self,body):drawingBox88,1995
+    def TimerFunc(self,):TimerFunc156,3752
+    def drawSkeletons(self,):drawSkeletons167,3958
+    def drawSkeleton(self, skeleton):drawSkeleton171,4099
+    def drawBodyNode(self, root_node):drawBodyNode174,4191
+    def drawEntity(self, entity):drawEntity196,4844
+    def drawShapeFrame(self, shape_frame):drawShapeFrame203,4999
+    def drawShape(self, shape, color):drawShape211,5249
+    def loadMesh(self, path, postprocess = None):loadMesh243,6350
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer264,7047
+    def drawCube(self,_size):drawCube287,7783
+    def drawSphere(self, radius):drawSphere337,9032
+    def drawEllipsoid(self, size):drawEllipsoid339,9094
+    def drawList(self, index):drawList341,9160
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path344,9224
+    world = pydart.World(1/1000)world349,9317
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground352,9352
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas353,9409
+    skel = world.skeletons[1]skel355,9486
+    q = skel.qq357,9517
+    controller = SC.Controller(skel,world)controller362,9602
+    app = wx.App(0)app364,9646
+    frame = wx.Frame(None, -1, size=(1200,960))frame366,9667
+    gui = dartGui(frame,world,controller)gui368,9758
+
+gym-foo/guiModule/drawMesh.py,559
+drawMesh.py1,0
+class drawingMesh():drawingMesh31,529
+    def __init__(self,shape,size = 0):__init__33,551
+    def getShape(self):getShape37,675
+    def load_Model(self, path, postprocess = None):load_Model40,730
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer69,1613
+    def renders(self,shadow):renders116,3580
+    def meshRender(self,shadow):meshRender125,3840
+    def drawMesh(self, mesh, shadow):drawMesh130,3953
+    def apply_material(self, mat,shadow):apply_material157,4794
+    def boxRender(self,_size):boxRender206,7273
+
+gym-foo/guiModule/guiBase.py,1206
+guiBase.py1,0
+class GuiBase(glcanvas.GLCanvas):GuiBase17,300
+    def __init__(self, parent, sim, controller):__init__18,334
+    def OnEraseBackground(self,event):OnEraseBackground51,1429
+    def OnSize(self, event):OnSize54,1482
+    def OnPaint(self, event):OnPaint62,1699
+    def OnMouseDown(self, event):OnMouseDown69,1871
+    def OnMouseUp(self,event):OnMouseUp72,1921
+    def OnRmouseDown(self, event):OnRmouseDown75,1968
+    def OnRmouseUp(self, event):OnRmouseUp78,2019
+    def OnMouseWheel(self, event):OnMouseWheel81,2072
+    def TimerEvent(self, event):TimerEvent84,2123
+    def TimerFunc(self):TimerFunc87,2186
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path93,2279
+    world = pydart.World(1/1000)world98,2372
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground101,2407
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas102,2464
+    skel = world.skeletons[1]skel104,2541
+    q = skel.qq106,2572
+    controller = SC.Controller(skel,world)controller111,2657
+    app = wx.App(0)app113,2701
+    frame = wx.Frame(None, -1, size=(1200,960))frame115,2722
+    gui = GuiBase(frame,world,controller)gui117,2813
+
+gym-foo/guiModule/ModuleTest_drawMesh.py,2125
+ModuleTest_drawMesh.py1,0
+drawLimit = 10drawLimit35,638
+qrm = np.array([[1,0,0],qrm38,677
+gEye = np.array([3,3,3])gEye42,752
+gAt = np.array([0,0,0])gAt43,777
+gUp = np.array([0,1,0])gUp44,801
+class dartGui(guiBase.GuiBase):dartGui48,828
+    def InitGL(self):InitGL49,860
+    def recursive_load_ModelMeshes(self,root):recursive_load_ModelMeshes96,2493
+    def load_ModelMeshes(self,bodyNodes):load_ModelMeshes102,2708
+    def recursive_draw_ModelMeshes(self,root):        recursive_draw_ModelMeshes114,3211
+    def draw_ModelMeshes(self,bodyNodes):draw_ModelMeshes132,3705
+    def reset_sIdx(self):reset_sIdx150,4381
+    def OnDraw(self):OnDraw153,4431
+    def TimerFunc(self,):TimerFunc168,4949
+    def OnMouseDown(self, event):OnMouseDown179,5155
+    def OnMouseUp(self, event):OnMouseUp184,5304
+    def orbit(self,):orbit190,5471
+    def updateEyeY(self):updateEyeY208,5978
+    def updateEyeX(self):updateEyeX225,6490
+    def myLookAtRot(self,eye, at, up, Axis):     myLookAtRot244,7029
+    def myLookAt(self,eye, at, up):     myLookAt280,8333
+    def OnRmouseDown(self,event):OnRmouseDown297,8838
+    def OnRmouseUp(self,event):OnRmouseUp301,8951
+    def pan(self,):pan306,9081
+    def updateEye_At(self):updateEye_At318,9433
+    def OnMouseWheel(self, event):OnMouseWheel329,9781
+    def updateEye_zoom(self):updateEye_zoom342,10100
+    def OnKeyDown(self, event):OnKeyDown349,10269
+    def mouseMotion(self, event):mouseMotion378,11377
+    def drawGroundBox(self,):drawGroundBox389,11765
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path398,12007
+    world = pydart.World(1/1000)world403,12100
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground406,12135
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas407,12192
+    skel = world.skeletons[1]skel409,12269
+    q = skel.qq411,12300
+    controller = SC.Controller(skel,world)controller416,12385
+    app = wx.App(0)app418,12429
+    frame = wx.Frame(None, -1, size=(1200,960))frame420,12450
+    gui = dartGui(frame,world,controller)gui422,12541
+
+gym-foo/guiModule/ModuleTest_drawMesh_new.py,2793
+ModuleTest_drawMesh_new.py1,0
+drawLimit = 100drawLimit37,678
+boxSize = 100boxSize38,694
+imageData = np.zeros((boxSize*8,boxSize*8,3))imageData39,708
+qrm = np.array([[1,0,0],qrm42,778
+gEye = np.array([3,3,3])gEye46,853
+gAt = np.array([0,0,0])gAt47,878
+gUp = np.array([0,1,0])gUp48,902
+class dartGui(guiBase.GuiBase):dartGui52,929
+    def InitGL(self):InitGL53,961
+    def recursive_load_ModelMeshes(self,root):recursive_load_ModelMeshes110,3057
+    def load_ModelMeshes(self,bodyNodes):load_ModelMeshes116,3272
+    def recursive_draw_ModelMeshes(self,root):        recursive_draw_ModelMeshes128,3775
+    def draw_ModelMeshes(self,bodyNodes):draw_ModelMeshes146,4269
+    def recursive_draw_Shadow_ModelMeshes(self,root):        recursive_draw_Shadow_ModelMeshes161,4868
+    def draw_Shadow_ModelMeshes(self,bodyNodes):draw_Shadow_ModelMeshes301,10625
+    def reset_sIdx(self):reset_sIdx320,11289
+    def OnDraw(self):OnDraw323,11339
+    def TimerFunc(self,):TimerFunc342,12023
+    def OnMouseDown(self, event):OnMouseDown353,12229
+    def OnMouseUp(self, event):OnMouseUp358,12378
+    def orbit(self,):orbit364,12545
+    def updateEyeY(self):updateEyeY382,13052
+    def updateEyeX(self):updateEyeX399,13564
+    def myLookAtRot(self,eye, at, up, Axis):     myLookAtRot418,14103
+    def myLookAt(self,eye, at, up):     myLookAt454,15407
+    def OnRmouseDown(self,event):OnRmouseDown471,15912
+    def OnRmouseUp(self,event):OnRmouseUp475,16025
+    def pan(self,):pan480,16155
+    def updateEye_At(self):updateEye_At492,16507
+    def OnMouseWheel(self, event):OnMouseWheel503,16855
+    def updateEye_zoom(self):updateEye_zoom516,17174
+    def OnKeyDown(self, event):OnKeyDown523,17343
+    def mouseMotion(self, event):mouseMotion552,18451
+    def drawGroundBox(self,):drawGroundBox563,18839
+    def EulerY(self, angle):EulerY608,20944
+    def CheckerBoardTextureData(self):CheckerBoardTextureData615,21184
+class wxPythonThread(threading.Thread):wxPythonThread625,21547
+    def __init__(self,app,frame):__init__626,21587
+    def run(self):run631,21731
+    def stop(self):stop633,21778
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path638,21828
+    world = pydart.World(1/1000)world643,21921
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground646,21956
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas647,22013
+    skel = world.skeletons[1]skel649,22090
+    q = skel.qq651,22121
+    controller = SC.Controller(skel,world)controller658,22244
+    app = wx.App(0)app662,22333
+    frame = wx.Frame(None, -1, size=(1200,960))frame664,22354
+    gui = dartGui(frame,world,controller)gui666,22445
+    guiThread = wxPythonThread(app,frame)guiThread668,22508
+
+gym-foo/gym_foo3d/__init__.py,706
+__init__.py1,0
+    id='3d-v0',id4,54
+    entry_point='gym_foo3d.envs:FooEnv',entry_point5,70
+    id='3d-v1',id8,123
+    entry_point='gym_foo3d.envs:FooEnv1',entry_point9,139
+    id='3d-v2',id12,193
+    entry_point='gym_foo3d.envs:FooEnv2',entry_point13,209
+    id='3d-v3',id16,263
+    entry_point='gym_foo3d.envs:FooEnv3',entry_point17,279
+    id='3d-v4',id20,333
+    entry_point='gym_foo3d.envs:FooEnv4',entry_point21,349
+    id='3d-v5',id24,403
+    entry_point='gym_foo3d.envs:FooEnv5',entry_point25,419
+    id='3d-v6',id28,473
+    entry_point='gym_foo3d.envs:FooEnv6',entry_point29,489
+    id='3d-v7',id32,543
+    entry_point='gym_foo3d.envs:FooEnv7',entry_point33,559
+
+gym-foo/lib/Model.py,506
+Model.py1,0
+HID_SIZE = 64HID_SIZE6,67
+class ModelActor(nn.Module):ModelActor9,83
+    def __init__(self, obs_size, act_size):__init__10,112
+    def forward(self, x):forward25,618
+class ModelCritic(nn.Module):ModelCritic28,671
+    def __init__(self, obs_size):__init__29,701
+    def forward(self,x):forward41,1036
+class AgentA2C(ptan.agent.BaseAgent):AgentA2C44,1091
+    def __init__(self,net,device ="cuda"):__init__45,1129
+    def __call__(self, states, agent_states):__call__49,1225
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/__init__.py,17
+__init__.py1,0
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/arguments.py,48
+arguments.py1,0
+def get_args():get_args6,32
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/distributions.py,1078
+distributions.py1,0
+FixedCategorical = torch.distributions.CategoricalFixedCategorical18,271
+old_sample = FixedCategorical.sampleold_sample20,323
+log_prob_cat = FixedCategorical.log_problog_prob_cat23,431
+FixedNormal = torch.distributions.NormalFixedNormal30,704
+log_prob_normal = FixedNormal.log_problog_prob_normal32,746
+normal_entropy = FixedNormal.entropynormal_entropy37,899
+FixedBernoulli = torch.distributions.BernoulliFixedBernoulli43,1056
+log_prob_bernoulli = FixedBernoulli.log_problog_prob_bernoulli45,1104
+bernoulli_entropy = FixedBernoulli.entropybernoulli_entropy49,1286
+class Categorical(nn.Module):Categorical54,1470
+    def __init__(self, num_inputs, num_outputs):__init__55,1500
+    def forward(self, x):forward66,1810
+class DiagGaussian(nn.Module):DiagGaussian71,1907
+    def __init__(self, num_inputs, num_outputs):__init__72,1938
+    def forward(self, x):forward81,2278
+class Bernoulli(nn.Module):Bernoulli93,2605
+    def __init__(self, num_inputs, num_outputs):__init__94,2633
+    def forward(self, x):forward102,2913
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/envs.py,1480
+envs.py1,0
+def make_env(env_id, seed, rank, log_dir, allow_early_resets):make_env32,628
+    def _thunk():_thunk33,691
+def make_vec_envs(env_name,make_vec_envs83,2243
+class TimeLimitMask(gym.Wrapper):TimeLimitMask118,3228
+    def step(self, action):step119,3262
+    def reset(self, **kwargs):reset126,3499
+class MaskGoal(gym.ObservationWrapper):MaskGoal131,3628
+    def observation(self, observation):observation132,3668
+class TransposeObs(gym.ObservationWrapper):TransposeObs138,3811
+    def __init__(self, env=None):__init__139,3855
+class TransposeImage(TransposeObs):TransposeImage146,4012
+    def __init__(self, env=None, op=[2, 0, 1]):__init__147,4048
+    def observation(self, ob):observation163,4663
+class VecPyTorch(VecEnvWrapper):VecPyTorch167,4760
+    def __init__(self, venv, device):__init__168,4793
+    def reset(self):reset174,4987
+    def step_async(self, actions):step_async179,5120
+    def step_wait(self):step_wait186,5382
+class VecNormalize(VecNormalize_):VecNormalize193,5631
+    def __init__(self, *args, **kwargs):__init__194,5666
+    def _obfilt(self, obs, update=True):_obfilt198,5797
+    def train(self):train209,6177
+    def eval(self):eval212,6228
+class VecPyTorchFrameStack(VecEnvWrapper):VecPyTorchFrameStack218,6389
+    def __init__(self, venv, nstack, device=None):__init__219,6432
+    def step_wait(self):step_wait238,7128
+    def reset(self):reset248,7515
+    def close(self):close257,7819
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/model.py,1404
+model.py1,0
+class Flatten(nn.Module):Flatten10,203
+    def forward(self, x):forward11,229
+class Policy(nn.Module):Policy15,294
+    def __init__(self, obs_shape, action_space, base=None, base_kwargs=None):__init__16,319
+    def is_recurrent(self):is_recurrent43,1369
+    def recurrent_hidden_state_size(self):recurrent_hidden_state_size47,1450
+    def forward(self, inputs, rnn_hxs, masks):forward51,1577
+    def act(self, inputs, rnn_hxs, masks, deterministic=False):act54,1659
+    def get_value(self, inputs, rnn_hxs, masks):get_value68,2102
+    def evaluate_actions(self, inputs, rnn_hxs, masks, action):evaluate_actions72,2229
+class NNBase(nn.Module):NNBase82,2570
+    def __init__(self, recurrent, recurrent_input_size, hidden_size):__init__83,2595
+    def is_recurrent(self):is_recurrent98,3113
+    def recurrent_hidden_state_size(self):recurrent_hidden_state_size102,3187
+    def output_size(self):output_size108,3327
+    def _forward_gru(self, x, hxs, masks):_forward_gru111,3388
+class CNNBase(NNBase):CNNBase169,5349
+    def __init__(self, num_inputs, recurrent=False, hidden_size=512):__init__170,5372
+    def forward(self, inputs, rnn_hxs, masks):forward189,6188
+class MLPBase(NNBase):MLPBase198,6418
+    def __init__(self, num_inputs, recurrent=False, hidden_size=64):__init__199,6441
+    def forward(self, inputs, rnn_hxs, masks):forward220,7206
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/storage.py,608
+storage.py1,0
+def _flatten_helper(T, N, _tensor):_flatten_helper5,86
+class RolloutStorage(object):RolloutStorage9,176
+    def __init__(self, num_steps, num_processes, obs_shape, action_space,__init__10,206
+    def to(self, device):to35,1423
+    def insert(self, obs, recurrent_hidden_states, actions, action_log_probs,insert46,1923
+    def after_update(self):after_update60,2591
+    def compute_returns(self,compute_returns66,2836
+    def feed_forward_generator(self,feed_forward_generator107,4996
+    def recurrent_generator(self, advantages, num_mini_batch):recurrent_generator145,6961
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/utils.py,469
+utils.py1,0
+def get_render_func(venv):get_render_func11,129
+def get_vec_normalize(venv):get_vec_normalize22,386
+class AddBias(nn.Module):AddBias32,609
+    def __init__(self, bias):__init__33,635
+    def forward(self, x):forward37,759
+def update_linear_schedule(optimizer, epoch, total_num_epochs, initial_lr):update_linear_schedule46,949
+def init(module, weight_init, bias_init, gain=1):init53,1223
+def cleanup_log_dir(log_dir):cleanup_log_dir59,1372
+
+pytorch-a2c-ppo-acktr-gail/gail_experts/convert_to_pytorch.py,50
+convert_to_pytorch.py1,0
+def main():main10,84
+
+pytorch-a2c-ppo-acktr-gail/guiModule/Cgui.py,1531
+Cgui.py1,0
+class dartGui(guiBase.GuiBase):dartGui31,544
+    def InitGL(self):InitGL32,576
+    def OnDraw(self):OnDraw54,1162
+    def drawBody(self,root):drawBody81,1857
+    def drawingBox(self,body):drawingBox88,1995
+    def TimerFunc(self,):TimerFunc156,3752
+    def drawSkeletons(self,):drawSkeletons167,3958
+    def drawSkeleton(self, skeleton):drawSkeleton171,4099
+    def drawBodyNode(self, root_node):drawBodyNode174,4191
+    def drawEntity(self, entity):drawEntity196,4844
+    def drawShapeFrame(self, shape_frame):drawShapeFrame203,4999
+    def drawShape(self, shape, color):drawShape211,5249
+    def loadMesh(self, path, postprocess = None):loadMesh243,6350
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer264,7047
+    def drawCube(self,_size):drawCube287,7783
+    def drawSphere(self, radius):drawSphere337,9032
+    def drawEllipsoid(self, size):drawEllipsoid339,9094
+    def drawList(self, index):drawList341,9160
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path344,9224
+    world = pydart.World(1/1000)world349,9317
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground352,9352
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas353,9409
+    skel = world.skeletons[1]skel355,9486
+    q = skel.qq357,9517
+    controller = SC.Controller(skel,world)controller362,9602
+    app = wx.App(0)app364,9646
+    frame = wx.Frame(None, -1, size=(1200,960))frame366,9667
+    gui = dartGui(frame,world,controller)gui368,9758
+
+pytorch-a2c-ppo-acktr-gail/guiModule/drawMesh.py,559
+drawMesh.py1,0
+class drawingMesh():drawingMesh31,529
+    def __init__(self,shape,size = 0):__init__33,551
+    def getShape(self):getShape37,675
+    def load_Model(self, path, postprocess = None):load_Model40,730
+    def prepare_gl_buffer(self, mesh):prepare_gl_buffer69,1613
+    def renders(self,shadow):renders116,3580
+    def meshRender(self,shadow):meshRender125,3840
+    def drawMesh(self, mesh, shadow):drawMesh130,3953
+    def apply_material(self, mat,shadow):apply_material157,4794
+    def boxRender(self,_size):boxRender206,7273
+
+pytorch-a2c-ppo-acktr-gail/guiModule/guiBase.py,1210
+guiBase.py1,0
+class GuiBase(glcanvas.GLCanvas):GuiBase17,300
+    def __init__(self, parent, sim, controller,env):__init__18,334
+    def OnEraseBackground(self,event):OnEraseBackground51,1455
+    def OnSize(self, event):OnSize54,1508
+    def OnPaint(self, event):OnPaint62,1725
+    def OnMouseDown(self, event):OnMouseDown69,1897
+    def OnMouseUp(self,event):OnMouseUp72,1947
+    def OnRmouseDown(self, event):OnRmouseDown75,1994
+    def OnRmouseUp(self, event):OnRmouseUp78,2045
+    def OnMouseWheel(self, event):OnMouseWheel81,2098
+    def TimerEvent(self, event):TimerEvent84,2149
+    def TimerFunc(self):TimerFunc87,2212
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path93,2305
+    world = pydart.World(1/1000)world98,2398
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground101,2433
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas102,2490
+    skel = world.skeletons[1]skel104,2567
+    q = skel.qq106,2598
+    controller = SC.Controller(skel,world)controller111,2683
+    app = wx.App(0)app113,2727
+    frame = wx.Frame(None, -1, size=(1200,960))frame115,2748
+    gui = GuiBase(frame,world,controller)gui117,2839
+
+pytorch-a2c-ppo-acktr-gail/guiModule/ModuleTest_drawMesh.py,2125
+ModuleTest_drawMesh.py1,0
+drawLimit = 10drawLimit35,638
+qrm = np.array([[1,0,0],qrm38,677
+gEye = np.array([3,3,3])gEye42,752
+gAt = np.array([0,0,0])gAt43,777
+gUp = np.array([0,1,0])gUp44,801
+class dartGui(guiBase.GuiBase):dartGui48,828
+    def InitGL(self):InitGL49,860
+    def recursive_load_ModelMeshes(self,root):recursive_load_ModelMeshes96,2493
+    def load_ModelMeshes(self,bodyNodes):load_ModelMeshes102,2708
+    def recursive_draw_ModelMeshes(self,root):        recursive_draw_ModelMeshes114,3211
+    def draw_ModelMeshes(self,bodyNodes):draw_ModelMeshes132,3705
+    def reset_sIdx(self):reset_sIdx150,4381
+    def OnDraw(self):OnDraw153,4431
+    def TimerFunc(self,):TimerFunc168,4949
+    def OnMouseDown(self, event):OnMouseDown179,5155
+    def OnMouseUp(self, event):OnMouseUp184,5304
+    def orbit(self,):orbit190,5471
+    def updateEyeY(self):updateEyeY208,5978
+    def updateEyeX(self):updateEyeX225,6490
+    def myLookAtRot(self,eye, at, up, Axis):     myLookAtRot244,7029
+    def myLookAt(self,eye, at, up):     myLookAt280,8333
+    def OnRmouseDown(self,event):OnRmouseDown297,8838
+    def OnRmouseUp(self,event):OnRmouseUp301,8951
+    def pan(self,):pan306,9081
+    def updateEye_At(self):updateEye_At318,9433
+    def OnMouseWheel(self, event):OnMouseWheel329,9781
+    def updateEye_zoom(self):updateEye_zoom342,10100
+    def OnKeyDown(self, event):OnKeyDown349,10269
+    def mouseMotion(self, event):mouseMotion378,11377
+    def drawGroundBox(self,):drawGroundBox389,11765
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path398,12007
+    world = pydart.World(1/1000)world403,12100
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground406,12135
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas407,12192
+    skel = world.skeletons[1]skel409,12269
+    q = skel.qq411,12300
+    controller = SC.Controller(skel,world)controller416,12385
+    app = wx.App(0)app418,12429
+    frame = wx.Frame(None, -1, size=(1200,960))frame420,12450
+    gui = dartGui(frame,world,controller)gui422,12541
+
+pytorch-a2c-ppo-acktr-gail/guiModule/ModuleTest_drawMesh_new.py,2793
+ModuleTest_drawMesh_new.py1,0
+drawLimit = 100drawLimit37,678
+boxSize = 100boxSize38,694
+imageData = np.zeros((boxSize*8,boxSize*8,3))imageData39,708
+qrm = np.array([[1,0,0],qrm42,778
+gEye = np.array([3,3,3])gEye46,853
+gAt = np.array([0,0,0])gAt47,878
+gUp = np.array([0,1,0])gUp48,902
+class dartGui(guiBase.GuiBase):dartGui52,929
+    def InitGL(self):InitGL53,961
+    def recursive_load_ModelMeshes(self,root):recursive_load_ModelMeshes111,3089
+    def load_ModelMeshes(self,bodyNodes):load_ModelMeshes117,3304
+    def recursive_draw_ModelMeshes(self,root):        recursive_draw_ModelMeshes129,3807
+    def draw_ModelMeshes(self,bodyNodes):draw_ModelMeshes147,4301
+    def recursive_draw_Shadow_ModelMeshes(self,root):        recursive_draw_Shadow_ModelMeshes162,4900
+    def draw_Shadow_ModelMeshes(self,bodyNodes):draw_Shadow_ModelMeshes302,10660
+    def reset_sIdx(self):reset_sIdx321,11324
+    def OnDraw(self):OnDraw324,11374
+    def TimerFunc(self,):TimerFunc418,14097
+    def OnMouseDown(self, event):OnMouseDown429,14303
+    def OnMouseUp(self, event):OnMouseUp434,14452
+    def orbit(self,):orbit440,14619
+    def updateEyeY(self):updateEyeY458,15126
+    def updateEyeX(self):updateEyeX475,15640
+    def myLookAtRot(self,eye, at, up, Axis):     myLookAtRot494,16181
+    def myLookAt(self,eye, at, up):     myLookAt530,17485
+    def OnRmouseDown(self,event):OnRmouseDown547,17990
+    def OnRmouseUp(self,event):OnRmouseUp551,18103
+    def pan(self,):pan556,18233
+    def updateEye_At(self):updateEye_At568,18585
+    def OnMouseWheel(self, event):OnMouseWheel579,18933
+    def updateEye_zoom(self):updateEye_zoom592,19252
+    def OnKeyDown(self, event):OnKeyDown599,19421
+    def mouseMotion(self, event):mouseMotion638,21165
+    def drawGroundBox(self,):drawGroundBox649,21553
+    def EulerY(self, angle):EulerY694,23658
+    def CheckerBoardTextureData(self):CheckerBoardTextureData701,23898
+class wxPythonThread(threading.Thread):wxPythonThread711,24261
+    def __init__(self,app,frame):__init__712,24301
+    def run(self):run717,24445
+    def stop(self):stop719,24492
+skel_path = "/home/qfei/dart/data/sdf/atlas/"skel_path724,24542
+    world = pydart.World(1/1000)world729,24635
+    ground = world.add_skeleton(skel_path+"ground.urdf")ground732,24670
+    atlas = world.add_skeleton(skel_path+"atlas_v3_no_head_soft_feet.sdf");atlas733,24727
+    skel = world.skeletons[1]skel735,24804
+    q = skel.qq737,24835
+    controller = SC.Controller(skel,world)controller744,24958
+    app = wx.App(0)app748,25047
+    frame = wx.Frame(None, -1, size=(1200,960))frame750,25068
+    gui = dartGui(frame,world,controller)gui752,25159
+    guiThread = wxPythonThread(app,frame)guiThread754,25222
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/__init__.py,706
+__init__.py1,0
+    id='3d-v0',id4,54
+    entry_point='gym_foo3d.envs:FooEnv',entry_point5,70
+    id='3d-v1',id8,123
+    entry_point='gym_foo3d.envs:FooEnv1',entry_point9,139
+    id='3d-v2',id12,193
+    entry_point='gym_foo3d.envs:FooEnv2',entry_point13,209
+    id='3d-v3',id16,263
+    entry_point='gym_foo3d.envs:FooEnv3',entry_point17,279
+    id='3d-v4',id20,333
+    entry_point='gym_foo3d.envs:FooEnv4',entry_point21,349
+    id='3d-v5',id24,403
+    entry_point='gym_foo3d.envs:FooEnv5',entry_point25,419
+    id='3d-v6',id28,473
+    entry_point='gym_foo3d.envs:FooEnv6',entry_point29,489
+    id='3d-v7',id32,543
+    entry_point='gym_foo3d.envs:FooEnv7',entry_point33,559
+
+pytorch-a2c-ppo-acktr-gail/lib/Model.py,506
+Model.py1,0
+HID_SIZE = 64HID_SIZE6,67
+class ModelActor(nn.Module):ModelActor9,83
+    def __init__(self, obs_size, act_size):__init__10,112
+    def forward(self, x):forward25,618
+class ModelCritic(nn.Module):ModelCritic28,671
+    def __init__(self, obs_size):__init__29,701
+    def forward(self,x):forward41,1036
+class AgentA2C(ptan.agent.BaseAgent):AgentA2C44,1091
+    def __init__(self,net,device ="cuda"):__init__45,1129
+    def __call__(self, states, agent_states):__call__49,1225
+
+gym-foo/gym_foo3d/envs/__init__.py,17
+__init__.py1,0
+
+gym-foo/gym_foo3d/envs/env_base.py,2862
+env_base.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path25,391
+STEP_PER_SEC = 900STEP_PER_SEC26,435
+DESIRED_MAX_SPEED = 1.5DESIRED_MAX_SPEED27,454
+class FooEnvBase(gym.Env):FooEnvBase28,478
+    metadata = {'render.modes': ['human']}metadata29,505
+    def __init__(self):__init__31,549
+    def init_dart(self):init_dart34,589
+    def init_sim(self,cDirection,render):init_sim37,637
+    def set_desiredSpeed(self):set_desiredSpeed156,5316
+    def get_state(self):get_state164,5594
+    def set_env_name(self, name_v):set_env_name169,6251
+    def reset_model(self):reset_model172,6315
+    def step(self):step185,6856
+    def do_simulation(self):do_simulation188,6914
+    def reset(self):reset191,6981
+    def start_render(self, mode='human', close=False):start_render205,7399
+    def stop_render(self):stop_render210,7530
+    def render(self):render213,7588
+    def get_viewer(self):get_viewer218,7710
+    def draw_plot(self,x,y):draw_plot221,7752
+    def _getJointPosition(self,node):_getJointPosition233,8178
+    def _calAngleBetweenVectors(self, v1, v2):_calAngleBetweenVectors243,8549
+    def ForceAction10(self,action):ForceAction10249,8748
+    def clip_Normal_Actiond10(self, action):clip_Normal_Actiond10266,9962
+    def clip_Scaling_Actiond10(self, action):clip_Scaling_Actiond10287,10786
+    def clip_Scaling_Actiond5(self, action):clip_Scaling_Actiond5309,11700
+    def clip_Normal_Actiond5(self, action):clip_Normal_Actiond5321,12122
+    def set_linearActionRatio(self, ratio):set_linearActionRatio332,12533
+    def getCOMFrameXAxis(self):getCOMFrameXAxis337,12696
+    def changeDirection(self):changeDirection351,13158
+    def rotateYAxis(self,theta,tVec):rotateYAxis359,13437
+class FooEnvBase_rs(FooEnvBase):FooEnvBase_rs365,13643
+    def init_sim(self):init_sim366,13676
+    def get_state(self):get_state375,14306
+    def select_TargetSpeed(self):select_TargetSpeed378,14622
+    def changeSpeed(self,spc,sec):changeSpeed382,14778
+    def reset(self):reset387,15007
+class wxPythonThread(threading.Thread):wxPythonThread392,15119
+    def __init__(self,app,frame):__init__393,15159
+    def run(self):run398,15303
+    def stop(self):stop400,15350
+class CircularQueue():CircularQueue403,15398
+    def __init__(self, maxsize):__init__404,15421
+    def isfull(self):isfull411,15592
+    def dequeue(self):dequeue417,15717
+    def enqueue(self, item):enqueue425,15911
+    def mean(self):mean433,16120
+    def reset(self):reset442,16292
+    def first_end_distance_square(self):first_end_distance_square448,16425
+    def returnSecond(self,freq):returnSecond454,16685
+    def returnarray(self):returnarray457,16750
+    def f_e_d(self):f_e_d460,16804
+    a = [0.97692168,0,-0.21359778293]a465,16917
+    b = [0.53975151,0,-0.84182439]b466,16955
+
+gym-foo/gym_foo3d/envs/env_base_rs.py,1545
+env_base_rs.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path28,455
+STEP_PER_SEC = 900STEP_PER_SEC29,499
+class FooEnvBase(gym.Env):FooEnvBase31,519
+    metadata = {'render.modes': ['human']}metadata32,546
+    def __init__(self):__init__34,590
+    def init_dart(self):init_dart116,3068
+    def init_sim(self):init_sim119,3116
+    def get_state(self):get_state191,5812
+    def set_env_name(self, name_v):set_env_name194,6113
+    def reset_model(self):reset_model197,6177
+    def step(self):step210,6718
+    def do_simulation(self):do_simulation213,6776
+    def reset(self):reset216,6843
+    def start_render(self, mode='human', close=False):start_render225,7076
+    def stop_render(self):stop_render230,7207
+    def render(self):render233,7265
+    def get_viewer(self):get_viewer238,7387
+    def draw_plot(self,x,y):draw_plot241,7429
+    def _getJointPosition(self,node):_getJointPosition253,7855
+    def _calAngleBetweenVectors(self, v1, v2):_calAngleBetweenVectors263,8226
+class wxPythonThread(threading.Thread):wxPythonThread270,8423
+    def __init__(self,app,frame):__init__271,8463
+    def run(self):run276,8607
+    def stop(self):stop278,8654
+class CircularQueue():CircularQueue281,8702
+    def __init__(self, maxsize):__init__282,8725
+    def isfull(self):isfull289,8896
+    def dequeue(self):dequeue295,9021
+    def enqueue(self, item):enqueue303,9205
+    def mean(self):mean310,9403
+    def reset(self):reset319,9575
+    def returnarray(self):returnarray325,9716
+
+gym-foo/gym_foo3d/envs/foo_env.py,294
+foo_env.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv(env_base.FooEnvBase):FooEnv27,445
+    def init_sim(self,cDirection,render):init_sim28,480
+    def step(self, action):step33,672
+    def do_simulation(self, action, n_frames):do_simulation124,4293
+
+gym-foo/gym_foo3d/envs/foo_env1.py,317
+foo_env1.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path24,377
+STEP_PER_SEC = 900STEP_PER_SEC25,421
+class FooEnv1(env_base.FooEnvBase):FooEnv129,465
+    def init_sim(self):init_sim30,501
+    def step(self, action):step35,627
+    def do_simulation(self, action, n_frames):do_simulation91,2794
+
+gym-foo/gym_foo3d/envs/foo_env2.py,279
+foo_env2.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv2(env_base.FooEnvBase):FooEnv228,446
+    def init_sim(self):init_sim30,483
+    def step(self, action):step35,608
+    def do_simulation(self, action, n_frames):do_simulation123,4047
+
+gym-foo/gym_foo3d/envs/foo_env3.py,305
+foo_env3.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+env_num = 3env_num27,445
+class FooEnv3(env_base.FooEnvBase):FooEnv329,458
+    def init_sim(self):init_sim31,495
+    def step(self, action):step36,620
+    def do_simulation(self, action, n_frames):do_simulation99,2938
+
+gym-foo/gym_foo3d/envs/foo_env4.py,309
+foo_env4.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+env_num = 4env_num27,445
+class FooEnv4(env_base.FooEnvBase_rs):FooEnv429,458
+    def init_sim(self):init_sim30,497
+    def step(self, action):step35,658
+    def do_simulation(self, action, n_frames):do_simulation123,4189
+
+gym-foo/gym_foo3d/envs/foo_env5.py,309
+foo_env5.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path24,377
+env_num = 5env_num25,421
+class FooEnv5(env_base.FooEnvBase_rs):FooEnv529,458
+    def init_sim(self):init_sim30,497
+    def step(self, action):step35,623
+    def do_simulation(self, action, n_frames):do_simulation109,3412
+
+gym-foo/gym_foo3d/envs/foo_env6.py,307
+foo_env6.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+env_num=6env_num27,445
+class FooEnv6(env_base.FooEnvBase_rs):FooEnv629,456
+    def init_sim(self):init_sim31,496
+    def step(self, action):step36,621
+    def do_simulation(self, action, n_frames):do_simulation117,3600
+
+gym-foo/gym_foo3d/envs/foo_env7.py,341
+foo_env7.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv7(env_base.FooEnvBase):FooEnv727,445
+    def init_sim(self,cDirection,render):init_sim28,481
+    def get_state(self):get_state36,1179
+    def step(self, action):step40,1581
+    def do_simulation(self, action, n_frames):do_simulation127,5203
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/algo/__init__.py,17
+__init__.py1,0
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/algo/a2c_acktr.py,137
+a2c_acktr.py1,0
+class A2C_ACKTR():A2C_ACKTR8,116
+    def __init__(self,__init__9,135
+    def update(self, rollouts):update33,810
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/algo/gail.py,625
+gail.py1,0
+class Discriminator(nn.Module):Discriminator12,213
+    def __init__(self, input_dim, hidden_dim, device):__init__13,245
+    def compute_grad_pen(self,compute_grad_pen30,751
+    def update(self, expert_loader, rollouts, obsfilt=None):update58,1751
+    def predict_reward(self, state, action, gamma, masks, update_rms=True):predict_reward98,3371
+class ExpertDataset(torch.utils.data.Dataset):ExpertDataset114,3952
+    def __init__(self, file_name, num_trajectories=4, subsample_frequency=20):__init__115,3999
+    def __len__(self):__len__160,5413
+    def __getitem__(self, i):__getitem__163,5464
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/algo/kfac.py,855
+kfac.py1,0
+def _extract_patches(x, kernel_size, stride, padding):_extract_patches16,366
+def compute_cov_a(a, classname, layer_info, fast_cnn):compute_cov_a29,844
+def compute_cov_g(g, classname, layer_info, fast_cnn):compute_cov_g49,1419
+def update_running_stat(aa, m_aa, momentum):update_running_stat67,1940
+class SplitBias(nn.Module):SplitBias74,2145
+    def __init__(self, module):__init__75,2173
+    def forward(self, input):forward81,2359
+class KFACOptimizer(optim.Optimizer):KFACOptimizer87,2468
+    def __init__(self,__init__88,2506
+        def split_bias(module):split_bias101,2848
+    def _save_input(self, module, input):_save_input144,3965
+    def _save_grad_output(self, module, grad_input, grad_output):_save_grad_output161,4605
+    def _prepare_model(self):_prepare_model179,5288
+    def step(self):step190,5818
+
+pytorch-a2c-ppo-acktr-gail/a2c_ppo_acktr/algo/ppo.py,118
+ppo.py1,0
+class PPO():PPO7,97
+    def __init__(self,__init__8,110
+    def update(self, rollouts):update34,891
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/__init__.py,17
+__init__.py1,0
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/env_base.py,3009
+env_base.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path25,391
+STEP_PER_WALK = 2STEP_PER_WALK26,435
+DESIRED_MAX_SPEED = 1.3DESIRED_MAX_SPEED27,453
+class FooEnvBase(gym.Env):FooEnvBase28,477
+    metadata = {'render.modes': ['human']}metadata29,504
+    def __init__(self):__init__31,548
+    def init_dart(self):init_dart34,588
+    def init_sim(self,cDirection,render):init_sim37,636
+    def set_desiredSpeed(self):set_desiredSpeed164,5595
+    def change_targetspeed(self):change_targetspeed171,5894
+    def get_state(self):get_state176,6080
+    def set_env_name(self, name_v):set_env_name181,6737
+    def reset_model(self):reset_model184,6801
+    def step(self):step197,7342
+    def do_simulation(self):do_simulation200,7400
+    def reset(self):reset203,7467
+    def start_render(self, mode='human', close=False):start_render223,8065
+    def stop_render(self):stop_render228,8196
+    def render(self):render231,8254
+    def get_viewer(self):get_viewer236,8376
+    def draw_plot(self,x,y):draw_plot239,8418
+    def _getJointPosition(self,node):_getJointPosition251,8844
+    def _calAngleBetweenVectors(self, v1, v2):_calAngleBetweenVectors261,9215
+    def ForceAction10(self,action):ForceAction10267,9414
+    def clip_Normal_Actiond10(self, action):clip_Normal_Actiond10284,10628
+    def clip_Scaling_Actiond10(self, action):clip_Scaling_Actiond10306,11415
+    def clip_Scaling_Actiond5(self, action):clip_Scaling_Actiond5340,12601
+    def clip_Normal_Actiond5(self, action):clip_Normal_Actiond5352,13023
+    def set_linearActionRatio(self, ratio):set_linearActionRatio363,13434
+    def getCOMFrameXAxis(self):getCOMFrameXAxis368,13597
+    def changeDirection(self):changeDirection382,14059
+    def rotateYAxis(self,theta,tVec):rotateYAxis390,14370
+    def distance(self):distance396,14580
+class FooEnvBase_rs(FooEnvBase):FooEnvBase_rs402,14932
+    def init_sim(self):init_sim403,14965
+    def get_state(self):get_state412,15595
+    def select_TargetSpeed(self):select_TargetSpeed415,15911
+    def changeSpeed(self,spc,sec):changeSpeed419,16067
+    def reset(self):reset424,16296
+class wxPythonThread(threading.Thread):wxPythonThread429,16408
+    def __init__(self,app,frame):__init__430,16448
+    def run(self):run435,16592
+    def stop(self):stop437,16639
+class CircularQueue():CircularQueue440,16687
+    def __init__(self, maxsize):__init__441,16710
+    def isfull(self):isfull448,16881
+    def dequeue(self):dequeue454,17006
+    def enqueue(self, item):enqueue462,17200
+    def mean(self):mean470,17409
+    def reset(self):reset479,17581
+    def first_end_distance_square(self):first_end_distance_square485,17714
+    def returnSecond(self,freq):returnSecond491,17974
+    def returnarray(self):returnarray494,18039
+    def f_e_d(self):f_e_d497,18093
+    def sum_all(self):sum_all500,18178
+    a = [0.97692168,0,-0.21359778293]a507,18336
+    b = [0.53975151,0,-0.84182439]b508,18374
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/env_base_rs.py,1545
+env_base_rs.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path28,455
+STEP_PER_SEC = 900STEP_PER_SEC29,499
+class FooEnvBase(gym.Env):FooEnvBase31,519
+    metadata = {'render.modes': ['human']}metadata32,546
+    def __init__(self):__init__34,590
+    def init_dart(self):init_dart116,3068
+    def init_sim(self):init_sim119,3116
+    def get_state(self):get_state191,5812
+    def set_env_name(self, name_v):set_env_name194,6113
+    def reset_model(self):reset_model197,6177
+    def step(self):step210,6718
+    def do_simulation(self):do_simulation213,6776
+    def reset(self):reset216,6843
+    def start_render(self, mode='human', close=False):start_render225,7076
+    def stop_render(self):stop_render230,7207
+    def render(self):render233,7265
+    def get_viewer(self):get_viewer238,7387
+    def draw_plot(self,x,y):draw_plot241,7429
+    def _getJointPosition(self,node):_getJointPosition253,7855
+    def _calAngleBetweenVectors(self, v1, v2):_calAngleBetweenVectors263,8226
+class wxPythonThread(threading.Thread):wxPythonThread270,8423
+    def __init__(self,app,frame):__init__271,8463
+    def run(self):run276,8607
+    def stop(self):stop278,8654
+class CircularQueue():CircularQueue281,8702
+    def __init__(self, maxsize):__init__282,8725
+    def isfull(self):isfull289,8896
+    def dequeue(self):dequeue295,9021
+    def enqueue(self, item):enqueue303,9205
+    def mean(self):mean310,9403
+    def reset(self):reset319,9575
+    def returnarray(self):returnarray325,9716
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env.py,296
+foo_env.py1,0
+skel_path="/home/gyoofe/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv(env_base.FooEnvBase):FooEnv27,447
+    def init_sim(self,cDirection,render):init_sim28,482
+    def step(self, action):step33,674
+    def do_simulation(self, action, n_frames):do_simulation125,4297
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env1.py,317
+foo_env1.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path24,377
+STEP_PER_SEC = 900STEP_PER_SEC25,421
+class FooEnv1(env_base.FooEnvBase):FooEnv129,465
+    def init_sim(self):init_sim30,501
+    def step(self, action):step35,627
+    def do_simulation(self, action, n_frames):do_simulation91,2794
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env2.py,279
+foo_env2.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv2(env_base.FooEnvBase):FooEnv228,446
+    def init_sim(self):init_sim30,483
+    def step(self, action):step35,608
+    def do_simulation(self, action, n_frames):do_simulation123,4047
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env3.py,305
+foo_env3.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+env_num = 3env_num27,445
+class FooEnv3(env_base.FooEnvBase):FooEnv329,458
+    def init_sim(self):init_sim31,495
+    def step(self, action):step36,620
+    def do_simulation(self, action, n_frames):do_simulation99,2938
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env4.py,309
+foo_env4.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path26,401
+env_num = 4env_num27,445
+class FooEnv4(env_base.FooEnvBase_rs):FooEnv429,458
+    def init_sim(self):init_sim30,497
+    def step(self, action):step35,658
+    def do_simulation(self, action, n_frames):do_simulation123,4189
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env5.py,309
+foo_env5.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path24,377
+env_num = 5env_num25,421
+class FooEnv5(env_base.FooEnvBase_rs):FooEnv529,458
+    def init_sim(self):init_sim30,497
+    def step(self, action):step35,623
+    def do_simulation(self, action, n_frames):do_simulation109,3412
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env6.py,795
+foo_env6.py1,0
+skel_path="/home/qfei/dart/data/sdf/atlas/"skel_path27,415
+SIMULATION_STEP_PER_SEC=900SIMULATION_STEP_PER_SEC28,459
+class FooEnv6(env_base.FooEnvBase):FooEnv629,487
+    def init_sim(self,cDirection,render):init_sim30,523
+    def get_state(self):get_state113,3835
+    def updateEndEffectorLocalPosition(self):updateEndEffectorLocalPosition120,4572
+    def setvalue(self,value):setvalue136,5356
+    def reset(self):reset144,5708
+    def increaseSpeed(self):increaseSpeed220,8011
+    def clip_Scaling_Actiond10(self, action, stateName):clip_Scaling_Actiond10224,8130
+    def step(self, action):step328,11667
+    def ChangeRandom(self):ChangeRandom518,20798
+    def do_simulation(self, action):do_simulation540,21957
+    def render(self):render746,32776
+
+pytorch-a2c-ppo-acktr-gail/gym_foo3d/envs/foo_env7.py,381
+foo_env7.py1,0
+skel_path="/home/gyoofe/dart/data/sdf/atlas/"skel_path26,401
+class FooEnv7(env_base.FooEnvBase):FooEnv727,447
+    def init_sim(self,cDirection,render):init_sim28,483
+    def get_state(self):get_state36,1181
+    def step(self, action):step40,1583
+    def do_simulation(self, action, n_frames):do_simulation146,5929
+    def render(self):render156,6309

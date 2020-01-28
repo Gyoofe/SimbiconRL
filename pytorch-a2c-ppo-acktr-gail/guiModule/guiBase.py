@@ -15,13 +15,13 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 class GuiBase(glcanvas.GLCanvas):
-    def __init__(self, parent, sim, controller):
+    def __init__(self, parent, sim, controller,env):
         glcanvas.GLCanvas.__init__(self, parent, -1)
         self.init = False
 
         self.sim = sim
         self.controller = controller
-
+        self.env = env
         #TODO::initial Mouse Postition
 
         #
@@ -41,6 +41,8 @@ class GuiBase(glcanvas.GLCanvas):
         self.Bind(wx.EVT_MOUSEWHEEL, self.OnMouseWheel)
         self.Bind(wx.EVT_MOTION, self.mouseMotion)
         self.timer.Start(30)
+        self.timerOffset = 30
+        self.currentTimeStep = 0
         #print(self.timer.GetInterval())
         #input()
         

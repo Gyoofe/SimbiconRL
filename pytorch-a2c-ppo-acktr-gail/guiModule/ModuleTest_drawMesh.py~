@@ -116,8 +116,8 @@ class dartGui(guiBase.GuiBase):
         #   return
 
         glPushMatrix()
-        glMultMatrixd(np.transpose(root.relative_transform()))
-        #glMultMatrixd(root.transform())
+        #glMultMatrixd(np.transpose(root.relative_transform()))
+        glMultMatrixd(root.transform())
         #glMultMatrixf(np.transpose(root.world_transform()))
         
         
@@ -166,7 +166,7 @@ class dartGui(guiBase.GuiBase):
         self.SwapBuffers()
 
     def TimerFunc(self,):
-        #print("TImer....")
+        print("TImer....")
         #self.controller.update()
         #self.sim.step()
 

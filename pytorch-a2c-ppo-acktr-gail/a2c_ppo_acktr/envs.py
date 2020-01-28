@@ -46,9 +46,9 @@ def make_env(env_id, seed, rank, log_dir, allow_early_resets):
 
         #추가코드
         env.init_dart()
-        env.init_sim(True,False)
+        env.init_sim(True,True)
 
-        #env.start_render()
+        env.start_render()
 
         obs_shape = env.observation_space.shape
 
