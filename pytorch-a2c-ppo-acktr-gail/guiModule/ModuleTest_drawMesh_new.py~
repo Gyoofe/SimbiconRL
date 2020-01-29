@@ -1456,7 +1456,7 @@ class dartGui(guiBase.GuiBase):
 
         #glutPostRedisplay()
         #self.OnDraw()
-         
+                 
         self.SecondPerTest = 10
         if self.currentTimeStep < 3:
             self.env.StartMedian()

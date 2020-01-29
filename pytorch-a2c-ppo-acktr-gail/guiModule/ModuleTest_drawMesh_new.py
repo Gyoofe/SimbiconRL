@@ -1456,7 +1456,7 @@ class dartGui(guiBase.GuiBase):
 
         #glutPostRedisplay()
         #self.OnDraw()
-        """         
+                 
         self.SecondPerTest = 10
         if self.currentTimeStep < 3:
             self.env.StartMedian()
@@ -1532,7 +1532,7 @@ class dartGui(guiBase.GuiBase):
             if self.env.desiredMaximumSwingfootHeight >= self.env.desiredStepDuration/4+0.15:
                 self.test5Done = True
                 print("test5Done")
-        """
+        
         self.Refresh()
         
         return
