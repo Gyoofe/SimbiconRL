@@ -311,7 +311,7 @@ class FooEnv6(env_base.FooEnvBase):
 
 
 
-    
+    """ 
     def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -1, 1)
         #다리 드는거 
@@ -353,7 +353,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[11] = (action[11])*0.524559-0.086132
 
         return action
-    
+    """
 
     def step(self, action):
         pos_before = self.sim.skeletons[1].com()
