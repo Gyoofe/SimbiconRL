@@ -160,8 +160,9 @@ class State():
 
         
         
-        ##비활성 
-        #self._updateTorqueForStanceLeg(getCOMFrameLinear)
+        ##비활성
+        #활송
+        self._updateTorqueForStanceLeg(getCOMFrameLinear)
 
         
         
