@@ -503,7 +503,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)
 
 
         self.step_counter += n_frames
