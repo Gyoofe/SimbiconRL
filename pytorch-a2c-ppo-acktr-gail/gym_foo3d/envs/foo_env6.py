@@ -376,6 +376,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         #방향 맞춤
         self.currentFrameXAxis = self.getCOMFrameXAxis()
+        """\
+        #방향 맞춤
         for i in range(3):
             self.currentFrameXAxis[i] = (self.currentFrameXAxis[i] + self.ppreviousforward[i])
         self.leftAngle = self._calAngleBetweenVectors(self.currentFrameXAxis, self.targetFrameXAxis)
@@ -383,7 +385,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.leftAngle = -self.leftAngle
         self.ppreviousforward = self.previousforward
         self.previousforward = self.getCOMFrameXAxis()
-
+        """
         
         ##torso 균형
         torsoYVec = self.mtorso.world_transform()[0:3,2]
@@ -400,13 +402,20 @@ class FooEnv6(env_base.FooEnvBase):
         #walkPenalty(직선보행 페널티)
         ###Queue 수정해야됨!!!!!!!!!!!!! ###
         #self.a = [1,0,0]
+        """
         if self.XveloQueue.f_e_d() == 0 and self.ZveloQueue.f_e_d() == 0:
             self.a = [1,0,0]
         else:
             self.a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
-
+        """
+        walkPenalty = np.dot(self.getCOMFrameXAxis(),np.array([1,0,0]))
+        if walkPenalty > 0:
+            walkPenalty = np.clip(np.log(walkPenalty), -3, 0)
+        else:
+            walkPenalty = -3
+        
 
 
         ##Stride Reward
@@ -503,7 +512,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - 2*rootPenalty + 2*walkPenalty -self.tausums/8000 - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
 
 
         self.step_counter += n_frames
