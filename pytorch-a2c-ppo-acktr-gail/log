@@ -1,0 +1,564 @@
+Logging to /tmp/openai-2020-05-28-11-32-46-286151
+Creating dummy env object to get spaces
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+failed to load pyqt5
+0.0
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m  [pydart2_api] Destroy pydart manager OK
+[1;32mMsg[0m  [pydart2_api] init...
+[1;32mMsg[0m  [pydart2_api] manager OK...
+[1;32mMsg[0m  [pydart2_api] RI OK...
+[1;32mMsg[0m  [pydart2_api] RI init OK...
+[1;32mMsg[0m  [pydart2_api] Initialize pydart manager OK
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/ground.urdf
+[1;32mMsg[0m  [pydart_api] parse as URDF (ext: urdf)
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/ground.urdf]
+[1;32mMsg[0m [pydart_api] /home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf
+[1;32mMsg[0m  [pydart_api] parse as SDF (ext: .sdf)
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(1)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(2)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(3)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - visual shape] is a duplicate, so it has been renamed to [utorso - visual shape(4)]
+[1;32mMsg[0m [NameManager::issueNewName] (Skeleton::N4dart8dynamics9ShapeNodeE | drc_skeleton) The name [utorso - collision shape] is a duplicate, so it has been renamed to [utorso - collision shape(1)]
+[1;32mMsg[0m  [pydart_api] skel [/home/gyoofe/dart/data/sdf/atlas/atlas_v3_no_head.sdf]
