@@ -338,6 +338,8 @@ class FooEnv6(env_base.FooEnvBase):
         #torso StanceState ( -30 ~0 )
         action[26] = ((action[26] -1)/2) * math.radians(30.0)
 
+        return action
+
     def clip_Scaling_Actiond10_SwingRight(self, action, stateName):
         action = np.clip(action, -200, 200)/200
 
@@ -422,6 +424,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         #torso StanceState ( -30 ~0 )
         action[26] = ((action[26] -1)/2) * math.radians(30.0)
+
+        return action
 
     def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -200, 200)/200
@@ -536,7 +540,7 @@ class FooEnv6(env_base.FooEnvBase):
         if self.previousState is "0":
             action = self.clip_Scaling_Actiond10_SwingRight(action, self.previousState)
         else:
-            action = self.clip_Scaling_Actiond10_SwingLeft..(action, self.previousState)
+            action = self.clip_Scaling_Actiond10_SwingLeft(action, self.previousState)
         done,n_frames = self.do_simulation(action)
         
         #발의 위치
@@ -674,7 +678,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
-        #alive_bonus = ALIVE_BONUS
+        alive_bonus = ALIVE_BONUS
 
         reward = (alive_bonus - 2*rootPenalty - self.tausums/32000 - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
 
