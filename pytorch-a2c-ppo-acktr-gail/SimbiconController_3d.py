@@ -74,12 +74,12 @@ class StateMachine():
             wState2 = self.mStates[2]
             wState3 = self.mStates[3]
             if int(self.mCurrentState.mName) is 0:
-                tCond0 = st.TimerCondition(wState0, action[20])
+                tCond0 = st.TimerCondition(wState0, action[24])
                 wState0.setTerminalCondition(tCond0)
                 #tCond1 = st.TimerCondition(wState1, action[10]*(1-action[11]))
                 #wState1.setTerminalCondition(tCond1)
             if int(self.mCurrentState.mName) is 2:
-                tCond2 = st.TimerCondition(wState2, action[20])
+                tCond2 = st.TimerCondition(wState2, action[24])
                 wState2.setTerminalCondition(tCond2)
                 #tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
                 #wState3.setTerminalCondition(tCond3)
@@ -114,33 +114,81 @@ class StateMachine():
             #swa13 = action[7]
             #stk13 = action[8]
             #sta13 = action[9]
+        if int(self.mCurrentState.mName) is 2:
+            swhx02 = action[0]
+            swh02 = action[1]
+            swhz02 = action[2]
 
-            swh02 = action[0]
-            swk02 = action[1]
-            swa02 = action[2]
-            swh13 = action[3]
-            swk13 = action[4]
-            swa13 = action[5]
+            swk02 = action[3]
+            swax02 = action[4]
+            swa02 = action[5]
 
-            stk02=  action[6]
-            sta02 = action[7]
-            stk13=  action[8]
-            sta13 = action[9]
+            swhx13 = action[6]
+            swh13 = action[7]
+            swhz13 = action[8]
 
-            swhx02 = action[10]
-            swhx13 = action[11]
+            swh13 = action[9]
 
-            swhz02=action[12]
-            swhz13=action[13]
-            sthx02=action[14]
-            sthy02=action[15]
-            sthz02=action[16]
-            sthx13=action[17]
-            sthy13=action[18]
-            sthz13=action[19]
+            swax13 = action[10]
+            swa13 = action[11]
 
-            pelvis02 = action[21]
-            pelvis13 = action[22]
+            ##stance
+            sthx02 = action[12]
+            sthy02 = action[13]
+            sthz02 = action[14]
+
+            stk02 = action[15]
+            stax02 = action[16]
+            sta02 = action[17]
+
+            sthx13 = action[18]
+            sthy13 = aciton[19]
+            sthz13 = action[20]
+
+            stk13=  action[21]
+            stax13 = action[22]
+            sta13 = action[23]
+
+            pelvis02 = action[25]
+            pelvis13 = action[26]
+        else if int(self.mCurrentState.mName) is 0:
+            #swing hip 
+            swhx02 = action[12]
+            swh02 = action[13]
+            swhz02 = action[14]
+
+            swk02 = action[15]
+            swax02 = action[16]
+            swa02 = action[17]
+
+            swhx13 = action[18]
+            swh13 = action[19]
+            swhz13 = action[20]
+
+            swh13 = action[21]
+
+            swax13 = action[22]
+            swa13 = action[23]
+
+            ##stance hip
+            sthx02 = action[0]
+            sthy02 = action[1]
+            sthz02 = action[2]
+
+            stk02 = action[3]
+            stax02 = action[4]
+            sta02 = action[5]
+
+            sthx13 = action[6]
+            sthy13 = aciton[7]
+            sthz13 = action[8]
+
+            stk13=  action[9]
+            stax13 = action[10]
+            sta13 = action[11]
+
+            pelvis02 = action[25]
+            pelvis13 = action[26]
             #tauT = action[14]
 
 
@@ -171,9 +219,11 @@ class StateMachine():
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)
             wState0.setDesiredJointPosition("r_leg_kny", -swk02)
             wState0.setDesiredJointPosition("r_leg_aky", -swa02)
+            wState0.setDesiredJointPosition("r_leg_akx", -swax02)
 
             wState0.setDesiredJointPosition("l_leg_kny", -stk02)
             wState0.setDesiredJointPosition("l_leg_aky",-sta02)
+            wState0.setDesiredJointPosition("l_leg_akx",-stax02)
 
             wState0.setDesiredJointPosition("r_leg_hpx", -swhx02)
             wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
@@ -186,9 +236,11 @@ class StateMachine():
             wState1.setDesiredJointPosition("r_leg_hpy", -swh13)
             wState1.setDesiredJointPosition("r_leg_kny", -swk13)
             wState1.setDesiredJointPosition("r_leg_aky", -swa13)
+            wState1.setDesiredJointPosition("r_leg_akx", -swax13)
 
             wState1.setDesiredJointPosition("l_leg_kny", -stk13)
             wState1.setDesiredJointPosition("l_leg_aky", -sta13)
+            wState1.setDesiredJointPosition("l_leg_akx", -stax13)
             
             wState1.setDesiredJointPosition("r_leg_hpx", -swhx13)
             wState1.setDesiredJointPosition("r_leg_hpz", -swhz13)
@@ -202,9 +254,11 @@ class StateMachine():
             wState2.setDesiredJointPosition("l_leg_hpy", -swh02)
             wState2.setDesiredJointPosition("l_leg_kny", -swk02)
             wState2.setDesiredJointPosition("l_leg_aky", -swa02)
+            wState2.setDesiredJointPosition("l_leg_akx", -swax02)
 
             wState2.setDesiredJointPosition("r_leg_kny", -stk02)
             wState2.setDesiredJointPosition("r_leg_aky",-sta02)
+            wState2.setDesiredJointPosition("r_leg_akx",-stax02)
 
             wState2.setDesiredJointPosition("l_leg_hpx", -swhx02)
             wState2.setDesiredJointPosition("l_leg_hpz", -swhz02)
@@ -218,9 +272,11 @@ class StateMachine():
             wState3.setDesiredJointPosition("l_leg_hpy", -swh13)
             wState3.setDesiredJointPosition("l_leg_kny", -swk13)
             wState3.setDesiredJointPosition("l_leg_aky", -swa13)
+            wState3.setDesiredJointPosition("l_leg_akx", -swax13)
 
             wState3.setDesiredJointPosition("r_leg_kny", -stk13)
             wState3.setDesiredJointPosition("r_leg_aky",-sta13)
+            wState3.setDesiredJointPosition("r_leg_akx",-stax13)
 
             wState3.setDesiredJointPosition("l_leg_hpx", -swhx13)
             wState3.setDesiredJointPosition("l_leg_hpz", -swhz13)

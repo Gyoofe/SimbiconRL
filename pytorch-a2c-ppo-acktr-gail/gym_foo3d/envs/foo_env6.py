@@ -113,7 +113,7 @@ class FooEnv6(env_base.FooEnvBase):
         #정보업데이트
         self.updateEndEffectorLocalPosition()
         observation_spaces = self.get_state()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(23,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(27,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.observation_space = self.get_state()
@@ -253,6 +253,176 @@ class FooEnv6(env_base.FooEnvBase):
         if self.targetspeed < self.targetMaxspeed:
             self.targetspeed += 0.025
 
+    def clip_Scaling_Actiond10_SwingLeft(self, action, stateName):
+        action = np.clip(action, -200, 200)/200
+
+        #left
+        
+        #swingState hipx ( -10 ~ 10 )
+        action[0] = action[0]*math.radians(10)
+        #swingState hipy(0~90)
+        action[1] = ((action[1] + 1)/2)*np.pi/2
+        #swingState hipz ( -30 ~ 30)
+        action[2] = action[2]*math.radians(30)
+
+        #swingState knee (-100 ~ -70)
+        action[3] = ((action[3] - 1)*0.35-0.3)*math.radians(100.0)
+
+        #SwingState ank x
+        action[4] = action[4] * math.radians(10.0)
+
+        #SwingState ank y (-40 ~ 60)
+        action[5] = (((action[5] + 1)/2)*(2/3)+1/3)*np.pi/3
+
+        #StanceState hipx (-10 ~ 10)
+        action[6] = action[6] * math.radians(10.0)
+
+        #StanceState hipy (-30 ~ 0)
+        action[7] = ((action[7] - 1)/2)*np.pi/6
+
+
+        #StanceState hipz (-30 ~ 30)
+        action[8] = action[8] * math.radians(30.0)
+        #StanceState knee (-20 ~ 0)
+        action[9] = ((action[9]-1)/2)*np.pi/9
+
+
+        #StanceState ank x
+        action[10] = action[10] * math.radians(10.0)
+
+        #StanceState ank y (-20 ~ 20)
+        action[11] = action[11] * math.radians(20.0)
+
+        #right(Stance Hip)
+
+        #swingState hipx ( -10 ~10 )
+        action[12] = action[12] * math.radians(10.0)
+        #swingState hipy ( -30 ~ 0 )
+        action[13] = ((action[13] - 1)/2)*math.radians(30.0)
+
+        #swingState hipz ( -30 ~30 )
+        action[14] = action[14] * math.radians(30.0)
+
+        #swingState knee ( -20 ~ 0 )
+        action[15] = ((action[15] -1)/2) * math.radians(20.0)
+
+        #SwingState ank x
+        action[16]  = action[16] * math.radians(10.0)
+
+        #SwingState ank y ( -20 ~ 20)
+        action[17] = action[17]*math.radians(20.0)
+
+        #StanceState hipx (-10 ~ 10 )
+        action[18] = action[18]*math.radians(10.0)
+
+        #StanceState hipy (-30 ~ 0)
+        action[19] = ((action[19] - 1) /2 ) * math.radians(30.0)
+
+        #StanceState hipz (-30 ~ 30 )
+        action[20] = action[20] * math.radians(30.0)
+        #StanceState knee (-20 ~0 )
+        action[21] = ((action[21]-1)/2)*math.radians(20.0)
+
+        #StanceState ank x 
+        action[22] = action[22] * math.radians(10.0)
+
+        #StanceState ank y (-20 ~ 20)
+        action[23] = action[23] * math.radians(20.0)
+        
+        #duration 
+        action[24] = ((action[24]+1)/2)*0.45 + 0.1
+
+        #torso SwingState ( -30 ~ 0 )
+        action[25] = ((action[25] -1)/2) * math.radians(30.0)
+
+        #torso StanceState ( -30 ~0 )
+        action[26] = ((action[26] -1)/2) * math.radians(30.0)
+
+    def clip_Scaling_Actiond10_SwingRight(self, action, stateName):
+        action = np.clip(action, -200, 200)/200
+
+        #left
+        
+        #swingState hipx ( -10 ~ 10 )
+        action[0] = action[0]*math.radians(10)
+        #swingState hipy (-30 ~ 0)
+        action[1] = ((action[1] - 1)/2)*math.radians(30.0)
+        #swingState hipz ( -30 ~ 30)
+        action[2] = action[2]*math.radians(30)
+
+        #swingState knee ( -20 ~ 0 )
+        action[3] = ((action[3] -1)/2) * math.radians(20.0)
+
+        #SwingState ank x
+        action[4] = ((action[4])) * math.radians(10.0)
+
+        #SwingState ank y (-20 ~ 20)
+        action[5] = action[5]*math.radians(20.0)
+
+        #StanceState hipx (-10 ~ 10)
+        action[6] = action[6] * math.radians(10.0)
+
+        #StanceState hipy (-30 ~ 0)
+        action[7] = ((action[7] - 1)/2)*np.pi/6
+
+
+        #StanceState hipz (-30 ~ 30)
+        action[8] = action[8] * math.radians(30.0)
+        #StanceState knee (-20 ~ 0)
+        action[9] = ((action[9]-1)/2)*np.pi/9
+
+
+        #StanceState ank x
+        action[10] = action[10] * math.radians(10.0)
+
+        #StanceState ank y (-20 ~ 20)
+        action[11] = action[11] * math.radians(20.0)
+
+        #right(Stance Hip)
+
+        #swingState hipx ( -10 ~10 )
+        action[12] = action[12] * math.radians(10.0)
+        #swingState hipy ( 0 ~ 90 )
+        action[13] = ((action[13] + 1)/2)*np.pi/2
+
+        #swingState hipz ( -30 ~30 )
+        action[14] = action[14] * math.radians(30.0)
+
+        #swingState knee (-100 ~ -70)
+        action[15] = ((action[15] - 1)*0.35-0.3)*math.radians(100.0)
+
+        #SwingState ank x
+        action[16] = action[16] * math.radians(10.0)
+
+        #SwingState ank y (-40 ~ 60)
+        action[17] = (((action[17] + 1)/2)*(2/3)+1/3)*np.pi/3
+
+        #StanceState hipx (-10 ~ 10 )
+        action[18] = action[18]*math.radians(10.0)
+
+        #StanceState hipy (-30 ~ 0)
+        action[19] = ((action[19] - 1) /2 ) * math.radians(30.0)
+
+        #StanceState hipz (-30 ~ 30 )
+        action[20] = action[20] * math.radians(30.0)
+        #StanceState knee (-20 ~0 )
+        action[21] = ((action[21]-1)/2)*math.radians(20.0)
+
+        #StanceState ank x 
+        action[22] = action[22] * math.radians(10.0)
+
+        #StanceState ank y (-20 ~ 20)
+        action[23] = action[23] * math.radians(20.0)
+        
+        #duration 
+        action[24] = ((action[24]+1)/2)*0.45 + 0.1
+
+        #torso SwingState ( -30 ~ 0 )
+        action[25] = ((action[25] -1)/2) * math.radians(30.0)
+
+        #torso StanceState ( -30 ~0 )
+        action[26] = ((action[26] -1)/2) * math.radians(30.0)
+
     def clip_Scaling_Actiond10(self, action, stateName):
         action = np.clip(action, -200, 200)/200
         #드는거 
@@ -363,7 +533,10 @@ class FooEnv6(env_base.FooEnvBase):
         #    action[14] = (self.curValue/20)*action[14]
         self.previousState = self.controller.mCurrentStateMachine.mCurrentState.mName
         #done은 에피소드가 끝났는지..
-        action = self.clip_Scaling_Actiond10(action, self.previousState)
+        if self.previousState is "0":
+            action = self.clip_Scaling_Actiond10_SwingRight(action, self.previousState)
+        else:
+            action = self.clip_Scaling_Actiond10_SwingLeft..(action, self.previousState)
         done,n_frames = self.do_simulation(action)
         
         #발의 위치
@@ -501,9 +674,9 @@ class FooEnv6(env_base.FooEnvBase):
 
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
 
-        alive_bonus = ALIVE_BONUS
+        #alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - 2*rootPenalty - self.tausums/32000 - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
 
 
         self.step_counter += n_frames
@@ -655,9 +828,9 @@ class FooEnv6(env_base.FooEnvBase):
             self.stepDuration += 1
 
             ##전체 몸에 가해지는 Torque 합
-            if self.tausums is 0:
-                for i in self.skel.tau:
-                    self.tausums += np.abs(i)
+            #if self.tausums is 0:
+            for i in self.skel.tau:
+                self.tausums += np.abs(i)
 
             if self.controller.mCurrentStateMachine.mCurrentState.mName is "0":
                 if self.footPosWhenS0S2End < r_foot_pos[1] - GROUND_Y:
