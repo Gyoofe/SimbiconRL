@@ -127,7 +127,7 @@ class StateMachine():
             swh13 = action[7]
             swhz13 = action[8]
 
-            swh13 = action[9]
+            swk13 = action[9]
 
             swax13 = action[10]
             swa13 = action[11]
@@ -142,7 +142,7 @@ class StateMachine():
             sta02 = action[17]
 
             sthx13 = action[18]
-            sthy13 = aciton[19]
+            sthy13 = action[19]
             sthz13 = action[20]
 
             stk13=  action[21]
@@ -151,7 +151,7 @@ class StateMachine():
 
             pelvis02 = action[25]
             pelvis13 = action[26]
-        else if int(self.mCurrentState.mName) is 0:
+        elif int(self.mCurrentState.mName) is 0:
             #swing hip 
             swhx02 = action[12]
             swh02 = action[13]
@@ -165,7 +165,7 @@ class StateMachine():
             swh13 = action[19]
             swhz13 = action[20]
 
-            swh13 = action[21]
+            swk13 = action[21]
 
             swax13 = action[22]
             swa13 = action[23]
@@ -180,7 +180,7 @@ class StateMachine():
             sta02 = action[5]
 
             sthx13 = action[6]
-            sthy13 = aciton[7]
+            sthy13 = action[7]
             sthz13 = action[8]
 
             stk13=  action[9]

@@ -60,7 +60,15 @@ class FooEnvBase(gym.Env):
         #x방향으로 진행
         self.initPos = q
         self.skel.set_positions(q)
-        
+       
+        larmIdx = self.skel.dof("l_arm_shx").index_in_skeleton()
+        rarmIdx = self.skel.dof("r_arm_shx").index_in_skeleton()
+
+        q[larmIdx] = -np.pi/2
+        q[rarmIdx] = np.pi/2
+
+        self.initPos = q
+        self.skel.set_positions(q)
         #self.sim.skeletons[1].set_root_joint_to_trans_and_euler()
         #print(q[0], q[1], q[2])
 
