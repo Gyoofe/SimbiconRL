@@ -36,7 +36,7 @@ class FooEnv6(env_base.FooEnvBase):
         #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
-        
+
 
         ##Contact Time 관련
         self.Rcontact_first = False
@@ -72,7 +72,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##Curriculum 관련
         self.curValue = 0
-        
+
         ##footstep 관련
         self.prevFootstep = 0
 
@@ -109,7 +109,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.ChangeRandom()
 
         #observation_spaces = np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],[1,0,0,0],[0,0]])
-        
+
         #정보업데이트
         self.updateEndEffectorLocalPosition()
         observation_spaces = self.get_state()
@@ -135,9 +135,9 @@ class FooEnv6(env_base.FooEnvBase):
     def get_state(self):
         return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
             [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight],
-           self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
+            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
-    ## 추후에 변수로 변경
+        ## 추후에 변수로 변경
     def state_scaling(self,state):
         state[0:18] = (state[0:18]+np.pi)/(np.pi + np.pi)
         state[18:36] = (state[18:36])/20
@@ -242,7 +242,7 @@ class FooEnv6(env_base.FooEnvBase):
         self.advancedActionstepPrevParameter = 0
 
         return self.state_scaling(self.get_state())
-        #self.Rcontact_time_before = 0
+    #self.Rcontact_time_before = 0
         #self.Rcontact_time_before_2step = 0
         #self.Rcontact_time_current = 0
         #self.Lcontact_time_before = 0
@@ -293,7 +293,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[14] = (action[14])*math.radians(10.0)
         action[15] = ((action[15]-1)/2)*math.radians(30.0)
         action[16] = (action[16])*math.radians(30.0)
-    
+
         #stance hpx,hpy,hpz13
         action[17] = (action[17])*math.radians(10.0)
         action[18] = ((action[18]-1)/2)*math.radians(30.0)
@@ -310,6 +310,12 @@ class FooEnv6(env_base.FooEnvBase):
         action[23] = (action[23])*math.radians(5.0)
         #swax13
         action[24] = action[24]*math.radians(5.0)
+
+        #swax02 
+        action[25] = (action[25])*math.radians(5.0)
+        #swax13
+        action[26] = action[26]*math.radians(5.0)
+
         return action
 
 
@@ -370,7 +376,7 @@ class FooEnv6(env_base.FooEnvBase):
         #done은 에피소드가 끝났는지..
         action = self.clip_Scaling_Actiond10(action, self.previousState)
         done,n_frames = self.do_simulation(action)
-        
+
         #발의 위치
         r_foot_pos = self._getJointPosition(self.r_foot) 
         l_foot_pos = self._getJointPosition(self.l_foot)
@@ -389,11 +395,11 @@ class FooEnv6(env_base.FooEnvBase):
         self.ppreviousforward = self.previousforward
         self.previousforward = self.getCOMFrameXAxis()
 
-        
+
         ##torso 균형
         torsoYVec = self.mtorso.world_transform()[0:3,2]
         torsoUprightPenalty = 1 - np.dot(torsoYVec, [0,1,0])
-        
+
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
         ##pelvis가 양옆으로 무너지는 일이 없어야 한다는것
         rootPenalty = 0
@@ -430,8 +436,8 @@ class FooEnv6(env_base.FooEnvBase):
             self.endFoot = pos_after + leftFoot*self.FXAnorm
             self.endFoot[1] = -0.95
         ##lFoot을 올렸을때 (lFoot Contact가 일어났다가 떨어짐)
-        elif self.previousState is "2":
-            #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
+    elif self.previousState is "2":
+        #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             #leftFoot = np.dot(self.last_Lcontact_l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             leftFoot = np.dot(l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
@@ -467,7 +473,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         #print(tausums)
         #input()
- 
+
 
         #reward 수정 예정,, torque 총합 페널티..
         #reward = alive_bonus - np.exp(2*(np.abs(self.leftAngle)) + 1.5*walkPenalty + 2*velocityReward)
@@ -475,10 +481,10 @@ class FooEnv6(env_base.FooEnvBase):
         ##초반 walkpenalty 상쇄?
         #reward = alive_bonus - self.tausums/10000 - 3*walkPenalty - np.abs(self.leftAngle) - 5*speed_penalty
         #reward = alive_bonus - self.tausums/8000 - 3*walkPenalty - 2*np.abs(self.leftAngle) - np.abs(DisV - 1)
-        
+
         ##다리 질질끌고 통통 튀면서 걷고 한쪽 다리 거의 못들어올리고 방향전환은 가능하나 결과 별로 좋지않다.
         ##reward = alive_bonus - self.tausums/8000 - 2*walkPenalty - 2*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 4*FootstepDiff
-        
+
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 0.7) - 3*torsoMSE - 2*FootstepDiff)*(n_frames/SIMULATION_STEP_PER_SEC)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 1.4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
         #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.leftAngle) - 4*np.abs(DisV - 1) - 3*torsoMSE - 2*FootstepDiff)
@@ -504,11 +510,13 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-9*np.square(FootHeightPenalty)))
         """
 
-        #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
-
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        #reward = (alive_bonus - self.tausums/32000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
+
+
+
+        reward = (alive_bonus - self.tausums/32000 - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
 
 
         self.step_counter += n_frames
