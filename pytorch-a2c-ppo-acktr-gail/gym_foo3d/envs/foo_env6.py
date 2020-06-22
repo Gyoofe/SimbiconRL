@@ -310,6 +310,12 @@ class FooEnv6(env_base.FooEnvBase):
         action[23] = (action[23])*math.radians(5.0)
         #swax13
         action[24] = action[24]*math.radians(5.0)
+
+        #swax02 
+        action[25] = (action[25])*math.radians(5.0)
+        #swax13
+        action[26] = action[26]*math.radians(5.0)
+
         return action
 
 
