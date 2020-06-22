@@ -141,6 +141,12 @@ class StateMachine():
 
             pelvis02 = action[20]
             pelvis13 = action[21]
+            swax02 = action[22]
+            swax13 = action[23]
+            
+            stax02 = action[24]
+            stax13 = action[25]
+            
             #tauT = action[14]
 
 
@@ -178,6 +184,9 @@ class StateMachine():
             wState0.setDesiredJointPosition("r_leg_hpx", -swhx02)
             wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
 
+            wState0.setDesiredJointPosition("r_leg_akx", -swax02)
+            wState0.setDesiredJointPosition("l_leg_akx",-stax02)
+
             #Stance Hip control
             wState0.setDesiredJointPosition("l_leg_hpx", -sthx02)
             wState0.setDesiredJointPosition("l_leg_hpy", -sthy02)
@@ -192,6 +201,9 @@ class StateMachine():
             
             wState1.setDesiredJointPosition("r_leg_hpx", -swhx13)
             wState1.setDesiredJointPosition("r_leg_hpz", -swhz13)
+
+            wState1.setDesiredJointPosition("r_leg_akx", -swax13)
+            wState1.setDesiredJointPosition("l_leg_akx",-stax13)
 
             #Stance Hip control
             wState1.setDesiredJointPosition("l_leg_hpx", -sthx13)
@@ -209,6 +221,9 @@ class StateMachine():
             wState2.setDesiredJointPosition("l_leg_hpx", -swhx02)
             wState2.setDesiredJointPosition("l_leg_hpz", -swhz02)
 
+            wState2.setDesiredJointPosition("r_leg_akx", -stax02)
+            wState2.setDesiredJointPosition("l_leg_akx",-swax02)
+
             #Stance Hip control
             wState2.setDesiredJointPosition("r_leg_hpx", -sthx02)
             wState2.setDesiredJointPosition("r_leg_hpy", -sthy02)
@@ -224,6 +239,9 @@ class StateMachine():
 
             wState3.setDesiredJointPosition("l_leg_hpx", -swhx13)
             wState3.setDesiredJointPosition("l_leg_hpz", -swhz13)
+
+            wState3.setDesiredJointPosition("r_leg_akx", -stax13)
+            wState3.setDesiredJointPosition("l_leg_akx",-swax13)
 
             #Stance Hip control
             wState3.setDesiredJointPosition("r_leg_hpx", -sthx13)

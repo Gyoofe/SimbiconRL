@@ -113,7 +113,7 @@ class FooEnv6(env_base.FooEnvBase):
         #정보업데이트
         self.updateEndEffectorLocalPosition()
         observation_spaces = self.get_state()
-        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(22,))
+        self.action_space = spaces.Box(low = 0, high = 1.5, shape=(26,))
         observation_spaces = np.zeros(len(observation_spaces))
         self.observation_space =spaces.Box(observation_spaces, -observation_spaces)
         #self.observation_space = self.get_state()
@@ -303,6 +303,15 @@ class FooEnv6(env_base.FooEnvBase):
         action[20] = ((action[20]+1)/2)*math.radians(-30.0)
         ##Torso13
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
+        #swax02 
+        action[22] = (action[22])*math.radians(5.0)
+        #swax13
+        action[23] = action[23]*math.radians(5.0)
+        #swax02 
+        action[24] = (action[22])*math.radians(5.0)
+        #swax13
+        action[25] = action[23]*math.radians(5.0)
+
         return action
 
 
