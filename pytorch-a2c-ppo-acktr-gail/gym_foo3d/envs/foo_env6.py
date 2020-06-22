@@ -310,6 +310,9 @@ class FooEnv6(env_base.FooEnvBase):
         action[23] = (action[23])*math.radians(5.0)
         #swax13
         action[24] = action[24]*math.radians(5.0)
+
+        action[25] = action[25]*math.radians(5.0)
+        action[26] = action[26]*math.radians(5.0)
         return action
 
 
@@ -504,11 +507,13 @@ class FooEnv6(env_base.FooEnvBase):
                 np.exp(-9*np.square(FootHeightPenalty)))
         """
 
-        #reward = (alive_bonus - self.tausums/8000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
-
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)
+        #reward = (alive_bonus - self.tausums/32000 - 5*walkPenalty - 5*np.abs(self.currentLeftAngle) - 3*rootPenalty - 8*StepLengthPenalty - 8*FootHeightPenalty - 8*stepDurationPenalty - 10*torsoUprightPenalty)
+
+
+
+        reward = (alive_bonus - self.tausums/32000 - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)
 
 
         self.step_counter += n_frames
