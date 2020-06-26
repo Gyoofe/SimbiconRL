@@ -6,7 +6,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cMat 
-import SimbiconController as SC
+import SimbiconController_3d as SC
 
 from wx import glcanvas
 
@@ -38,6 +38,7 @@ class GuiBase(glcanvas.GLCanvas):
         self.timer = wx.Timer(self,id = 1)
         self.Bind(wx.EVT_TIMER, self.TimerEvent)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(wx.EVT_MOUSEWHEEL, self.OnMouseWheel)
         self.Bind(wx.EVT_MOTION, self.mouseMotion)
         self.timer.Start(30)
@@ -48,7 +49,8 @@ class GuiBase(glcanvas.GLCanvas):
         
         self.mouseDownPos = None
         self.mouseUpPos = None
-
+        self.addForceTimer = 0
+        self.forceArray = np.array([0,0,0])
 
     def OnEraseBackground(self,event):
         pass

@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 from . import env_base
 
-skel_path="/home/gyoofe/dart/data/sdf/atlas/"
+skel_path="/home/qfe/dart/data/sdf/atlas/"
 class FooEnv(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)

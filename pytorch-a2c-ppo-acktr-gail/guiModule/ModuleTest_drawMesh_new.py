@@ -13,7 +13,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cMat 
-import SimbiconController as SC
+import SimbiconController_3d as SC
 
 from wx import glcanvas
 
@@ -37,6 +37,7 @@ import copy
 import time
 
 import cMat
+from . import objParser
 
 drawLimit = 100
 boxSize = 100
@@ -55,6 +56,7 @@ gUp = np.array([0,1,0])
 
 class dartGui(guiBase.GuiBase):
     def InitGL(self):
+        global gEye, gAt, gUp
         self.cameraX = 0
         self.cameraY = 0
         self.cameraZ = 0
@@ -70,8 +72,7 @@ class dartGui(guiBase.GuiBase):
         # position viewer
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        self.myLookAt(np.array([3,3,3]), np.array([0,0,0]), np.array([0,1,0])) 
-         
+        self.myLookAt(np.array([3,3,3]), np.array([0,0,0]), np.array([0,1,0]))  
         #glTranslatef(0, 0, -1.0)
         #gluLookAt(np.radians(self.cameraX),np.radians(self.cameraY),np.radians(self.cameraZ),0,0,0,0,1,0)
         #gluLookAt(3,3,3,self.cameraX, self.cameraY, self.cameraZ, 0,1,0)
@@ -143,7 +144,34 @@ class dartGui(guiBase.GuiBase):
         self.test3Done = False
         self.test4Done = False
         self.test5Done = False
+
+        self.Inner3Done = False
+        self.Inner4Done = False
+        self.Inner5Done = False
+
+        #self.myLookAt(Eye,At,up)
+        #CameraEye
+        gEye = self.sim.skeletons[1].com()+[0,-0.5,3]
+        #gEye = self.sim.skeletons[1].com()+[3,0.5,0]
+        gAt = self.sim.skeletons[1].com()
+        gUp = [0,1,0]
+
         glutInit()
+        self.objParser = objParser.objParser()
+        self.objParser.openObj("./guiModule/arrow.obj")
+        self.objParser.parseObj()
+        self.objParser.print_v()
+        self.obj_arrow_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
+        self.obj_arrow_offset = np.array([0,0,0])
+
+        self.decreaseDMSF = False
+        self.increaseDMSF = False
+        self.decreaseDesiredStepLength = False
+        self.increaseDesiredStepLength = False
+
+        ##속도
+        self.desiredspeed = 1.0
+        #input()
 
     def recursive_load_ModelMeshes(self,root):
         self.load_ModelMeshes(root)
@@ -358,24 +386,61 @@ class dartGui(guiBase.GuiBase):
     def reset_sIdx(self):
         self.sidx = 0
  
+    def DrawArrowObj(self):
+        triangles = np.array(self.objParser.TriangleVertexArrays)
+        self.objParser.TriangleNormalArrays
+        vertices = np.array(self.objParser.vertexArrays)
+        normals = np.array(self.objParser.NormalArrays)
+        #print(self.objParser.NormalArrays)
+        #print(vertices, "off")
+        #for vert in self.objParser.vertexArrays:
+        #    np.append(vert,[1])
+        #    vert = self.sim.skeletons[1].com() + vert
+        #    vert = vert[0:3]
+        #    np.append(vertices,[vert], axis=0)
+        #print(vertices, "on")
+        vertices = vertices
+        vertices = vertices + np.array([9,0,0])
+        vertices = vertices/15
+
+        print(normals)
+
+        for i in range(len(vertices)):
+            #vertices[i] = np.array([[np.cos(np.pi/2),0,np.sin(np.pi/2)],[0,1,0],[-np.sin(np.pi/2),0,np.cos(np.pi/2)]])@vertices[i]
+            vertices[i] = self.obj_arrow_rot@vertices[i]
+            #normals[i] = np.array([[np.cos(np.pi/2),0,np.sin(np.pi/2)],[0,1,0],[-np.sin(np.pi/2),0,np.cos(np.pi/2)]])@normals[i]
+            normals[i] = self.obj_arrow_rot@normals[i]
+        self.objParser.vertexNormals
+
+        #vertices = vertices - np.array([0.5, 0, 0])
+        vertices = vertices - self.obj_arrow_offset
+        
+        vertices = self.sim.skeletons[1].com() + vertices
+        vertices = vertices
+        glVertexPointer(3, GL_FLOAT, 0, vertices)
+        glNormalPointer(GL_FLOAT,0, normals)
+        #glNormalPointer(GL_FLOAT, 6*varrA.itemsize, varrA)
+        #glVertexPointer(3, GL_FLOAT, 6*varrA.itemsize, ctypes.c_void_p(varrA.ctypes.data + 3*varrA.itemsize))
+        glDrawElements(GL_TRIANGLES, len(triangles)*3, GL_UNSIGNED_INT, triangles)
+
     def OnDraw(self):
         global gEye, gAt, gUp
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glClearColor(1.0,1.0,1.0,0)
         compoint = self.sim.skeletons[1].com()
 
-
         glPushMatrix()
         #print(self.cameraX)
         #print(self.cameraY)
         #print(self.cameraZ)
         self.drawGroundBox()
-
+        if self.env.doForce:
+            self.DrawArrowObj()
         self.recursive_draw_ModelMeshes(self.sim.skeletons[0].root_bodynode())
         self.recursive_draw_ModelMeshes(self.sim.skeletons[1].root_bodynode())
         self.sidx = 2
         glTranslatef(0,0,-0.9)
-        self.recursive_draw_Shadow_ModelMeshes(self.sim.skeletons[1].root_bodynode())
+        #self.recursive_draw_Shadow_ModelMeshes(self.sim.skeletons[1].root_bodynode())
         self.reset_sIdx()
         #print("OnDrawEnd")
         glPopMatrix()
@@ -544,6 +609,7 @@ class dartGui(guiBase.GuiBase):
 
         self.createUpwardCuboid(sfoot,dfoot,0,0)
         self.BOX(pelvisPos[0]-0.7,-0.93,pelvisPos[2],0.015,0.015,0.015)
+        #self.DrawArrowObj()
 
         #self.BOX(pelvisPos[0],-0.93,pelvisPos[2],self.env.desiredStepLength,0.015,0.015)
     
@@ -554,9 +620,16 @@ class dartGui(guiBase.GuiBase):
         self.createForwardBOX(StepLengthBoxPos, self.env.cStepLength,0.015, 0.015, np.array([1,0,0]))
 
 
+        dStepDurationBoxPos = np.array([pelvisPos[0]-0.8, -0.05, pelvisPos[2]])
+        StepDurationBoxPos = np.array([pelvisPos[0]-0.8, 0.0, pelvisPos[2]])
+
+        self.createForwardCuboid(dStepDurationBoxPos, self.env.desiredStepDuration,0.025,0.025,np.array([1,0,0]), [153/255,0,0], [153/255,0,0])
+        self.createForwardBOX(StepDurationBoxPos, self.env.cStepDuration,0.015, 0.015, np.array([1,0,0]), [255/255,51/255,51/255,1])
+        #self.DrawArrowObj()
+
         glColor3f(1,0,1,0)
         #glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ctypes.c_int(ord('a')))
-        self.printInfo()
+        #self.printInfo()
 
         ##카메라
         xM = self.pCompoint[0] - compoint[0]
@@ -593,9 +666,13 @@ class dartGui(guiBase.GuiBase):
         self.printText(DesiredSwingFootHeight)
 
         ###currentOffset
-        glWindowPos2f(0.0,self.size.height-60.0)
-        currentOffsetStr = "Current Offset: " + str(self.env.currentOffset)
-        self.printText(currentOffsetStr)
+
+        #glWindowPos2f(0.0,self.size.height-60.0)
+        #currentOffsetStr = "Current Speed: " + str(self.env.cVelocityQueue.mean())
+        #self.printText(currentOffsetStr)
+        #glWindowPos2f(0.0,self.size.height-75.0)
+        #currentOffsetStr = "Desired Speed: " + str(self.env.desiredStepLength/self.env.desiredStepDuration)
+        #self.printText(currentOffsetStr)
         """
         glWindowPos2f(10.0,self.size.height-80.0)
         self.drawGraph(int(np.round(self.env.cStepDuration *1000)),128)
@@ -738,11 +815,17 @@ class dartGui(guiBase.GuiBase):
             size += 1
         return np.array(cMat.Matrix.normalize(sumv/size))
 
-    def createForwardCuboid(self, EndCenter, distance, width, height, forwardVec):
+    def createForwardCuboid(self, EndCenter, distance, width, height, forwardVec, defaultColor = [0/255,0/255, 102/255, 1.0], incColor = [0/255,102/255, 102/255, 1.0]):
         specular = [1.0,1.0,1.0,1.0]
         shininess = [ 100.0 ]
         ambient = [1.0,1.0, 1.0, 1.0]
-        diffuse = [0/255,0/255, 102/255, 1.0]
+
+        if self.decreaseDesiredStepLength is True or self.increaseDesiredStepLength is True:
+            #diffuse = [0/255,102/255, 102/255, 1.0]
+            diffuse = incColor
+        else:
+            #diffuse = [0/255,0/255, 102/255, 1.0]
+            diffuse = defaultColor
         glClearColor( 0.0, 0.0, 0.0, 0.0)
         glShadeModel(GL_SMOOTH)
 
@@ -909,11 +992,12 @@ class dartGui(guiBase.GuiBase):
         glDrawArrays(GL_TRIANGLES,0,int(varrA.size/6))
 
 
-    def createForwardBOX(self, EndCenter, distance, width, height, forwardVec):
+    def createForwardBOX(self, EndCenter, distance, width, height, forwardVec, _color = [51/255,51/255, 255/255, 1.0]):
         specular = [1.0,1.0,1.0,1.0]
         shininess = [ 100.0 ]
         ambient = [1.0,1.0, 1.0, 1.0]
-        diffuse = [51/255,51/255, 255/255, 1.0]
+        #diffuse = [51/255,51/255, 255/255, 1.0]
+        diffuse = _color
         glClearColor( 0.0, 0.0, 0.0, 0.0)
         glShadeModel(GL_SMOOTH)
 
@@ -1121,7 +1205,10 @@ class dartGui(guiBase.GuiBase):
         shininess = [ 100.0 ]
         light_pos = [1.0,0.0,-10.0, 0.0]
         ambient = [1.0,1.0, 1.0, 0.9]
-        diffuse = [0/255,51/255, 0/255, 1]
+        if self.decreaseDMSF is True or self.increaseDMSF is True:
+            diffuse = [155/255,155/255, 0/255, 1]
+        else:
+            diffuse = [0/255,51/255, 0/255, 1]
         glClearColor( 0.0, 0.0, 0.0, 0.0)
         glShadeModel(GL_SMOOTH)
 
@@ -1447,92 +1534,252 @@ class dartGui(guiBase.GuiBase):
             pix[i*4+3] = 0
         glDrawPixels(size,12,GL_RGBA, GL_UNSIGNED_BYTE, pix)
 
-    def TimerFunc(self,):
-        #print("TImer....")
-        self.currentTimeStep = self.currentTimeStep + self.timerOffset/900
-        #print(self.currentTimeStep)
-        #self.controller.update()
-        #self.sim.step()
+    def ClipEnvParameters(self,):
+        ##Length에 맞추어 stepDuration
+        DurationMin = (3/2)*(self.env.desiredStepLength - 0.2)
+        DurationMax = (3/2)*(self.env.desiredStepLength)
+        self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, DurationMin, DurationMax)
+        ##절대값에 맞추어 Duration Clip
+        self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 0.1, 0.5)
 
-        #glutPostRedisplay()
-        #self.OnDraw()
-                 
+        ##stepDuration값에 맞추어 height값 Clip
+        swingfootHeightMin = self.env.desiredStepDuration/4.0
+        swingfootHeightMax = 0.15+self.env.desiredStepDuration/4.0
+        self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight,swingfootHeightMin, swingfootHeightMax)
+
+
+    def TimerFunc(self,):
+        self.currentTimeStep = self.currentTimeStep + self.timerOffset/900
+
+        step_dur_min = 0.1
+        step_len_min = 2/30
+        foot_height_min = 1/40
+
+        step_dur_max = 0.5
+        step_len_max = 0.5*2/3+0.2
+        foot_height_max = 0.15 + 0.5/4
+
+        step_dur_mid = (step_dur_min + step_dur_max)/2
+        step_len_mid = (step_len_min + step_len_max)/2
+        foot_height_mid = (foot_height_min + foot_height_max)/2
+
+        self.SecondPerTest = 10
+        
+        self.env.ext_force = self.env.getCOMFrameXAxis()
+        self.env.ext_force[0] = 800*self.env.ext_force[0]
+        self.env.ext_force[1] = 800*self.env.ext_force[1]
+        self.env.ext_force[2] = 800*self.env.ext_force[2]
+
+        x = self.env.getCOMFrameXAxis()
+        my = np.array([0,0,1])
+        angle = np.dot(x,my)/(np.linalg.norm(x)*np.linalg.norm(my))
+        angle = -np.arccos(angle)
+        self.obj_arrow_rot = np.array([[np.cos(angle), 0, -np.sin(angle)],
+                                        [0,1,0],
+                                        [np.sin(angle), 0, np.cos(angle)]])
+
+
+        self.obj_arrow_offset = self.env.getCOMFrameXAxis()
+        self.obj_arrow_offset[0] = 0.8*self.obj_arrow_offset[0]
+        self.obj_arrow_offset[1] = 0.8*self.obj_arrow_offset[1]
+        self.obj_arrow_offset[2] = 0.8*self.obj_arrow_offset[2]
+
+        
+        if self.currentTimeStep < 1:
+            self.env.desiredStepLength = step_len_mid
+            self.env.desiredStepDuration = step_dur_mid
+            self.env.desiredMaximumSwingfootHeight = foot_height_mid
+        if self.currentTimeStep <5:
+            self.addForceTimer = 0.0
+            self.obj_arrow_offset = np.array([0.8,0,0])
+            self.obj_arrow_rot = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+            #self.env.ext_force = np.array([600,0,0])
+            self.env.ext_force = self.env.getCOMFrameXAxis()
+            self.env.ext_force[0] = 1100*self.env.ext_force[0]
+            self.env.ext_force[1] = 1100*self.env.ext_force[1]
+            self.env.ext_force[2] = 1100*self.env.ext_force[2]
+            print(self.env.ext_force)
+        elif np.abs(self.currentTimeStep - 15) < 0.001:
+            print("11111")
+            self.addForceTimer = 0.3
+        """
+        elif np.abs(self.currentTimeStep - 15) < 0.001:
+            print("11211")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 20) < 0.001:
+            print("11311")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 25) < 0.001:
+            print("11411")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 30) < 0.001:
+            print("11511")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 35) < 0.001:
+            print("11611")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 40) < 0.001:
+            print("11711")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 45) < 0.001:
+            print("11811")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 50) < 0.001:
+            print("11911")
+            self.addForceTimer = 0.1
+        elif np.abs(self.currentTimeStep - 55) < 0.001:
+            print("11911")
+            self.addForceTimer = 0.1
+        """
+
+
+        """
+        if self.currentTimeStep < 3:
+            self.env.desiredStepLength = step_len_mid
+            self.env.desiredStepDuration = step_dur_mid
+            self.env.desiredMaximumSwingfootHeight = foot_height_mid
+        elif self.currentTimeStep < 3.5:
+            self.env.desiredStepLength = step_len_min
+            self.env.desiredStepDuration = step_dur_min
+            self.env.desiredMaximumSwingfootHeight = foot_height_min
+        elif self.currentTimeStep < 13.5:
+            self.env.desiredStepLength += (step_len_max - step_len_min)/self.SecondPerTest*self.timerOffset/900
+            self.env.desiredStepDuration += (step_dur_max - step_dur_min)/self.SecondPerTest*self.timerOffset/900
+            self.env.desiredMaximumSwingfootHeight += (foot_height_max - foot_height_min)/self.SecondPerTest*self.timerOffset/900
+        elif self.currentTimeStep < 23.5:
+            self.env.desiredStepLength -= (step_len_max - step_len_min)/self.SecondPerTest*self.timerOffset/900
+            self.env.desiredStepDuration -= (step_dur_max - step_dur_min)/self.SecondPerTest*self.timerOffset/900
+            self.env.desiredMaximumSwingfootHeight -= (foot_height_max - foot_height_min)/self.SecondPerTest*self.timerOffset/900
+        elif self.currentTimeStep < 28.5:
+            self.env.desiredStepLength += (0.2)/5*self.timerOffset/900
+        elif self.currentTimeStep < 33.5:
+            self.env.desiredMaximumSwingfootHeight += (0.15)/5*self.timerOffset/900
+        elif self.currentTimeStep < 38.5:
+            self.env.desiredStepDuration = step_dur_mid
+            self.env.desiredMaximumSwingfootHeight = (step_dur_mid)/4
+            self.env.desiredStepLength = ((step_dur_mid)*2/3)+((0.2)*(self.currentTimeStep-33.5)/5)
+            print(self.env.desiredStepLength)
+        elif self.currentTimeStep < 43.5:
+            self.env.desiredMaximumSwingfootHeight += (0.15)/5*self.timerOffset/900
+        elif self.currentTimeStep < 48.5:
+            self.env.desiredStepDuration = step_dur_max
+            self.env.desiredMaximumSwingfootHeigth = step_dur_max/4
+            self.env.desiredStepLength = 2*step_dur_max/3 + ((0.2)*(self.currentTimeStep-43.5)/5)
+            print(self.env.desiredStepLength)
+        elif self.currentTimeStep < 53.5:
+            self.env.desiredMaximumSwingfootHeight += (0.15)/5*self.timerOffset/900
+        elif self.currentTimeStep < 58.5:
+            self.env.desiredStepLength -= (step_len_max - step_len_mid)/5*self.timerOffset/900
+            self.env.desiredStepDuration -= (step_dur_max - step_dur_mid)/5*self.timerOffset/900
+            self.env.desiredMaximumSwingfootHeight -= (foot_height_max - foot_height_mid)/5*self.timerOffset/900
+        """
+
+        """
         self.SecondPerTest = 10
         if self.currentTimeStep < 3:
             self.env.StartMedian()
         elif self.currentTimeStep < 3.5:
             self.env.StartMinimum()
         elif not self.test1Done:
-            self.env.desiredStepDuration = self.env.desiredStepDuration + (0.4/self.SecondPerTest)*self.timerOffset/900
-            #desiredStep값에 맞추어  StepLength 증가
-            #desitedStep값에 맞추어 MaximumSwingfOotHeight 증가 
-            if self.env.desiredStepLength < 2*self.env.desiredStepDuration/3:
-                self.env.desiredStepLength = 2*self.env.desiredStepDuration/3
-            if self.env.desiredMaximumSwingfootHeight < self.env.desiredStepDuration/4:
-                self.env.desiredMaximumSwingfootHeight = self.env.desiredStepDuration/4
-            if self.env.desiredStepDuration >= 0.5:
+        ##10초 후 최대값 도달하도록 값 증가 
+        ##최대값 - 최소값
+            gap = (1/2)-(1/30)
+            self.env.desiredStepLength = self.env.desiredStepLength + (gap/self.SecondPerTest)*self.timerOffset/900
+            if self.env.desiredStepLength >= ((1/2)+(1/30)):
                 self.test1Done = True
-                self.env.desiredStepDuration = 0.5
-                print("test1Done")
+                self.env.desiredStepLength = (1/2)+(1/30)
+                self.env.desiredSwingfootHeight = 0.5/4+0.15
         elif not self.test2Done:
-            self.env.desiredStepDuration = self.env.desiredStepDuration - (0.35/self.SecondPerTest)*self.timerOffset/900
-            #desiredStep값에 맞추어  StepLength 감소
-            #desitedStep값에 맞추어 MaximumSwingfOotHeight 감소
-            if self.env.desiredStepLength > 2*self.env.desiredStepDuration/3 + 0.2:
-                self.env.desiredStepLength =  2*self.env.desiredStepDuration/3 + 0.2
-            if self.env.desiredMaximumSwingfootHeight > self.env.desiredStepDuration/4 + 0.15:
-                self.env.desiredMaximumSwingfootHeight = self.env.desiredStepDuration/4 + 0.15
-            if self.env.desiredStepDuration <= 0.1:
+            gap = (7/15)
+            self.env.desiredStepLength = self.env.desiredStepLength - (gap/self.SecondPerTest)*self.timerOffset/900
+            if self.env.desiredStepLength <= (2/30):
                 self.test2Done = True
-                self.env.desiredStepDuration = 0.1
+                self.env.desiredStepLength = 2/30
                 print("test2Done")
+                self.env.desiredMaximumSwingfootHeight = 0.1/4
+                self.env.desiredStepLength = 0.166
+                ##test 3에서 쓸 swingfootHeight의 gap 계산
+                self.heightWhen2DoneGap = 0.15 + 7/40 - self.env.desiredMaximumSwingfootHeight
         elif not self.test3Done:
-            if self.env.desiredStepLength > 0.1:
-                self.env.desiredStepLength = self.env.desiredStepLength - (0.2/(self.SecondPerTest/5))*self.timerOffset/900
-            else:
-                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight - (0.15/(self.SecondPerTest/5))*self.timerOffset/900            
-            if self.env.desiredMaximumSwingfootHeight <= 0.15/2:
-                print("test3Done")
-                self.env.desiredStepLength = 0.1
-                self.env.desiredMaximumSwingfootHeight = 0.15/2
-                self.test3Done = True 
-        elif not self.test4Done:
-            ##중간값까지 상승
-            if self.env.desiredStepDuration < 0.3:
-                self.env.desiredStepDuration = self.env.desiredStepDuration + (0.4/self.SecondPerTest)*self.timerOffset/900
-                #desiredStep값에 맞추어  StepLength 증가
-                #desitedStep값에 맞추어 MaximumSwingfOotHeight 증가 
-                if self.env.desiredStepLength < 2*self.env.desiredStepDuration/3:
-                    self.env.desiredStepLength = 2*self.env.desiredStepDuration/3
-                if self.env.desiredMaximumSwingfootHeight < self.env.desiredStepDuration/4:
-                    self.env.desiredMaximumSwingfootHeight = self.env.desiredStepDuration/4
-            ##중간값까지 상승하면 다른 값 조절
-            elif self.env.desiredStepLength < self.env.desiredStepDuration*(2/3)+0.2:
-                self.env.desiredStepLength = self.env.desiredStepLength + (0.2/(self.SecondPerTest/2))*self.timerOffset/900
-            else:
-                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight + (0.15/(self.SecondPerTest/2))*self.timerOffset/900            
+            #stepLength의 최소값일때 나머지의 범위는 애매하군.....
+            #stepLength를 0.166까지올린다 0.166인 이유는 Duration 0.25일때의 최소값 
+            #stepDuration을 허용 최대값 0.25까지 올린다 3
+            #StepDuration을 다시 중간값으로 내린다 - 0.175 2 
+            #maximumFootHeight를 최대값으로 서서히 올린다 - 0.19375(0.15+7/40) 3 
+            #총 10초
 
-            if self.env.desiredMaximumSwingfootHeight >= self.env.desiredStepDuration/4+0.15:
-                self.test4Done = True
+            if self.env.desiredStepDuration < 0.25 and self.Inner3Done is False:
+                self.env.desiredStepDuration = self.env.desiredStepDuration + (0.25/5)*self.timerOffset/900
+                print("t32")
+                if self.env.desiredStepDuration >= 0.25:
+                    self.Inner3Done = True
+            elif self.env.desiredStepDuration > 0.175:
+                self.env.desiredStepDuration = self.env.desiredStepDuration - (0.075/5)*self.timerOffset/900
+                print("t33")
+            elif self.env.desiredMaximumSwingfootHeight < 0.193:
+                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight + (self.heightWhen2DoneGap/5)*self.timerOffset/900
+                print("t33")
+            else:
+                print("test3Done")
+                self.env.desiredMaximumSwingfootHeight = 0.15+7/40
+                self.test3Done = True
+                self.env.desiredStepLength = 0.366
+        elif not self.test4Done:
+            ##StepLength를 0.366까지 상승
+            ##StepDuration을 최대값까지 상승(0.5까지) 
+            ##StepDuration을 다시 중간값까지 하락
+            ##MaximumSwingfootHeight를 최대값으로 올린다.
+
+            if self.env.desiredStepDuration < 0.5 and self.Inner4Done is False:
+                gap = 0.25 
+                self.env.desiredStepDuration = self.env.desiredStepDuration + (gap/5)*self.timerOffset/900
+                if self.env.desiredStepDuration > 0.49:
+                    self.Inner4Done = True
+                self.msfMax = 0.15 + self.env.desiredStepDuration/4
+                self.heightInner4Gap = self.msfMax - self.env.desiredMaximumSwingfootHeight
+                print("2")
+            elif self.env.desiredStepDuration > 0.375:
+                gap = 0.125
+                self.env.desiredStepDuration = self.env.desiredStepDuration - (gap)*self.timerOffset/900
+                self.msfMax = 0.15 + self.env.desiredStepDuration/4
+                self.heightInner4Gap = self.msfMax - self.env.desiredMaximumSwingfootHeight
+                print("3")
+            elif self.env.desiredMaximumSwingfootHeight < self.msfMax:
+                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight + (self.heightInner4Gap/2)*self.timerOffset/900 
+            else:
                 print("test4Done")
+                self.env.desiredMaximumSwingfootHeight = self.msfMax
+                self.test4Done = True 
         elif not self.test5Done:
             ##최대값까지 상승
-            if self.env.desiredStepDuration < 0.5:
-                self.env.desiredStepDuration = self.env.desiredStepDuration + (0.4/self.SecondPerTest)*self.timerOffset/900
-                #desiredStep값에 맞추어  StepLength 증가
-                #desitedStep값에 맞추어 MaximumSwingfOotHeight 증가 
-                if self.env.desiredStepLength < 2*self.env.desiredStepDuration/3:
-                    self.env.desiredStepLength = 2*self.env.desiredStepDuration/3
-                if self.env.desiredMaximumSwingfootHeight < self.env.desiredStepDuration/4:
-                    self.env.desiredMaximumSwingfootHeight = self.env.desiredStepDuration/4
-            elif self.env.desiredStepLength < self.env.desiredStepDuration*(2/3)+0.2:
-                self.env.desiredStepLength = self.env.desiredStepLength + (0.2/(self.SecondPerTest/2))*self.timerOffset/900
-            else:
-                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight + (0.15/(self.SecondPerTest/2))*self.timerOffset/900            
-            if self.env.desiredMaximumSwingfootHeight >= self.env.desiredStepDuration/4+0.15:
+            if self.env.desiredStepLength < 0.5 + (1/30):
+                gap = 0.1 + (2/30)
+                self.env.desiredStepLength = self.env.desiredStepLength + (gap/3)*self.timerOffset/900
+                self.durationGap = 0.5 - self.env.desiredStepDuration
+                self.heightGap = 0.15 + 0.5/4 - self.env.desiredMaximumSwingfootHeight
+            elif self.env.desiredStepDuration < 0.5:
+                self.env.desiredStepDuration = self.env.desiredStepDuration + (self.durationGap/3)*self.timerOffset/900
+                self.heightGap = 0.15 + 0.5/4 - self.env.desiredMaximumSwingfootHeight
+            elif self.env.desiredMaximumSwingfootHeight < 0.15 + 0.5/4:
+                print("last")
+                self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight + (self.heightGap/3)*self.timerOffset/900
                 self.test5Done = True
                 print("test5Done")
-        
+        """
+        #clip the value
+        self.ClipEnvParameters()
+
+        #self.env.desiredStepLength = step_len_min - 0.05
+        #self.env.desiredStepDuration = step_dur_min - 0.05
+        #self.env.desiredMaximumSwingfootHeight = foot_height_min
+
+
+        if self.addForceTimer > 0:
+            #self.add_ext_force(self.forceArray)
+            self.env.doForce = True
+            self.addForceTimer -= self.timerOffset/900
+        else:
+            self.env.doForce = False
         self.Refresh()
         
         return
@@ -1707,13 +1954,59 @@ class dartGui(guiBase.GuiBase):
         gEye = gEye + self.zoomI * vect
         #input(gEye)
 
+    #def add_ext_force(self, forceArray):
+        #self.sim.skeletons[1].root_bodynode().add_ext_force(forceArray)
+        #print("forceArray", forceArray)
+        #self.sim.skeletons[1].root_bodynode().add_ext_force(np.array([0,0,5000]))
+
+    def OnKeyUp(self, event):
+        code = event.GetKeyCode()
+
+        ##Q qey(reduce the Desired StepLength)
+        if code == 81:
+            self.decreaseDesiredStepLength = False
+        ##W key(increase the Deisried StepLength)
+        elif code == 87:
+            self.increaseDesiredStepLength = False
+        ##Z key(decrease the MaxmimumSwingfootHeight)
+        elif code == 90:
+            self.decreaseDMSF = False
+        ##X Key(increase the MaximumSwingfootHeight)
+        elif code == 88:
+            self.increaseDMSF = False
+
+
+
     def OnKeyDown(self, event):
         code = event.GetKeyCode()
         desiredStepDuration_MIN = 0.2
         desiredStepDuration_MAX = 0.6
+        #D키 뒤로밀기
+        if code == 68:
+            #self.sim.skeletons[1].root_bodynode().add_ext_force(np.array([0,0,5000]))
+            self.addForceTimer = 0.5
+            self.obj_arrow_offset = np.array([-0.8,0,0])
+            self.obj_arrow_rot = np.array([[0,0,-1],[0,1,0],[1,0,0]])
+            self.env.ext_force = np.array([-600,0,0])
+            print("add_ext_force")
+        #A키 앞으로 밀기
         if code == 65:
-            #self.cameraX = (self.cameraX + 80)%90
-            self.cameraX = self.cameraX - 0.01
+            self.addForceTimer = 0.5
+            self.obj_arrow_offset = np.array([0.8,0,0])
+            self.obj_arrow_rot = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+            self.env.ext_force = np.array([700,0,0])
+        #F키 옆으로 밀기
+        if code == 70:
+            self.addForceTimer = 0.5
+            self.obj_arrow_offset = np.array([0,0,0.8])
+            self.obj_arrow_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
+            self.env.ext_force = np.array([0,0,600])
+        #G키 옆으로 밀기
+        if code == 71:
+            self.addForceTimer = 0.5
+            self.obj_arrow_offset = np.array([0,0,-0.8])
+            self.obj_arrow_rot = np.array([[-1,0,0],[0,1,0],[0,0,-1]])
+            self.env.ext_force = np.array([0,0,-600])
         elif code == 316:
             #self.env.targetAngle = np.radians(np.degrees(self.env.targetAngle) + 1)
             self.env.targetFrameXAxis = self.env.rotateYAxis(np.radians(1), self.env.targetFrameXAxis)
@@ -1751,51 +2044,83 @@ class dartGui(guiBase.GuiBase):
             """
         ##Q qey(reduce the Desired StepLength)
         elif code == 81:
+            self.decreaseDesiredStepLength = True
             self.env.desiredStepLength -= 0.01
             if self.env.desiredStepLength < (0.2)/3:
                 self.env.desiredStepLength= (0.2)/3
-            stepLengthMin = self.env.desiredStepDuration - self.env.desiredStepDuration/3.0
-            if self.env.desiredStepLength < stepLengthMin:
-                self.env.desiredStepDuration = (3/2)*self.env.desiredStepLength 
-                swingfootHeightMin = self.env.desiredStepDuration/4.0
-                self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight,swingfootHeightMin, swingfootHeightMin+0.15)
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration,(3/2)*(self.env.desiredStepLength-0.2), (3/2)*self.env.desiredStepLength)
+            self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15  )   
 
         ##W key(increase the Deisried StepLength)
         elif code == 87:
+            self.increaseDesiredStepLength = True
             self.env.desiredStepLength += 0.01
             if self.env.desiredStepLength > 0.7 - 0.5/3:
                 self.env.desiredStepLength = 0.7 - 0.5/3
-            stepLengthMax = (2/3)*self.env.desiredStepDuration + 0.2
-            if self.env.desiredStepLength > stepLengthMax:
-                self.env.desiredStepDuration = (3/2)*(self.env.desiredStepLength - 0.2)
-                swingfootHeightMin = self.env.desiredStepDuration/4.0
-                self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight,swingfootHeightMin, swingfootHeightMin+0.15)
+
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration,(3/2)*(self.env.desiredStepLength-0.2), (3/2)*self.env.desiredStepLength)
+            self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15  )   
+
         ##Z key(decrease the MaxmimumSwingfootHeight)
         elif code == 90:
+            self.decreaseDMSF = True
             self.env.desiredMaximumSwingfootHeight -= 0.01
             if self.env.desiredMaximumSwingfootHeight < 0.025:
                 self.env.desiredMaximumSwingfootHeight = 0.025
             swingfootHeightMin = self.env.desiredStepDuration/4.0
-            if self.env.desiredMaximumSwingfootHeight < swingfootHeightMin:
-                self.env.desiredStepDuration = 4.0*self.env.desiredMaximumSwingfootHeight
-                stepLengthMin = self.env.desiredStepDuration - self.env.desiredStepDuration/3.0
-                self.env.desiredStepLength = np.clip(self.env.desiredStepLength,stepLengthMin,stepLengthMin+0.2)
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 4*(self.env.desiredMaximumSwingfootHeight - 0.15), 4*(self.env.desiredMaximumSwingfootHeight))
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
 
         ##X Key(increase the MaximumSwingfootHeight)
         elif code == 88:
+            self.increaseDMSF = True
             self.env.desiredMaximumSwingfootHeight += 0.01
             if self.env.desiredMaximumSwingfootHeight > 0.5/4 + 0.15:
                 self.env.desiredMaximumSwingfootHeight = 0.5/4 + 0.15
             swingfootHeightMax = 0.15 + self.env.desiredStepDuration/4.0
-            if self.env.desiredMaximumSwingfootHeight > swingfootHeightMax:
-                self.env.desiredStepDuration = 4.0*(self.env.desiredMaximumSwingfootHeight - 0.15)
-                stepLengthMin = self.env.desiredStepDuration - self.env.desiredStepDuration/3.0
-                self.env.desiredStepLength = np.clip(self.env.desiredStepLength,stepLengthMin,stepLengthMin+0.2)
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 4*(self.env.desiredMaximumSwingfootHeight - 0.15), 4*(self.env.desiredMaximumSwingfootHeight))
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
 
         #elif code == 315:
         #    self.env.targetForwardFrameXAxis = self.env.rotateYAxis(np.radians(1), self.env.targetForwardFrameXAxis)
         #elif code == 317:
         #    self.env.targetForwardFrameXAxis = self.env.rotateYAxis(np.radians(-1), self.env.targetForwardFrameXAxis)
+
+
+        ##J Key
+        elif code == 74:
+            self.desiredspeed = 0.75
+            self.env.desiredStepDuration += 0.01
+            self.env.desiredStepLength = self.env.desiredStepDuration * self.desiredspeed
+
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 0.1, 0.5)
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
+            self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15) 
+        elif code == 75:
+            self.desiredspeed = 0.75
+            self.env.desiredStepDuration -= 0.01
+            self.env.desiredStepLength = self.env.desiredStepDuration * self.desiredspeed
+
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 0.1, 0.5)
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
+            self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15) 
+
+        ##H key -- desiredSpeed 조작
+        elif code == 72:
+            self.desiredspeed += 0.01
+            self.env.desiredStepLength = self.env.desiredStepDuration * self.desiredspeed
+
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 0.1, 0.5)
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
+            self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15) 
+        ##N key -- desiredSpeed Decrease
+        elif code == 78:
+            self.desiredspeed -= 0.01
+            self.env.desiredStepLength = self.env.desiredStepDuration * self.desiredspeed
+
+            self.env.desiredStepDuration = np.clip(self.env.desiredStepDuration, 0.1, 0.5)
+            self.env.desiredStepLength = np.clip(self.env.desiredStepLength, self.env.desiredStepDuration*2/3, self.env.desiredStepDuration*2/3 + 0.2)
+            self.env.desiredMaximumSwingfootHeight = self.env.desiredMaximumSwingfootHeight = np.clip(self.env.desiredMaximumSwingfootHeight, self.env.desiredStepDuration/4.0, self.env.desiredStepDuration/4.0 + 0.15) 
 
         else:
             print(code)

@@ -7,7 +7,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import cMat 
-import SimbiconController as SC
+import SimbiconController_3d as SC
 
 from wx import glcanvas
 

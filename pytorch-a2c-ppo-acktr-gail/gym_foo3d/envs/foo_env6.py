@@ -123,6 +123,10 @@ class FooEnv6(env_base.FooEnvBase):
         self.rightFoot = 0
         self.leftFoot = 0
         self.FXAnorm = [1,0,0]
+
+
+        self.doForce = False
+        self.ext_force = [0,0,0]
         print(self.targetAngle)
     """
     def get_state(self):
@@ -224,16 +228,16 @@ class FooEnv6(env_base.FooEnvBase):
         self.last_Rcontact_l_foot_pos = None
         self.last_Lcontact_r_foot_pos = None
         self.last_Lcontact_l_foot_pos = None
-        self.desiredStepLength = 0
+        #self.desiredStepLength = 0
 
         ##Step Duration 관련
         self.stepDuration = 0 
-        self.desiredStepDuration = 0 
+        #self.desiredStepDuration = 0 
         #SwingFoot Height 관련
-        self.desiredMaximumSwingfootHeight = 0
+        #self.desiredMaximumSwingfootHeight = 0
         self.footPosWhenS0S2End = -0.8
         self.currentOffset = 0
-        self.ChangeRandom()
+        #self.ChangeRandom()
         #정보업데이트
         self.updateEndEffectorLocalPosition()
         ##State초기화
@@ -503,7 +507,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - self.tausums/12000 -2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 15*stepDurationPenalty - 8*torsoUprightPenalty)/(3/self.desiredStepDuration)
+
 
         self.step_counter += n_frames
         self.change_step += n_frames
@@ -519,7 +524,7 @@ class FooEnv6(env_base.FooEnvBase):
         #if self.actionSteps % (self.step_per_walk * 20) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0 and self.curValue > 0:/
         #if self.actionSteps % (self.step_per_walk * 10) == self.step_per_walk*5 and self.cDirection and self.step_counter is not 0:
         if self.actionSteps - self.advancedActionstepPrevParameter > int(3/self.desiredStepDuration):
-            self.ChangeRandom()
+            #self.ChangeRandom()
             self.advancedActionstepPrevParameter = self.actionSteps
 
         ##one hot incording으로 State 정보 넣어주기
@@ -632,6 +637,9 @@ class FooEnv6(env_base.FooEnvBase):
         self.footPosWhenS0S2End = 0
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName
                 or (int(self.previousState)+1)%4 is int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
+            if self.doForce is True:
+                #self.sim.skeletons[1].root_bodynode().add_ext_force(self.ext_force)
+                self.utorso.add_ext_force(self.ext_force)
             self.controller.update()
             self.sim.step()
 
@@ -704,7 +712,7 @@ class FooEnv6(env_base.FooEnvBase):
             elif l_foot_pos[1] > pos_after[1]:
                 done = True
             #elif self.actionSteps > self.step_per_walk * 10:
-            elif self.step_counter > SIMULATION_STEP_PER_SEC*(0.3)*20:
+            elif self.step_counter > SIMULATION_STEP_PER_SEC*(0.3)*200:
                 done = True
             if done is True:
                 break

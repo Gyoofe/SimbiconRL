@@ -1,0 +1,6 @@
+    def StartMinimum(self,):
+        self.desiredStepDuration, self.desiredStepLength, self.swingfootHeight = parameterInit.StartMinimum()
+
+    def StartMedian(self,):
+        self.desiredStepDuration, self.desiredStepLength, self.swingfootHeight = parameterInit.StartMedium()
+

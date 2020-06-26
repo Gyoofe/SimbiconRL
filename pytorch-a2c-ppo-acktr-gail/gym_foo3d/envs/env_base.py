@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/qfei/dart/data/sdf/atlas/"
+skel_path="/home/qfe/dart/data/sdf/atlas/"
 STEP_PER_WALK = 2
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
@@ -58,6 +58,10 @@ class FooEnvBase(gym.Env):
         #q[28] = q[28]-0.1
         #q[3] = q[3]+1
         #x방향으로 진행
+        larmIdx = self.skel.dof("l_arm_shx").index_in_skeleton()
+        rarmIdx = self.skel.dof("r_arm_shx").index_in_skeleton()
+        q[larmIdx] = -np.pi/2
+        q[rarmIdx] = np.pi/2
         self.initPos = q
         self.skel.set_positions(q)
         

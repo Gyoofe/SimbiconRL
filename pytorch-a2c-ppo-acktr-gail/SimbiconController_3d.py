@@ -171,9 +171,11 @@ class StateMachine():
             wState0.setDesiredJointPosition("r_leg_hpy", -swh02)
             wState0.setDesiredJointPosition("r_leg_kny", -swk02)
             wState0.setDesiredJointPosition("r_leg_aky", -swa02)
+            wState0.setDesiredJointPosition("r_leg_akx", -swa02)
 
             wState0.setDesiredJointPosition("l_leg_kny", -stk02)
             wState0.setDesiredJointPosition("l_leg_aky",-sta02)
+            wState0.setDesiredJointPosition("l_leg_akx",-sta02)
 
             wState0.setDesiredJointPosition("r_leg_hpx", -swhx02)
             wState0.setDesiredJointPosition("r_leg_hpz", -swhz02)
