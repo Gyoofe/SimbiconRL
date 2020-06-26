@@ -1599,9 +1599,11 @@ class dartGui(guiBase.GuiBase):
             self.env.ext_force[1] = 1100*self.env.ext_force[1]
             self.env.ext_force[2] = 1100*self.env.ext_force[2]
             print(self.env.ext_force)
-        elif np.abs(self.currentTimeStep - 15) < 0.001:
-            print("11111")
-            self.addForceTimer = 0.3
+        # elif np.abs(self.currentTimeStep - 15) < 0.001:
+        #     print("11111")
+        #     self.addForceTimer = 0.2
+        elif np.abs(self.currentTimeStep%5) <0.001:
+            self.pushForward(600)
         """
         elif np.abs(self.currentTimeStep - 15) < 0.001:
             print("11211")
@@ -1776,6 +1778,7 @@ class dartGui(guiBase.GuiBase):
 
         if self.addForceTimer > 0:
             #self.add_ext_force(self.forceArray)
+            print("GGGGG")
             self.env.doForce = True
             self.addForceTimer -= self.timerOffset/900
         else:
@@ -1976,6 +1979,29 @@ class dartGui(guiBase.GuiBase):
             self.increaseDMSF = False
 
 
+    def pushBack(self, force = 600):
+        self.addForceTimer = 0.2
+        self.obj_arrow_offset = np.array([-0.8,0,0])
+        self.obj_arrow_rot = np.array([[0,0,-1],[0,1,0],[1,0,0]])
+        self.env.ext_force = np.array([-force,0,0])
+
+    def pushForward(self, force = 600):
+        self.addForceTimer = 0.2
+        self.obj_arrow_offset = np.array([0.8,0,0])
+        self.obj_arrow_rot = np.array([[0,0,1],[0,1,0],[-1,0,0]])
+        self.env.ext_force = np.array([force,0,0])
+
+    def pushRight(self, force = 600):
+        self.addForceTimer = 0.2
+        self.obj_arrow_offset = np.array([0,0,0.8])
+        self.obj_arrow_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
+        self.env.ext_force = np.array([0,0,force])
+
+    def pushLeft(self, force = 600):
+        self.addForceTimer = 0.2
+        self.obj_arrow_offset = np.array([0,0,-0.8])
+        self.obj_arrow_rot = np.array([[-1,0,0],[0,1,0],[0,0,-1]])
+        self.env.ext_force = np.array([0,0,force])
 
     def OnKeyDown(self, event):
         code = event.GetKeyCode()
@@ -1984,29 +2010,17 @@ class dartGui(guiBase.GuiBase):
         #D키 뒤로밀기
         if code == 68:
             #self.sim.skeletons[1].root_bodynode().add_ext_force(np.array([0,0,5000]))
-            self.addForceTimer = 0.5
-            self.obj_arrow_offset = np.array([-0.8,0,0])
-            self.obj_arrow_rot = np.array([[0,0,-1],[0,1,0],[1,0,0]])
-            self.env.ext_force = np.array([-600,0,0])
+            self.pushBack()
             print("add_ext_force")
         #A키 앞으로 밀기
         if code == 65:
-            self.addForceTimer = 0.5
-            self.obj_arrow_offset = np.array([0.8,0,0])
-            self.obj_arrow_rot = np.array([[0,0,1],[0,1,0],[-1,0,0]])
-            self.env.ext_force = np.array([700,0,0])
+            self.pushForward()
         #F키 옆으로 밀기
         if code == 70:
-            self.addForceTimer = 0.5
-            self.obj_arrow_offset = np.array([0,0,0.8])
-            self.obj_arrow_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
-            self.env.ext_force = np.array([0,0,600])
+            self.pushRight()
         #G키 옆으로 밀기
         if code == 71:
-            self.addForceTimer = 0.5
-            self.obj_arrow_offset = np.array([0,0,-0.8])
-            self.obj_arrow_rot = np.array([[-1,0,0],[0,1,0],[0,0,-1]])
-            self.env.ext_force = np.array([0,0,-600])
+            self.pushLeft()
         elif code == 316:
             #self.env.targetAngle = np.radians(np.degrees(self.env.targetAngle) + 1)
             self.env.targetFrameXAxis = self.env.rotateYAxis(np.radians(1), self.env.targetFrameXAxis)
