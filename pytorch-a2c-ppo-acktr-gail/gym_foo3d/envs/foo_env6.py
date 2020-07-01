@@ -312,6 +312,12 @@ class FooEnv6(env_base.FooEnvBase):
         action[23] = (action[23])*0.8
         #swax13
         action[24] = action[24]*0.8
+
+        #swax02 
+        action[25] = (action[25])*0.8
+        #swax13
+        action[26] = action[26]*0.8
+
         return action
 
 
