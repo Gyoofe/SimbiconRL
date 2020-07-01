@@ -436,7 +436,7 @@ class FooEnv6(env_base.FooEnvBase):
             self.endFoot = pos_after + leftFoot*self.FXAnorm
             self.endFoot[1] = -0.95
         ##lFoot을 올렸을때 (lFoot Contact가 일어났다가 떨어짐)
-    elif self.previousState is "2":
+        elif self.previousState is "2":
         #rightFoot = np.dot(self.last_Lcontact_r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             #leftFoot = np.dot(self.last_Lcontact_l_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
             rightFoot = np.dot(r_foot_pos - pos_after, self.currentFrameXAxis)/currentFrameXAxisN
