@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/gyoofe/dart/data/sdf/atlas/"
+skel_path="/home/dart/data/sdf/atlas/"
 STEP_PER_WALK = 2
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
