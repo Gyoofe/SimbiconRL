@@ -257,29 +257,29 @@ class FooEnv6(env_base.FooEnvBase):
         action = np.clip(action, -200, 200)/200
         #드는거 
         #swh02
-        action[0] = ((action[0] + 1)/2)*np.pi/2
+        action[0] = ((action[0] + 1)/2)*math.radians(120.0)
         #swk02
         #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
-        action[1] = ((action[1] - 1)*0.35-0.3)*math.radians(100.0)
+        action[1] = ((action[1] - 1)/2)*math.radians(100.0)
         #swa02
-        action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
+        action[2] = action[2] * math.radians(30.0)
         #내리는거
         #swh13
-        action[3] = ((action[3] - 1)/2)*np.pi/6
+        action[3] = ((action[3] - 1)/2)*math.radians(60.0)
         #swk13
-        action[4] = ((action[4]-1)/2)*np.pi/9
+        action[4] = ((action[4]-1)/2)*math.radians(20.0)
         #swa13
-        action[5] = (action[5])*np.pi/9
+        action[5] = (action[5])*math.radians(30.0)
 
         #stk02
-        action[6] = ((action[6]-1)/2)*np.pi/9
+        action[6] = ((action[6]-1)/2)*math.radians(20.0)
         #sta02
-        action[7] = (action[7])*np.pi/9
+        action[7] = (action[7])*math.radians(30.0)
 
         #stk13
-        action[8] = ((action[8]-1)/2)*np.pi/9
+        action[8] = ((action[8]-1)/2)*math.radians(20.0)
         #sta13
-        action[9] = (action[9])*np.pi/9
+        action[9] = (action[9])*math.radians(30.0)
 
         #swhx02
         action[10] = (action[10])*math.radians(10.0)
