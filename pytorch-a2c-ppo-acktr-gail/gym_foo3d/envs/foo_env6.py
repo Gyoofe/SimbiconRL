@@ -260,7 +260,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[0] = ((action[0] + 1)/2)*np.pi/2
         #swk02
         #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
-        action[1] = ((action[1] - 1)*0.35-0.3)*math.radians(100.0)
+        action[1] = ((action[1] - 1)/2)*math.radians(100.0)
         #swa02
         action[2] = (((action[2] + 1)/2)*(2/3)+1/3)*np.pi/3
         #내리는거
