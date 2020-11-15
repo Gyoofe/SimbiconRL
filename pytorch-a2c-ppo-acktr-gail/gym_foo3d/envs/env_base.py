@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/gyoofe/dart/data/sdf/atlas/"
+skel_path="/home/qfe/dart/data/skel/"
 STEP_PER_WALK = 2
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
@@ -37,10 +37,10 @@ class FooEnvBase(gym.Env):
     def init_sim(self,cDirection,render):
         self.querystep = 1
         self.frameskip = 30
-        self.sim = pydart.World(1/900)
+        self.sim = pydart.World(1/900, "/home/qfe/dart/data/skel/fullbody1.skel")
         self.sim.set_recording(False)
-        self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
-        self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
+        #self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
+        #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
         #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.urdf")
        
         self.data = None
@@ -48,7 +48,7 @@ class FooEnvBase(gym.Env):
         
         self.skel = self.sim.skeletons[1]
         q = self.skel.q
-        q[0] = -0.49*np.pi
+        #q[0] = -0.49*np.pi
         #q[1] = 0.49*np.pi
         #q[2] = 0
         q[4] = q[4]
@@ -117,23 +117,23 @@ class FooEnvBase(gym.Env):
 
         self.step_counter = 0
 
-        self.r_foot = self.skel.body("r_foot")
-        self.l_foot = self.skel.body("l_foot")
-        self.l_uleg = self.skel.body("l_uleg")
-        self.r_uleg = self.skel.body("r_uleg")
-        self.l_lleg = self.skel.body("l_lleg")
-        self.r_lleg = self.skel.body("r_lleg")
-        self.l_leg_hpy = self.skel.joint("l_leg_hpy")
-        self.r_leg_hpy = self.skel.joint("r_leg_hpy")
-        self.pelvisX = self.skel.joint("back_bkx")
-        self.pelvisY = self.skel.joint("back_bky")
-        self.pelvisZ = self.skel.joint("back_bkz")
-        self.pelvis = self.skel.body("pelvis")
+        self.r_foot = self.skel.body("h_toe_right")
+        self.l_foot = self.skel.body("h_toe_left")
+        self.l_uleg = self.skel.body("h_thigh_left")
+        self.r_uleg = self.skel.body("h_thigh_right")
+        self.l_lleg = self.skel.body("h_shin_left")
+        self.r_lleg = self.skel.body("h_shin_right")
+        self.l_leg_hpy = self.skel.joint("j_thigh_left")
+        self.r_leg_hpy = self.skel.joint("j_thigh_right")
+        self.pelvisX = self.skel.joint("j_abdomen")
+        #self.pelvisY = self.skel.joint("j_abdomen_2")
+        #self.pelvisZ = self.skel.joint("back_bkz")
+        self.pelvis = self.skel.body("h_pelvis")
 
-        self.l_hand = self.skel.body("l_hand")
-        self.r_hand = self.skel.body("r_hand")
-        self.utorso = self.skel.body("utorso")
-        self.mtorso = self.skel.body("mtorso")
+        self.l_hand = self.skel.body("h_hand_left")
+        self.r_hand = self.skel.body("h_hand_right")
+        self.utorso = self.skel.body("h_head")
+        self.mtorso = self.skel.body("h_spine")
 
 
         self.XveloQueue = CircularQueue(self.frameskip*1)
@@ -368,7 +368,7 @@ class FooEnvBase(gym.Env):
     def getCOMFrameXAxis(self):
         yAxis = cMat.Matrix.UnitY()
 
-        pelvisAxis = self.sim.skeletons[1].body("pelvis").T
+        pelvisAxis = self.sim.skeletons[1].body("h_pelvis").T
         pelvisXAxis = cMat.Matrix.linear(pelvisAxis)
         pelvisXAxis = cMat.Matrix.col(pelvisXAxis,0)
 

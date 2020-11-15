@@ -133,18 +133,18 @@ class FooEnv6(env_base.FooEnvBase):
     """
 
     def get_state(self):
-        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:9],self.sim.skeletons[1].q[14:20],self.sim.skeletons[1].q[26:32],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:9],self.sim.skeletons[1].dq[14:20],self.sim.skeletons[1].dq[26:32],self.currentState,
+        return np.concatenate([self.sim.skeletons[1].q[0:3],self.sim.skeletons[1].q[6:23],self.sim.skeletons[1].dq[0:3],self.sim.skeletons[1].dq[6:23],self.currentState,
             [self.desiredStepDuration,self.desiredStepLength,self.desiredMaximumSwingfootHeight],
            self.l_hand_relative_pos,self.r_hand_relative_pos,self.utorso_relative_pos,self.l_foot_relative_pos,self.r_foot_relative_pos])
 
     ## 추후에 변수로 변경
     def state_scaling(self,state):
-        state[0:18] = (state[0:18]+np.pi)/(np.pi + np.pi)
-        state[18:36] = (state[18:36])/20
-        state[37] = state[37] #current State
-        state[38] = (state[38]-0.1)/(0.5-0.1) # desiredStepLength
-        state[39] = (state[39]-2*self.desiredStepDuration/3)/(0.2)
-        state[40] = (state[40]-self.desiredStepDuration/4)/(0.15)
+        state[0:20] = (state[0:20]+np.pi)/(np.pi + np.pi)
+        state[20:40] = (state[20:40])/20
+        state[41] = state[41] # desire Step Duration
+        state[42] = (state[42]-0.1)/(0.5-0.1) # desiredStepLength
+        state[43] = (state[43]-2*self.desiredStepDuration/3)/(0.2)
+        state[44] = (state[44]-self.desiredStepDuration/4)/(0.15)
         return state
 
     def updateEndEffectorLocalPosition(self):
@@ -254,6 +254,8 @@ class FooEnv6(env_base.FooEnvBase):
             self.targetspeed += 0.025
 
     def clip_Scaling_Actiond10(self, action, stateName):
+        #Skel에선 y가 z여야함
+
         action = np.clip(action, -200, 200)/200
         #드는거 
         #swh02
@@ -305,7 +307,7 @@ class FooEnv6(env_base.FooEnvBase):
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         ##Torso13
         action[22] = ((action[22]+1)/2)*math.radians(-30.0)
-        return action
+        return -1*action
 
 
 

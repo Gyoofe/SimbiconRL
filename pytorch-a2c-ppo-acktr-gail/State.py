@@ -30,21 +30,21 @@ class State():
         self.mCoronalCv = np.zeros(self.numDof) 
 
         #for atlas
-        self.mCoronalLeftHipDOFIndex = self.mSkel.dof("l_leg_hpx").index_in_skeleton()
-        self.mCoronalRightHipDOFIndex = self.mSkel.dof("r_leg_hpx").index_in_skeleton()
-        self.mSagitalLeftHipDOFIndex = self.mSkel.dof("l_leg_hpy").index_in_skeleton()
-        self.mSagitalRightHipDOFIndex = self.mSkel.dof("r_leg_hpy").index_in_skeleton()
-        self.mTransverseLeftHipDOFIndex = self.mSkel.dof("l_leg_hpz").index_in_skeleton()
-        self.mTransverseRightHipDOFIndex = self.mSkel.dof("r_leg_hpz").index_in_skeleton()
-        self.mlay = self.mSkel.dof("l_arm_shy").index_in_skeleton()
-        self.mray = self.mSkel.dof("r_arm_shy").index_in_skeleton()
-        self.mlax = self.mSkel.dof("l_arm_shx").index_in_skeleton()
-        self.mrax = self.mSkel.dof("r_arm_shx").index_in_skeleton()
+        self.mCoronalLeftHipDOFIndex = self.mSkel.dof("j_thigh_left_x").index_in_skeleton()
+        self.mCoronalRightHipDOFIndex = self.mSkel.dof("j_thigh_right_x").index_in_skeleton()
+        self.mSagitalLeftHipDOFIndex = self.mSkel.dof("j_thigh_left_z").index_in_skeleton()
+        self.mSagitalRightHipDOFIndex = self.mSkel.dof("j_thigh_right_z").index_in_skeleton()
+        self.mTransverseLeftHipDOFIndex = self.mSkel.dof("j_thigh_left_y").index_in_skeleton()
+        self.mTransverseRightHipDOFIndex = self.mSkel.dof("j_thigh_right_y").index_in_skeleton()
+        self.mlay = self.mSkel.dof("j_bicep_left_y").index_in_skeleton()
+        self.mray = self.mSkel.dof("j_bicep_right_y").index_in_skeleton()
+        self.mlax = self.mSkel.dof("j_bicep_left_x").index_in_skeleton()
+        self.mrax = self.mSkel.dof("j_bicep_right_x").index_in_skeleton()
         #self.mPelvis = self.mSkel.dof("pelvis").index_in_skeleton()
         self.mTorque = np.zeros(self.numDof)
         
         self.mKp = np.zeros(self.numDof)
-        self.mKd = np.zeros(self.numDof)
+        self.mKd = np.zeros(self.numDof)    
 
         for i in range(0,self.numDof):
             self.mKp[i] = 1000
@@ -54,8 +54,8 @@ class State():
         self.mDesiredJointPositionBalance = np.zeros(self.numDof)
 
 
-        self.mLeftFoot = self.mSkel.body("l_foot")
-        self.mRightFoot = self.mSkel.body("r_foot")
+        self.mLeftFoot = self.mSkel.body("h_heel_left")
+        self.mRightFoot = self.mSkel.body("h_heel_right")
 
         self.mStanceFoot = self.mLeftFoot
 
@@ -120,23 +120,6 @@ class State():
         
         self.mDesiredJointPositionBalance = self.mDesiredJointPosition + self.getSagitalCOMDistance(getCOMFrameLinear) * self.mSagitalCd + self.getSagitalCOMVelocity(getCOMFrameLinear) * self.mSagitalCv + self.getCoronalCOMDistance(getCOMFrameLinear) * self.mCoronalCd + self.getCoronalCOMVelocity(getCOMFrameLinear) * self.mCoronalCv
         #self.mDesiredJointPositionBalance = self.mDesiredJointPosition
-        #print("desiredPos",self.mDesiredJointPosition)
-        #print("DesiredPosb",self.mDesiredJointPositionBalance)
-        #print("sd", self.getSagitalCOMDistance())
-        #print("sv", self.getSagitalCOMVelocity())
-        #print("cd", self.getCoronalCOMDistance())
-        #print("cv", self.getCoronalCOMVelocity())
-        #print("cd", self.mSagitalCd)
-        #print("cv", self.mSagitalCv)
-        #print("ccd", self.mCoronalCd)
-        #print("ccv",self.mSagitalCv)
-        #print("timestep", timestep)
-        #print(self.getSagitalCOMDistance())
-        #print("balance",self.mDesiredJointPositionBalance)
-        #print("sCd",self.getSagitalCOMDistance())
-        #print("scd",self.mSagitalCd)
-        #print("mkp",self.mKp)
-        #print("mkd",self.mKd)
 
         self.mTorque[0:6] = 0
         for i in range(6,self.numDof):
@@ -250,7 +233,7 @@ class State():
             #input()
             #pelvisSagitalAngle = self.getSagitalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoSagital = -5000.0 * (pelvisSagitalAngle + self.mDesiredGlobalPelvisAngleOnSagital)
-            tauTorsoSagital = 5000.0*pos_d[1]
+            tauTorsoSagital = -5000.0*pos_d[1]
 
             #coronal left 10
             #coronal right 11
@@ -279,8 +262,8 @@ class State():
             #    tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2] 
             #    self.mTorque[self.mTransverseLeftHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
 
-            tauTorsoTransverse = 250*pos_d[2] - 25*dq[2] 
-            self.mTorque[self.mTransverseLeftHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
+            # tauTorsoTransverse = 250*pos_d[2] - 25*dq[2] 
+            # self.mTorque[self.mTransverseLeftHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseRightHipDOFIndex])
 
 
             #print("coronalTorque",self.mTorque[self.mCoronalLeftHipDOFIndex])
@@ -291,7 +274,7 @@ class State():
         elif self.mStanceFoot is self.mRightFoot :
             #pelvisSagitalAngle = self.getSagitalPelvisAngle(getCOMFrameLinear,comY,pelvisZ)
             #tauTorsoSagital =-5000.0 * (pelvisSagitalAngle + self.mDesiredGlobalPelvisAngleOnSagital)
-            tauTorsoSagital = 5000.0*pos_d[1]
+            tauTorsoSagital = -5000.0*pos_d[1]
 
             ##RLCODE
             #self.mTorque[self.mSagitalLeftHipDOFIndex] = action[0]
@@ -314,8 +297,8 @@ class State():
             #    tauTorsoTransverse = self.mRootKp*pos_d[2] - self.mRootKd*dq[2]
             #    self.mTorque[self.mTransverseRightHipDOFIndex] = (self.mRootKp/5000)*(tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
            
-            tauTorsoTransverse = 250*pos_d[2] - 25*dq[2]
-            self.mTorque[self.mTransverseRightHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
+            # tauTorsoTransverse = 250*pos_d[2] - 25*dq[2]
+            # self.mTorque[self.mTransverseRightHipDOFIndex] = (tauTorsoTransverse - self.mTorque[self.mTransverseLeftHipDOFIndex])
 
             #print("mTRDOF",self.mTorque[self.mTransverseRightHipDOFIndex])
 
@@ -439,7 +422,7 @@ class State():
 
         yAxis = cMat.Matrix.UnitY()
 
-        pelvisAxis = self.mSkel.body("pelvis").T
+        pelvisAxis = self.mSkel.body("h_pelvis").T
         pelvisXAxis = cMat.Matrix.linear(pelvisAxis)
         pelvisXAxis = cMat.Matrix.col(pelvisXAxis,0)
 
@@ -491,6 +474,9 @@ class State():
     def isTerminalConditionSatisfied(self,):
         if self.mTerminalCondition is not None:
             return self.mTerminalCondition.isSatisfied()
+
+    def setValues(self, abdoman, hip_x, hip_y, hip_z, knee, ankle, ):
+        return
 
 
 class TerminalCondition():
