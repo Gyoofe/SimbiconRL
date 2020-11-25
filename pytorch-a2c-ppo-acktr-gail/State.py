@@ -126,6 +126,7 @@ class State():
             self.mTorque[i] = -self.mKp[i] * (q[i] - self.mDesiredJointPositionBalance[i]) - self.mKd[i]* dq[i]
             #self.mTorque[i] = 0.5*self.mTorque[i]
             #self.mTorque[i] = -self.mTorque[i]
+            #print(self.mTorque[i])
         #------------------------------------
         
         #print("qq",q[self.mlax], q[self.mlay])

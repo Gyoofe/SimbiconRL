@@ -84,9 +84,9 @@ class StateMachine():
                 #tCond3 = st.TimerCondition(wState3, action[10]*(1-action[11]))
                 #wState3.setTerminalCondition(tCond3)
 
-            swh02 = action[0]
-            swk02 = action[1]
-            swa02 = action[2]
+            swh02 = action[0] #양수 드는거
+            swk02 = action[1] #음수 반대로 꺾임
+            swa02 = action[2] #양수 발목 위로
             swh13 = action[3]
             swk13 = action[4]
             swa13 = action[5]
@@ -111,73 +111,70 @@ class StateMachine():
             pelvis02 = action[21]
             pelvis13 = action[22]
 
+            #양수가 앞으로 숙인다. 하지만 이건 제ㅚ하기로했다
+            # wState0.setDesiredJointPosition("j_abdomen_2", pelvis02)
+            # wState1.setDesiredJointPosition("j_abdomen_2", pelvis13)
+            # wState2.setDesiredJointPosition("j_abdomen_2", pelvis02)
+            # wState3.setDesiredJointPosition("j_abdomen_2", pelvis13)
 
-            wState0.setDesiredJointPosition("j_abdomen_2", -pelvis02)
-            wState1.setDesiredJointPosition("j_abdomen_2", -pelvis13)
-            wState2.setDesiredJointPosition("j_abdomen_2", -pelvis02)
-            wState3.setDesiredJointPosition("j_abdomen_2", -pelvis13)
 
+            #00
+            wState0.setDesiredJointPosition("j_thigh_right_z", swh02) # +가 다리 올리는거
+            wState0.setDesiredJointPosition("j_shin_right", swk02) # +면 반대로 꺽임 
+            wState0.setDesiredJointPosition("j_heel_right_1", swa02) # +면 발목위로
 
-            wState0.setDesiredJointPosition("j_thigh_right_z", -swh02)
-            wState0.setDesiredJointPosition("j_shin_right", -swk02)
-            wState0.setDesiredJointPosition("j_heel_right_1", -swa02)
+            wState0.setDesiredJointPosition("j_thigh_right_x", swhx02) # +면 다리 안쪽으로 모음 
+            wState0.setDesiredJointPosition("j_thigh_right_y", swhz02) # 다리 돌리는거겠지
+            #Stance Hip control
+            wState0.setDesiredJointPosition("j_thigh_left_x", sthx02)
+            wState0.setDesiredJointPosition("j_thigh_left_z", sthy02)
+            wState0.setDesiredJointPosition("j_thigh_left_y", sthz02)
+            wState0.setDesiredJointPosition("j_shin_left", stk02)
+            wState0.setDesiredJointPosition("j_heel_left_1",sta02)
+            ##########################################################
 
-            wState0.setDesiredJointPosition("j_shin_left", -stk02)
-            wState0.setDesiredJointPosition("j_heel_left_1",-sta02)
+            wState1.setDesiredJointPosition("j_thigh_right_z", swh13)
+            wState1.setDesiredJointPosition("j_shin_right", swk13)
+            wState1.setDesiredJointPosition("j_heel_right_1", swa13)
 
-            wState0.setDesiredJointPosition("j_thigh_right_x", -swhx02)
-            wState0.setDesiredJointPosition("j_thigh_right_y", -swhz02)
+            wState1.setDesiredJointPosition("j_thigh_right_x", swhx13)
+            wState1.setDesiredJointPosition("j_thigh_right_y", swhz13)
 
             #Stance Hip control
-            wState0.setDesiredJointPosition("j_thigh_left_x", -sthx02)
-            wState0.setDesiredJointPosition("j_thigh_left_z", -sthy02)
-            wState0.setDesiredJointPosition("j_thigh_left_y", -sthz02)
+            wState1.setDesiredJointPosition("j_thigh_left_x", sthx13)
+            wState1.setDesiredJointPosition("j_thigh_left_z", sthy13)
+            wState1.setDesiredJointPosition("j_thigh_left_y", sthz13)
+            wState1.setDesiredJointPosition("j_shin_left", stk13)
+            wState1.setDesiredJointPosition("j_heel_left_1", sta13)
+            ############################################################
+            ##22
+            wState2.setDesiredJointPosition("j_thigh_left_z", swh02)
+            wState2.setDesiredJointPosition("j_shin_left", swk02)
+            wState2.setDesiredJointPosition("j_heel_left_1", swa02)
 
-
-            wState1.setDesiredJointPosition("j_thigh_right_z", -swh13)
-            wState1.setDesiredJointPosition("j_shin_right", -swk13)
-            wState1.setDesiredJointPosition("j_heel_right_1", -swa13)
-
-            wState1.setDesiredJointPosition("j_shin_left", -stk13)
-            wState1.setDesiredJointPosition("j_heel_left_1", -sta13)
-
-            wState1.setDesiredJointPosition("j_thigh_right_x", -swhx13)
-            wState1.setDesiredJointPosition("j_thigh_right_y", -swhz13)
-
-            #Stance Hip control
-            wState1.setDesiredJointPosition("j_thigh_right_x", -sthx13)
-            wState1.setDesiredJointPosition("j_thigh_right_z", -sthy13)
-            wState1.setDesiredJointPosition("j_thigh_right_y", -sthz13)
-            
-            wState2.setDesiredJointPosition("j_thigh_right_z", -swh02)
-            wState2.setDesiredJointPosition("j_shin_right", -swk02)
-            wState2.setDesiredJointPosition("j_heel_right_1", -swa02)
-
-            wState2.setDesiredJointPosition("j_shin_left", -stk02)
-            wState2.setDesiredJointPosition("j_heel_left_1",-sta02)
-
-            wState2.setDesiredJointPosition("j_thigh_right_x", -swhx02)
-            wState2.setDesiredJointPosition("j_thigh_right_y", -swhz02)
+            wState2.setDesiredJointPosition("j_thigh_left_x", swhx02)
+            wState2.setDesiredJointPosition("j_thigh_left_y", swhz02)
 
             #Stance Hip control
-            wState2.setDesiredJointPosition("j_thigh_left_x", -sthx02)
-            wState2.setDesiredJointPosition("j_thigh_left_z", -sthy02)
-            wState2.setDesiredJointPosition("j_thigh_left_y", -sthz02)
+            wState2.setDesiredJointPosition("j_thigh_right_x", sthx02)
+            wState2.setDesiredJointPosition("j_thigh_right_z", sthy02)
+            wState2.setDesiredJointPosition("j_thigh_right_y", sthz02)
+            wState2.setDesiredJointPosition("j_shin_right", stk02)
+            wState2.setDesiredJointPosition("j_heel_right_1",sta02)
+            ############################################################
+            wState3.setDesiredJointPosition("j_thigh_left_z", swh13)
+            wState3.setDesiredJointPosition("j_shin_left", swk13)
+            wState3.setDesiredJointPosition("j_heel_left_1", swa13)
 
-            wState3.setDesiredJointPosition("j_thigh_right_z", -swh13)
-            wState3.setDesiredJointPosition("j_shin_right", -swk13)
-            wState3.setDesiredJointPosition("j_heel_right_1", -swa13)
-
-            wState3.setDesiredJointPosition("j_shin_left", -stk13)
-            wState3.setDesiredJointPosition("j_heel_left_1", -sta13)
-
-            wState3.setDesiredJointPosition("j_thigh_right_x", -swhx13)
-            wState3.setDesiredJointPosition("j_thigh_right_y", -swhz13)
+            wState3.setDesiredJointPosition("j_thigh_left_x", swhx13)
+            wState3.setDesiredJointPosition("j_thigh_left_y", swhz13)
 
             #Stance Hip control
-            wState3.setDesiredJointPosition("j_thigh_right_x", -sthx13)
-            wState3.setDesiredJointPosition("j_thigh_right_z", -sthy13)
-            wState3.setDesiredJointPosition("j_thigh_right_y", -sthz13)
+            wState3.setDesiredJointPosition("j_thigh_right_x", sthx13)
+            wState3.setDesiredJointPosition("j_thigh_right_z", sthy13)
+            wState3.setDesiredJointPosition("j_thigh_right_y", sthz13)
+            wState3.setDesiredJointPosition("j_shin_right", stk13)
+            wState3.setDesiredJointPosition("j_heel_right_1", sta13)
 
 
 
@@ -246,8 +243,8 @@ class Controller():
         input()
 
     def _createWalkingStateMachine(self):
-        cd = 0.5
-        cv = 0.2
+        cd = -0.5
+        cv = -0.2
 
         pelvis = math.radians(-10.0)
 
@@ -335,10 +332,10 @@ class Controller():
         wState0.setDesiredJointPosition("j_shin_left", stk02)
         wState0.setDesiredJointPosition("j_heel_left_1",sta02)
 
-        wState0.setDesiredJointPosition("j_bicep_left_z", math.radians(-20.0))
-        wState0.setDesiredJointPosition("j_bicep_right_z", math.radians(10.0)) 
-        wState0.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
-        wState0.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
+        # wState0.setDesiredJointPosition("j_bicep_left_z", math.radians(-20.0))
+        # wState0.setDesiredJointPosition("j_bicep_right_z", math.radians(10.0)) 
+        # wState0.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
+        # wState0.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
         #3D
         wState0.setDesiredJointPosition("j_thigh_right_x", math.radians(0.0))
 
@@ -363,10 +360,10 @@ class Controller():
         wState1.setDesiredJointPosition("j_shin_right", stk13)
         wState1.setDesiredJointPosition("j_heel_right_1", sta13)
 
-        wState1.setDesiredJointPosition("j_bicep_right_z", math.radians(20.0))
-        wState1.setDesiredJointPosition("j_bicep_left_z", math.radians(-10.0)) 
-        wState1.setDesiredJointPosition("j_bicep_right_y", math.radians(80.00))
-        wState1.setDesiredJointPosition("j_bicep_left_y",-math.radians(80.00))
+        # wState1.setDesiredJointPosition("j_bicep_right_z", math.radians(20.0))
+        # wState1.setDesiredJointPosition("j_bicep_left_z", math.radians(-10.0)) 
+        # wState1.setDesiredJointPosition("j_bicep_right_y", math.radians(80.00))
+        # wState1.setDesiredJointPosition("j_bicep_left_y",-math.radians(80.00))
 
         #3D
         wState1.setDesiredJointPosition("j_thigh_left_x", math.radians(0.0))
@@ -390,10 +387,10 @@ class Controller():
         wState2.setDesiredJointPosition("j_shin_right", stk02)
         wState2.setDesiredJointPosition("j_heel_right_1",sta02)
 
-        wState2.setDesiredJointPosition("j_bicep_right_z", math.radians(20.0))
-        wState2.setDesiredJointPosition("j_bicep_left_z", math.radians(-10.0)) 
-        wState2.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
-        wState2.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
+        # wState2.setDesiredJointPosition("j_bicep_right_z", math.radians(20.0))
+        # wState2.setDesiredJointPosition("j_bicep_left_z", math.radians(-10.0)) 
+        # wState2.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
+        # wState2.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
 
         #3D
         wState2.setDesiredJointPosition("j_thigh_left_x", math.radians(0.0))
@@ -418,10 +415,10 @@ class Controller():
         wState3.setDesiredJointPosition("j_shin_left", stk13)
         wState3.setDesiredJointPosition("j_heel_left_1",sta13)
 
-        wState3.setDesiredJointPosition("j_bicep_left_z", math.radians(20.0))
-        wState3.setDesiredJointPosition("j_bicep_right_z", math.radians(-10.0)) 
-        wState3.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
-        wState3.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
+        # wState3.setDesiredJointPosition("j_bicep_left_z", math.radians(20.0))
+        # wState3.setDesiredJointPosition("j_bicep_right_z", math.radians(-10.0)) 
+        # wState3.setDesiredJointPosition("j_bicep_left_y", math.radians(80.00))
+        # wState3.setDesiredJointPosition("j_bicep_right_y",-math.radians(80.00))
 
         #3D
         wState3.setDesiredJointPosition("j_thigh_right_x", math.radians(0.0))

@@ -258,7 +258,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         action = np.clip(action, -200, 200)/200
         #드는거 
-        #swh02
+        #swh02 드는건 +가 양수다 그러면...
         action[0] = ((action[0] + 1)/2)*np.pi/2
         #swk02
         #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
@@ -302,12 +302,13 @@ class FooEnv6(env_base.FooEnvBase):
         action[19] = (action[19])*math.radians(30.0)
 
         ##Duration
-        action[20] = ((action[20]+1)/2)*0.45 + 0.1
+        action[20] = ((action[20]+1)/2)*0.1 + 0.1
         ##Torso02
         action[21] = ((action[21]+1)/2)*math.radians(-30.0)
         ##Torso13
         action[22] = ((action[22]+1)/2)*math.radians(-30.0)
-        return -1*action
+
+        return action
 
 
 
@@ -758,8 +759,6 @@ class FooEnv6(env_base.FooEnvBase):
             ##평균값
             self.Rcontact_mean_step = np.round(self.contactTimeQueue.sum_all()/self.contactTimeQueue.count)
             assert self.Rcontact_mean_step > 0, "contact Time is under zero"
-
-
 
         self.StepCounterQueue.enqueue(n_frames)
         return done,n_frames
