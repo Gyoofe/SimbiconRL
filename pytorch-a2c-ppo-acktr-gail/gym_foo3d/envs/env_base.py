@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import random
 
-skel_path="/home/qfe/dart/data/skel/"
+skel_path="/home/gyoofe/dart/data/skel/"
 STEP_PER_WALK = 2
 DESIRED_MAX_SPEED = 1.3
 class FooEnvBase(gym.Env):
@@ -37,7 +37,7 @@ class FooEnvBase(gym.Env):
     def init_sim(self,cDirection,render):
         self.querystep = 1
         self.frameskip = 30
-        self.sim = pydart.World(1/900, "/home/qfe/dart/data/skel/fullbody1.skel")
+        self.sim = pydart.World(1/900, "/home/gyoofe/dart/data/skel/fullbody1.skel")
         self.sim.set_recording(False)
         #self.ground = self.sim.add_skeleton(skel_path+"ground.urdf")
         #self.model = self.sim.add_skeleton(skel_path+"atlas_v3_no_head.sdf")
