@@ -389,6 +389,7 @@ class State():
         #print("gsAP",self.getStanceAnklePosition())
         #d = self.getCOM() - self.getStanceAnklePosition()
         d = self.getCOM() - self.returnStanceAnklePositionValue()
+
         return np.dot(d,xAxis)
 
     def getSagitalCOMVelocity(self,getCOMFrameLinear): 
@@ -424,6 +425,7 @@ class State():
         yAxis = cMat.Matrix.UnitY()
 
         pelvisAxis = self.mSkel.body("h_pelvis").T
+
         pelvisXAxis = cMat.Matrix.linear(pelvisAxis)
         pelvisXAxis = cMat.Matrix.col(pelvisXAxis,0)
 
@@ -503,11 +505,11 @@ class TimerCondition(TerminalCondition):
             return False
 
 class CollisionCondition(TerminalCondition):
-    def __init__(self,state,world,bodynode):
+    def __init__(self,state,world,bodynodes):
         super().__init__(state)
         self.collisionChecker = pydart.collision_result.CollisionResult(world)
         self.mDuration = 0.3
-        self.mbodynode = bodynode
+        self.mbodynodes = bodynodes
         self.checkOut = 0
         #print(bodynode)
         #input()
@@ -530,20 +532,24 @@ class CollisionCondition(TerminalCondition):
                 return True
 
         """
-        if self.mbodynode in self.collisionChecker.contacted_bodies:
+        for bodynode in self.mbodynodes:
+            #print(self.collisionChecker.contacted_bodies, "checkOut:", self.checkOut, "bodyNode:", bodynode)
+            if bodynode in self.collisionChecker.contacted_bodies:
             #print("return True")
             #input()
-            if self.checkOut is not 0:
-                if len(self.collisionChecker.contacted_bodies) < 2:
-                    return False
+                if self.checkOut is not 0:
+                    if len(self.collisionChecker.contacted_bodies) < 2:
+                        continue
+                    else:
+                        return True
                 else:
-                    return True
-            else:
-                self.checkOut = 0
-                return False
+                    self.checkOut = 0
+                    return False
         #elif self.mState.getElapsedTime() > self.mDuration:
             #return True
-        else:
-            self.checkOut = 1
-            return False
+            else:
+                self.checkOut = 1
+                continue
+        
+        return False
 

@@ -56,6 +56,7 @@ class StateMachine():
             self.mFrame = self.mFrame+1
         
             booleanS = self.mCurrentState.isTerminalConditionSatisfied()
+
             if booleanS is True:
                 #quit()
                 #print(self.mCurrentState.mName)
@@ -112,10 +113,10 @@ class StateMachine():
             pelvis13 = action[22]
 
             #양수가 앞으로 숙인다. 하지만 이건 제ㅚ하기로했다
-            # wState0.setDesiredJointPosition("j_abdomen_2", pelvis02)
-            # wState1.setDesiredJointPosition("j_abdomen_2", pelvis13)
-            # wState2.setDesiredJointPosition("j_abdomen_2", pelvis02)
-            # wState3.setDesiredJointPosition("j_abdomen_2", pelvis13)
+            wState0.setDesiredJointPosition("j_abdomen_2", pelvis02)
+            wState1.setDesiredJointPosition("j_abdomen_2", pelvis13)
+            wState2.setDesiredJointPosition("j_abdomen_2", pelvis02)
+            wState3.setDesiredJointPosition("j_abdomen_2", pelvis13)
 
 
             #00
@@ -128,6 +129,7 @@ class StateMachine():
             #Stance Hip control
             wState0.setDesiredJointPosition("j_thigh_left_x", sthx02)
             wState0.setDesiredJointPosition("j_thigh_left_z", sthy02)
+            #print(sthy02)
             wState0.setDesiredJointPosition("j_thigh_left_y", sthz02)
             wState0.setDesiredJointPosition("j_shin_left", stk02)
             wState0.setDesiredJointPosition("j_heel_left_1",sta02)
@@ -201,10 +203,10 @@ class Controller():
         self.mWorld=world
 
         self.mCoronalLeftHip = self.mSkel.dof("j_thigh_left_x").index_in_skeleton()
-        self.mSagitalLeftHip = self.mSkel.dof("j_thigh_left_y").index_in_skeleton()
+        self.mSagitalLeftHip = self.mSkel.dof("j_thigh_left_z").index_in_skeleton()
 
         self.mCoronalRightHip = self.mSkel.dof("j_thigh_right_x").index_in_skeleton()
-        self.mSagitalRightHip = self.mSkel.dof("j_thigh_right_y").index_in_skeleton()
+        self.mSagitalRightHip = self.mSkel.dof("j_thigh_right_z").index_in_skeleton()
 
         self._buildStateMachine()
         self._setJointDamping()
@@ -246,7 +248,7 @@ class Controller():
         cd = -0.5
         cv = -0.2
 
-        pelvis = math.radians(-10.0)
+        pelvis = math.radians(0.0)
 
         swh02 = 0.5
         swk02 = -1.10
@@ -276,8 +278,8 @@ class Controller():
         tCond3 = st.CollisionCondition(wState3,self.mWorld,self._getLeftFoot())
         self.LContact = tCond3
         #tCond3 = st.TimerCondition(wState3, 1/30)
-        tCond5 = st.TimerCondition(wState1, 1)
-        tCond6 = st.TimerCondition(wState3, 1)
+        #tCond5 = st.TimerCondition(wState1, 1)
+        #tCond6 = st.TimerCondition(wState3, 1)
 
         wState0.setTerminalCondition(tCond0)
         wState1.setTerminalCondition(tCond1)
@@ -408,7 +410,7 @@ class Controller():
 
         wState3.setDesiredJointPosition("j_abdomen_2", pelvis)
 
-        wState3.setDesiredJointPosition("j_thigh_right_z", -swh13)
+        wState3.setDesiredJointPosition("j_thigh_right_z", swh13)
         wState3.setDesiredJointPosition("j_shin_right", swk13)
         wState3.setDesiredJointPosition("j_heel_right_1", swa13)
 
@@ -459,7 +461,7 @@ class Controller():
         self.mCurrentStateMachine.computeControlForce_state(1/900)
     """
     def _getLeftFoot(self):
-        return self.mSkel.body("h_toe_left")
+        return [self.mSkel.body("h_toe_left"), self.mSkel.body("h_heel_left")]
 
     def _getRightFoot(self):
-        return self.mSkel.body("h_toe_right")
+        return [self.mSkel.body("h_toe_right"), self.mSkel.body("h_heel_right")]
