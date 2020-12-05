@@ -27,7 +27,7 @@ from . import env_base
 skel_path="/home/qfei/dart/data/sdf/atlas/"
 SIMULATION_STEP_PER_SEC=900
 GROUND_Y = -0.85
-ALIVE_BONUS = 10
+ALIVE_BONUS = 20
 class FooEnv6(env_base.FooEnvBase):
     def init_sim(self,cDirection,render):
         super().init_sim(cDirection,render)
@@ -256,7 +256,7 @@ class FooEnv6(env_base.FooEnvBase):
     def clip_Scaling_Actiond10(self, action, stateName):
         #Skel에선 y가 z여야함
 
-        action = np.clip(action, -200, 200)/200
+        action = np.clip(action, -1, 1)
         #드는거 
         #swh02 드는건 +가 양수다 그러면...
         action[0] = ((action[0] + 1)/2)*np.pi/2
@@ -368,7 +368,6 @@ class FooEnv6(env_base.FooEnvBase):
         #done은 에피소드가 끝났는지..
         action = self.clip_Scaling_Actiond10(action, self.previousState)
         done,n_frames = self.do_simulation(action)
-        
         #발의 위치
         r_foot_pos = self._getJointPosition(self.r_foot) 
         l_foot_pos = self._getJointPosition(self.l_foot)
@@ -409,8 +408,6 @@ class FooEnv6(env_base.FooEnvBase):
             self.a = [self.XveloQueue.f_e_d(), 0, self.ZveloQueue.f_e_d()]
         self.a = cMat.Matrix.normalize(self.a)
         walkPenalty = self._calAngleBetweenVectors(self.currentFrameXAxis, self.a)
-
-
 
         ##Stride Reward
         #보폭을 비슷하게
@@ -634,11 +631,14 @@ class FooEnv6(env_base.FooEnvBase):
 
         ##값 초기화
         self.footPosWhenS0S2End = 0
+        stepss = 0
         while(self.previousState is self.controller.mCurrentStateMachine.mCurrentState.mName
                 or (int(self.previousState)+1)%4 is int(self.controller.mCurrentStateMachine.mCurrentState.mName)):
             self.controller.update()
             self.sim.step()
-
+            stepss=stepss+1
+            if stepss > 10000:
+                print("stepSS!")
             pos_after = self.sim.skeletons[1].com()
             r_foot_pos = self._getJointPosition(self.r_foot) 
             l_foot_pos = self._getJointPosition(self.l_foot)
