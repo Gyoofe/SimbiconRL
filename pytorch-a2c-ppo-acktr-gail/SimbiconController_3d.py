@@ -447,7 +447,7 @@ class Controller():
         for i in range(1,self.mSkel.num_bodynodes()):
             joint = self.mSkel.joint(i)
             for j in range(0,joint.num_dofs()):
-                joint.set_damping_coefficient(j, 80.0)
+                joint.set_damping_coefficient(j, 120.0)
      
     def update(self):
         #check After
