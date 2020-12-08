@@ -47,7 +47,7 @@ class State():
         self.mKd = np.zeros(self.numDof)    
 
         for i in range(0,self.numDof):
-            self.mKp[i] = 1000
+            self.mKp[i] = 650
             self.mKd[i] = 1
 
 
