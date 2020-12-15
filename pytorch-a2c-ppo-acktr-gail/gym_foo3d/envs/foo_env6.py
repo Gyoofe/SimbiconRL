@@ -388,7 +388,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         
         ##torso 균형
-        torsoYVec = self.mtorso.world_transform()[0:3,2]
+        torsoYVec = self.mtorso.world_transform()[0:3,1]
         torsoUprightPenalty = 1 - np.dot(torsoYVec, [0,1,0])
         
         ##root 균형(pelvis의 y축 요소중 z축 방향으로의 요소가 0이 되어야 한다.)
@@ -503,7 +503,7 @@ class FooEnv6(env_base.FooEnvBase):
 
         alive_bonus = ALIVE_BONUS
 
-        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 6*StepLengthPenalty - 5*FootHeightPenalty - 7*stepDurationPenalty - 4*torsoUprightPenalty)/(3/self.desiredStepDuration)
+        reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 14*stepDurationPenalty - 4*torsoUprightPenalty)/(3/self.desiredStepDuration)
         if reward < 0:
             print("reward <0", reward)
         self.step_counter += n_frames
