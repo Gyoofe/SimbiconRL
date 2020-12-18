@@ -259,7 +259,7 @@ class FooEnv6(env_base.FooEnvBase):
         action = np.clip(action, -1, 1)
         #드는거 
         #swh02 드는건 +가 양수다 그러면...
-        action[0] = ((action[0] + 1)/2)*np.pi/2
+        action[0] = (((action[0] + 1)/2)*0.65+0.35)*np.pi/2
         #swk02
         #action[1] = (((action[1] - 1)/4)-0.5)*np.pi/2
         action[1] = ((action[1] - 1)*0.35-0.3)*math.radians(100.0)
@@ -505,6 +505,8 @@ class FooEnv6(env_base.FooEnvBase):
 
         reward = (alive_bonus - 2*rootPenalty - np.abs(pos_after[2]) - 12*StepLengthPenalty - 10*FootHeightPenalty - 14*stepDurationPenalty - 4*torsoUprightPenalty)/(3/self.desiredStepDuration)
         if reward < 0:
+            print("torso", torsoUprightPenalty)
+            print("footheight", FootHeightPenalty)
             print("reward <0", reward)
         self.step_counter += n_frames
         self.change_step += n_frames
